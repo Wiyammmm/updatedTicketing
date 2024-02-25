@@ -991,7 +991,7 @@ class _LoginPageState extends State<LoginPage> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: isRegularTrip
+                                  backgroundColor: isRegularTrip
                                       ? Color(0xFF00558d)
                                       : Color(
                                           0xFFd9d9d9), // Background color of the button
@@ -1028,7 +1028,7 @@ class _LoginPageState extends State<LoginPage> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: !isRegularTrip
+                                  backgroundColor: !isRegularTrip
                                       ? Color(0xFF00558d)
                                       : Color(
                                           0xFFd9d9d9), // Background color of the button
@@ -1306,7 +1306,7 @@ class _LoginPageState extends State<LoginPage> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Color(
+                                backgroundColor: Color(
                                     0xFF00adee), // Background color of the button
                                 padding: EdgeInsets.symmetric(horizontal: 24.0),
                                 shape: RoundedRectangleBorder(

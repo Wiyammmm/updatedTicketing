@@ -326,7 +326,7 @@ class _PrePaidListingPageState extends State<PrePaidListingPage> {
                                     builder: (context) => TicketingMenuPage()));
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Color(
+                            backgroundColor: Color(
                                 0xFF00adee), // Background color of the button
                             padding: EdgeInsets.symmetric(horizontal: 24.0),
                             shape: RoundedRectangleBorder(

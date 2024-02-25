@@ -214,8 +214,8 @@ class _PrinterPageState extends State<PrinterPage> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
                         ElevatedButton(
-                          style:
-                              ElevatedButton.styleFrom(primary: Colors.brown),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.brown),
                           onPressed: () {
                             initPlatformState();
                           },
@@ -227,7 +227,7 @@ class _PrinterPageState extends State<PrinterPage> {
                         const SizedBox(width: 20),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: _connected
+                              backgroundColor: _connected
                                   ? Color(0xFFa02e49)
                                   : const Color.fromARGB(255, 0, 104, 3)),
                           onPressed: _connected ? _disconnect : _connect,
@@ -244,8 +244,8 @@ class _PrinterPageState extends State<PrinterPage> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.5,
                         child: ElevatedButton(
-                          style:
-                              ElevatedButton.styleFrom(primary: Colors.brown),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.brown),
                           onPressed: () {
                             TestPrintt.sample();
                           },
@@ -264,7 +264,7 @@ class _PrinterPageState extends State<PrinterPage> {
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
-                      primary:
+                      backgroundColor:
                           Color(0xFF00adee), // Background color of the button
                       padding: EdgeInsets.symmetric(horizontal: 24.0),
                       shape: RoundedRectangleBorder(

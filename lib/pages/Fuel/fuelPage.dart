@@ -488,7 +488,7 @@ class _FuelPageState extends State<FuelPage> {
                                               DashboardPage()));
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: AppColors
+                                  backgroundColor: AppColors
                                       .primaryColor, // Background color of the button
 
                                   padding:
@@ -629,7 +629,7 @@ class _FuelPageState extends State<FuelPage> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: AppColors
+                                  backgroundColor: AppColors
                                       .primaryColor, // Background color of the button
 
                                   padding:

@@ -171,7 +171,7 @@ class _CundoctorPageState extends State<CundoctorPage> {
                                       //         builder: (context) => LoginPage()));
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      primary: AppColors
+                                      backgroundColor: AppColors
                                           .primaryColor, // Background color of the button
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 24.0),
@@ -753,7 +753,7 @@ class _CundoctorPageState extends State<CundoctorPage> {
                                         builder: (context) => DashboardPage()));
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: AppColors
+                                backgroundColor: AppColors
                                     .primaryColor, // Background color of the button
                                 padding: EdgeInsets.symmetric(horizontal: 24.0),
                                 shape: RoundedRectangleBorder(

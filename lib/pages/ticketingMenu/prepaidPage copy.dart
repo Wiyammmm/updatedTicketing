@@ -131,7 +131,7 @@ class _PrepaidPageState extends State<PrepaidPage> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      primary:
+                      backgroundColor:
                           Color(0xFF00adee), // Background color of the button
 
                       padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -168,7 +168,7 @@ class _PrepaidPageState extends State<PrepaidPage> {
                               builder: (context) => TicketingMenuPage()));
                     },
                     style: ElevatedButton.styleFrom(
-                      primary:
+                      backgroundColor:
                           Color(0xFF00adee), // Background color of the button
 
                       padding: EdgeInsets.symmetric(horizontal: 24.0),

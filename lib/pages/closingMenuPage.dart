@@ -253,7 +253,7 @@ class _ClosingMenuPageState extends State<ClosingMenuPage> {
                                 //         builder: (context) => LoginPage()));
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: AppColors
+                                backgroundColor: AppColors
                                     .primaryColor, // Background color of the button
                                 padding: EdgeInsets.symmetric(horizontal: 24.0),
                                 shape: RoundedRectangleBorder(
@@ -306,7 +306,7 @@ class _ClosingMenuPageState extends State<ClosingMenuPage> {
             content: Container(
               height: MediaQuery.of(context).size.height * 0.5,
               decoration: BoxDecoration(
-                  color: Color(0xFF00558d),
+                  color: AppColors.primaryColor,
                   border: Border.all(width: 2, color: Colors.white),
                   borderRadius: BorderRadius.circular(10)),
               child: Padding(
@@ -346,7 +346,7 @@ class _ClosingMenuPageState extends State<ClosingMenuPage> {
                                     alignment: Alignment.center,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                          color: Color(0xff00558d),
+                                          color: AppColors.primaryColor,
                                           borderRadius:
                                               BorderRadius.circular(100)),
                                       child: Padding(
@@ -446,7 +446,7 @@ class _ClosingMenuPageState extends State<ClosingMenuPage> {
                     content: Container(
                       height: MediaQuery.of(context).size.height * 0.4,
                       decoration: BoxDecoration(
-                          color: Color(0xFF00558d),
+                          color: AppColors.primaryColor,
                           border: Border.all(width: 2, color: Colors.white),
                           borderRadius: BorderRadius.circular(10)),
                       child: Padding(
@@ -476,8 +476,8 @@ class _ClosingMenuPageState extends State<ClosingMenuPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('CARD ID:'),
-                                        Text('$result')
+                                        Text('SN:'),
+                                        Text('${cardData[0]['sNo']}')
                                       ],
                                     ),
                                     Row(
@@ -505,13 +505,13 @@ class _ClosingMenuPageState extends State<ClosingMenuPage> {
                                       //         builder: (context) => LoginPage()));
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      primary: Color(
-                                          0xFF00adee), // Background color of the button
+                                      backgroundColor: AppColors
+                                          .primaryColor, // Background color of the button
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 24.0),
                                       shape: RoundedRectangleBorder(
                                         side: BorderSide(
-                                            width: 1, color: Colors.black),
+                                            width: 1, color: Colors.white),
                                         borderRadius: BorderRadius.circular(
                                             10.0), // Border radius
                                       ),

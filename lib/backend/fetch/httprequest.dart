@@ -684,7 +684,7 @@ class httprequestService {
             },
             body: jsonEncode(item),
           )
-          .timeout(Duration(seconds: 5));
+          .timeout(Duration(seconds: 10));
       print('sendtocketTicket Raw Response: ${responseMastercard.body}');
       masterCarddata = json.decode(responseMastercard.body);
       if (responseMastercard.statusCode == 200) {
@@ -704,18 +704,14 @@ class httprequestService {
       }
     } catch (e) {
       print("sendtocketTicket error: $e");
+      print('sendtocketTicket masterCarddata: $masterCarddata');
+
       if (e is ClientException) {
         return {
           "messages": {"code": "500", "message": "NO INTERNET"}
         };
       } else {
-        return {
-          "messages": {
-            "code": 500,
-            "message": "SOMETHING WENT WRONG",
-          },
-          "response": {}
-        };
+        return masterCarddata;
       }
     }
   }
@@ -949,48 +945,48 @@ class httprequestService {
       ],
       "response": {}
     };
-    // try {
-    String apiUrl = "http://172.232.77.205:3000/api/v1/filipay/tor/trip";
+    try {
+      String apiUrl = "http://172.232.77.205:3000/api/v1/filipay/tor/trip";
 
-    // final Map<String, dynamic> MasterCardrequestBody = {
-    //   "masterCardId": "$masterCardId",
-    //   "filipayCardId": "$passengerCardId",
-    //   "amount": amount
-    // };
+      // final Map<String, dynamic> MasterCardrequestBody = {
+      //   "masterCardId": "$masterCardId",
+      //   "filipayCardId": "$passengerCardId",
+      //   "amount": amount
+      // };
 
-    final responseMastercard = await http
-        .post(
-          Uri.parse(apiUrl),
-          headers: {
-            'Authorization': 'Bearer $bearerToken',
-            'Content-Type': 'application/json',
-            // Add other headers if needed
-          },
-          body: jsonEncode(item),
-        )
-        .timeout(Duration(seconds: 30));
-    torTrip = json.decode(responseMastercard.body);
-    print('sendtorTrip torTrip: $torTrip');
-    if (responseMastercard.statusCode == 200) {
-      // Successful response
+      final responseMastercard = await http
+          .post(
+            Uri.parse(apiUrl),
+            headers: {
+              'Authorization': 'Bearer $bearerToken',
+              'Content-Type': 'application/json',
+              // Add other headers if needed
+            },
+            body: jsonEncode(item),
+          )
+          .timeout(Duration(seconds: 30));
+      torTrip = json.decode(responseMastercard.body);
+      print('sendtorTrip torTrip: $torTrip');
+      if (responseMastercard.statusCode == 200) {
+        // Successful response
 
-      print('sendtorTrip: $torTrip');
-      if (torTrip['messages'][0]['code'].toString() == "0") {
-        return torTrip;
+        print('sendtorTrip: $torTrip');
+        if (torTrip['messages'][0]['code'].toString() == "0") {
+          return torTrip;
+        } else {
+          return torTrip;
+        }
       } else {
+        // Handle error responses
+        print('sendtorTrip Error: ${responseMastercard.statusCode}');
+        print('sendtorTrip Response body: ${responseMastercard.body}');
         return torTrip;
       }
-    } else {
-      // Handle error responses
-      print('sendtorTrip Error: ${responseMastercard.statusCode}');
-      print('sendtorTrip Response body: ${responseMastercard.body}');
+    } catch (e) {
+      print("sendtorTrip: $e");
+      print('sendtorTrip torTrip error: $torTrip');
       return torTrip;
     }
-    // } catch (e) {
-    //   print("sendtorTrip: $e");
-    //   print('sendtorTrip torTrip error: $torTrip');
-    //   return torTrip;
-    // }
   }
 
   Future<Map<String, dynamic>> addInspection(Map<String, dynamic> item) async {

@@ -251,6 +251,21 @@ class fetchServices {
     return sumOfBaggage;
   }
 
+  double totalCashReceivedBaggageperTrip() {
+    final torTicket = _myBox.get('torTicket');
+    final session = _myBox.get('SESSION');
+    final torTrip = _myBox.get('torTrip');
+    String control_no = torTrip[session['currentTripIndex']]['control_no'];
+    double sumOfBaggage = torTicket
+        .where((fare) =>
+            fare['control_no'] == control_no &&
+            (fare['cardType'] == "mastercard" || fare['cardType'] == "cash"))
+        .map<double>((fare) => (fare['baggage'] as num).toDouble())
+        .fold(0.0, (prev, baggage) => prev + baggage);
+
+    return sumOfBaggage;
+  }
+
 // counter fetcher
   int baggageCount() {
     try {
@@ -405,6 +420,23 @@ class fetchServices {
     return totalPassengerAmount;
   }
 
+  double totalCashReceivedpassengerFareAmountTrip() {
+    double totalPassengerAmount = 0.0;
+
+    final torTicket = _myBox.get('torTicket');
+    String control_no = getCurrentControlNumber();
+
+    for (Map<String, dynamic> item in torTicket) {
+      if (item['control_no'].toString() == control_no &&
+          (item['cardType'] == "mastercard" || item['cardType'] == "cash")) {
+        totalPassengerAmount +=
+            (item['fare'] * item['pax']) + item['additionalFare'];
+      }
+    }
+
+    return totalPassengerAmount;
+  }
+
   String getCurrentControlNumber() {
     final session = _myBox.get('SESSION');
     final torTrip = _myBox.get('torTrip');
@@ -496,7 +528,7 @@ class fetchServices {
             (fare['additionalFare'] as num).toDouble())
         .fold(0.0, (prev, amount) => prev + amount);
 
-    return totalAmount;
+    return totalAmount - totalTripExpenses();
   }
 
   double totalTripCardSales() {
@@ -521,6 +553,19 @@ class fetchServices {
         .map<num>((fare) => (fare['additionalFare'] as num).toDouble())
         .fold(0.0, (prev, amount) => prev + amount);
     return totalAmount + totaladdFareAmount;
+  }
+
+  double totalTripExpenses() {
+    final expenses = _myBox.get('expenses');
+
+    String controlNumberToFilter = getCurrentControlNumber();
+    double totalAmount = 0;
+    totalAmount = expenses
+        .where((item) => item['control_no'] == controlNumberToFilter)
+        .map<num>((fare) => (fare['amount'] as num).toDouble())
+        .fold(0.0, (prev, amount) => prev + amount);
+
+    return totalAmount;
   }
 
   double grandTotalCardSales() {

@@ -231,7 +231,7 @@ class _TicketStopListPageState extends State<TicketStopListPage> {
                                 builder: (context) => TicketingMenuPage()));
                       },
                       style: ElevatedButton.styleFrom(
-                        primary:
+                        backgroundColor:
                             Color(0xFF00adee), // Background color of the button
                         padding: EdgeInsets.symmetric(horizontal: 24.0),
                         shape: RoundedRectangleBorder(

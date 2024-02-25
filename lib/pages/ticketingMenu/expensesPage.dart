@@ -32,6 +32,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
   final _formKey = GlobalKey<FormState>();
 
   List<Map<String, dynamic>> expensesList = [];
+  List<Map<String, dynamic>> expenses = [];
   List<Map<String, dynamic>> torTrip = [];
   Map<String, dynamic> session = {};
   TextEditingController expensesAmountController = TextEditingController();
@@ -45,8 +46,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
     "EMPLOYEE BENEFITS",
     "MATERIALS",
     "REPRESENTATION",
-    'REPAIR',
-    "MAINTENANCE"
+    'REPAIR'
   ];
   // fuel controller
   TextEditingController fuelStationController = TextEditingController();
@@ -75,13 +75,13 @@ class _ExpensesPageState extends State<ExpensesPage> {
   @override
   void initState() {
     super.initState();
-    expensesList = _myBox.get('expenses');
+    expenses = _myBox.get('expenses');
     session = _myBox.get('SESSION');
     torTrip = _myBox.get('torTrip');
     control_no = torTrip[session['currentTripIndex']]['control_no'];
     torNo = torTrip[session['currentTripIndex']]['tor_no'];
     expensesList =
-        expensesList.where((item) => item['control_no'] == control_no).toList();
+        expenses.where((item) => item['control_no'] == control_no).toList();
     print('expenses list: $expensesList');
   }
 
@@ -256,7 +256,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                                 _showAddModal(context);
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: AppColors
+                                backgroundColor: AppColors
                                     .primaryColor, // Background color of the button
 
                                 padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -289,7 +289,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                                               TicketingMenuPage()));
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: AppColors
+                                  backgroundColor: AppColors
                                       .primaryColor, // Background color of the button
 
                                   padding:
@@ -329,7 +329,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: AppColors
+                                  backgroundColor: AppColors
                                       .primaryColor, // Background color of the button
 
                                   padding:
@@ -925,7 +925,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: AppColors
+                              backgroundColor: AppColors
                                   .primaryColor, // Background color of the button
 
                               padding: EdgeInsets.symmetric(horizontal: 24.0),

@@ -763,10 +763,10 @@ class HiveService {
       storedData.add(item);
       _myBox.put('expenses', storedData);
       final newstoredData = _myBox.get('expenses');
-      print('newstoredData: $newstoredData');
+      print('addExpenses newstoredData: $newstoredData');
       return true;
     } catch (e) {
-      print('error updateCurrentTripIndex: $e');
+      print('error addExpenses: $e');
       return false;
     }
   }

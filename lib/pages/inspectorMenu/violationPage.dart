@@ -270,7 +270,7 @@ class _ViolationPageState extends State<ViolationPage> {
                                                 )));
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: AppColors
+                                    backgroundColor: AppColors
                                         .primaryColor, // Background color of the button
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 24.0),
@@ -346,7 +346,7 @@ class _ViolationPageState extends State<ViolationPage> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: AppColors
+                                    backgroundColor: AppColors
                                         .primaryColor, // Background color of the button
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 24.0),

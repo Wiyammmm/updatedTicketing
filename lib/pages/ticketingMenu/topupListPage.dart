@@ -389,7 +389,7 @@ class _TopUpListPageState extends State<TopUpListPage> {
                               builder: (context) => CundoctorPage()));
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: AppColors
+                      backgroundColor: AppColors
                           .primaryColor, // Background color of the button
                       padding: EdgeInsets.symmetric(horizontal: 24.0),
                       shape: RoundedRectangleBorder(

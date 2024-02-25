@@ -1532,7 +1532,7 @@ class _LoginPageState extends State<LoginPage> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: AppColors
+                                  backgroundColor: AppColors
                                       .primaryColor, // Background color of the button
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 24.0),

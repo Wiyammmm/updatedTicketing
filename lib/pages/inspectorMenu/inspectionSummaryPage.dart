@@ -255,18 +255,18 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
   }
 
   String findNearestStation(
-      List<Map<String, dynamic>> stations, double targetKm) {
-    if (stations.isEmpty) {
+      List<Map<String, dynamic>> thisstations, double targetKm) {
+    if (filteredStations.isEmpty) {
       return ''; // Handle the case where the list is empty
     }
     setState(() {
       stationNames = [];
     });
     // updateStationName(stations);
-    for (var station in stations) {
+    for (var station in filteredStations) {
       double km = station['km']?.toDouble() ?? 0.0;
       // int numrow = station['rowNo'].toInt();
-      if (targetKm == km) {
+      if (targetKm.toDouble() == km) {
         setState(() {
           stationNames.add(station);
         });
@@ -281,11 +281,12 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
       // }
     }
     if (stationNames.isEmpty) {
+      print('stationNames no stations');
       setState(() {
         stationNames = filteredStations;
       });
     }
-
+    print('stationNames filteredStations: $filteredStations');
     print('stationNames: $stationNames');
 
     // setState(() {
@@ -344,25 +345,25 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
         print('onboardfilteredTorTicket firstkm: ${filteredStations[0]['km']}');
         print('onboardfilteredTorTicket currentKM: $currentkmpost');
         if (!isReverse) {
-          if (kmRun == int.parse(filteredStations[0]['km'].toString())) {
-            return kmRun <= currentkmpost &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'];
-          } else {
-            return kmRun < currentkmpost &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'];
-          }
+          // if (kmRun == int.parse(filteredStations[0]['km'].toString())) {
+          //   return kmRun <= currentkmpost &&
+          //       torNoInTicket == control_no &&
+          //       reverseNum == SESSION['reverseNum'];
+          // } else {
+          return kmRun < currentkmpost &&
+              torNoInTicket == control_no &&
+              reverseNum == SESSION['reverseNum'];
+          // }
         } else {
-          if (kmRun == 0) {
-            return kmRun >= currentkmpost &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'];
-          } else {
-            return kmRun > currentkmpost &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'];
-          }
+          // if (kmRun == 0) {
+          //   return kmRun >= currentkmpost &&
+          //       torNoInTicket == control_no &&
+          //       reverseNum == SESSION['reverseNum'];
+          // } else {
+          return kmRun > currentkmpost &&
+              torNoInTicket == control_no &&
+              reverseNum == SESSION['reverseNum'];
+          // }
         }
       }).toList();
     });
@@ -684,6 +685,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * 0.35,
+                              height: 65,
                               decoration: BoxDecoration(
                                 color: AppColors.primaryColor,
                               ),
@@ -698,17 +700,20 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                         style: TextStyle(color: Colors.white),
                                       ),
                                     ),
-                                    Container(
-                                      width: double.infinity,
-                                      decoration:
-                                          BoxDecoration(color: Colors.white),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Center(
-                                          child: Text(
-                                              '${timeService.dateofTrip2()}',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold)),
+                                    Expanded(
+                                      child: Container(
+                                        width: double.infinity,
+                                        decoration:
+                                            BoxDecoration(color: Colors.white),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Center(
+                                            child: Text(
+                                                '${timeService.dateofTrip2()}',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          ),
                                         ),
                                       ),
                                     )
@@ -721,6 +726,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                             ),
                             Expanded(
                               child: Container(
+                                height: 65,
                                 decoration: BoxDecoration(
                                   color: AppColors.primaryColor,
                                 ),
@@ -735,18 +741,25 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       ),
-                                      Container(
-                                        width: double.infinity,
-                                        decoration:
-                                            BoxDecoration(color: Colors.white),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: Center(
-                                              child: Text(
-                                            '$route',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          )),
+                                      Expanded(
+                                        child: Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white),
+                                          child: FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              child: Center(
+                                                  child: Text(
+                                                '$route',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )),
+                                            ),
+                                          ),
                                         ),
                                       )
                                     ],
@@ -917,21 +930,17 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                                 try {
                                                   double thisvalue =
                                                       double.parse(value);
-                                                  findNearestStation(stations,
+
+                                                  selectedOnboardPlace = null;
+                                                  findNearestStation(
+                                                      filteredStations,
                                                       double.parse(value));
-                                                  if (thisvalue <= 0) {
-                                                    setState(() {
-                                                      kmPostController.text =
-                                                          "";
-                                                    });
-                                                  }
                                                 } catch (e) {
                                                   print('km post error: $e');
 
                                                   print(e);
 
                                                   setState(() {
-                                                    stationNames.clear();
                                                     stationNames =
                                                         filteredStations;
                                                     selectedOnboardPlace = null;
@@ -1583,7 +1592,8 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                             discrepancyController.text =
                                                 "${(int.parse(passengerController.text) + (int.parse(baggageOnlyController.text) + int.parse(baggageWithPassengerController.text))) - (int.parse(headCountController.text) + int.parse(baggageCountController.text))}";
                                           } catch (e) {
-                                            discrepancyController.text = "0";
+                                            discrepancyController.text =
+                                                "${(int.parse(passengerController.text) + (int.parse(baggageOnlyController.text) + int.parse(baggageWithPassengerController.text))) - (int.parse(headCountController.text))}";
                                           }
                                         });
                                       },
@@ -1960,7 +1970,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                                 )));
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: AppColors
+                                    backgroundColor: AppColors
                                         .primaryColor, // Background color of the button
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 24.0),
@@ -2025,7 +2035,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: AppColors
+                                    backgroundColor: AppColors
                                         .primaryColor, // Background color of the button
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 24.0),

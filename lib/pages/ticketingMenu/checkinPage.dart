@@ -344,7 +344,7 @@ class _CheckInPageState extends State<CheckInPage> {
                                     builder: (context) => PrepaidPage()));
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Color(
+                            backgroundColor: Color(
                                 0xFF00adee), // Background color of the button
 
                             padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -473,7 +473,7 @@ class _CheckInPageState extends State<CheckInPage> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Color(
+                            backgroundColor: Color(
                                 0xFF00adee), // Background color of the button
 
                             padding: EdgeInsets.symmetric(horizontal: 24.0),

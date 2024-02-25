@@ -2986,7 +2986,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                             //             TicketingMenuPage()));
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            primary: AppColors
+                                            backgroundColor: AppColors
                                                 .primaryColor, // Background color of the button
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 24.0),
@@ -3053,7 +3053,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                             }
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            primary: AppColors
+                                            backgroundColor: AppColors
                                                 .primaryColor, // Background color of the button
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 24.0),
@@ -4176,7 +4176,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   // print(stations.length);
                                                 },
                                                 style: ElevatedButton.styleFrom(
-                                                  primary: AppColors
+                                                  backgroundColor: AppColors
                                                       .primaryColor, // Background color of the button
                                                   padding: EdgeInsets.symmetric(
                                                       horizontal: 24.0),
@@ -4424,7 +4424,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   // print(stations.length);
                                                 },
                                                 style: ElevatedButton.styleFrom(
-                                                  primary: AppColors
+                                                  backgroundColor: AppColors
                                                       .primaryColor, // Background color of the button
                                                   padding: EdgeInsets.symmetric(
                                                       horizontal: 24.0),
@@ -4941,7 +4941,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                           Navigator.of(context).pop();
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          primary: AppColors
+                                          backgroundColor: AppColors
                                               .primaryColor, // Background color of the button
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 24.0),
@@ -4973,7 +4973,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                           }
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          primary: AppColors
+                                          backgroundColor: AppColors
                                               .primaryColor, // Background color of the button
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 24.0),
@@ -5094,7 +5094,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                             Navigator.of(context).pop();
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            primary: passengerType == 'regular'
+                                            backgroundColor: passengerType == 'regular'
                                                 ? Color(0xff00558d)
                                                 : Color(
                                                     0xFF46aef2), // Background color of the button
@@ -5173,7 +5173,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                             Navigator.of(context).pop();
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            primary: passengerType == 'senior'
+                                            backgroundColor: passengerType == 'senior'
                                                 ? Color(0xff00558d)
                                                 : Color(
                                                     0xFF46aef2), // Background color of the button
@@ -5252,7 +5252,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                             Navigator.of(context).pop();
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            primary: passengerType == 'student'
+                                            backgroundColor: passengerType == 'student'
                                                 ? Color(0xff00558d)
                                                 : Color(
                                                     0xFF46aef2), // Background color of the button
@@ -5328,7 +5328,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                             Navigator.of(context).pop();
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            primary: passengerType == 'pwd'
+                                            backgroundColor: passengerType == 'pwd'
                                                 ? Color(0xff00558d)
                                                 : Color(
                                                     0xFF46aef2), // Background color of the button
@@ -5440,7 +5440,7 @@ class _TicketingPageState extends State<TicketingPage> {
                               Navigator.of(context).pop();
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Color(
+                              backgroundColor: Color(
                                   0xff46aef2), // Background color of the button
                               padding: EdgeInsets.symmetric(horizontal: 24.0),
                               shape: RoundedRectangleBorder(
@@ -5489,7 +5489,7 @@ class _TicketingPageState extends State<TicketingPage> {
                               Navigator.of(context).pop();
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Color(
+                              backgroundColor: Color(
                                   0xff46aef2), // Background color of the button
                               padding: EdgeInsets.symmetric(horizontal: 24.0),
                               shape: RoundedRectangleBorder(
@@ -6039,7 +6039,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    primary: passengerType ==
+                                                    backgroundColor: passengerType ==
                                                             'regular'
                                                         ? Color(0xff00558d)
                                                         : Color(
@@ -6146,7 +6146,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    primary: passengerType ==
+                                                    backgroundColor: passengerType ==
                                                             'senior'
                                                         ? Color(0xff00558d)
                                                         : Color(
@@ -6253,7 +6253,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    primary: passengerType ==
+                                                    backgroundColor: passengerType ==
                                                             'student'
                                                         ? Color(0xff00558d)
                                                         : Color(
@@ -6349,7 +6349,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    primary: passengerType ==
+                                                    backgroundColor: passengerType ==
                                                             'pwd'
                                                         ? Color(0xff00558d)
                                                         : Color(

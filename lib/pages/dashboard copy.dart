@@ -472,7 +472,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 TicketingMenuPage()));
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color(
+                                    backgroundColor: Color(
                                         0xFF00adee), // Background color of the button
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 24.0),
@@ -505,7 +505,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 CundoctorPage()));
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color(
+                                    backgroundColor: Color(
                                         0xFF00adee), // Background color of the button
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 24.0),
@@ -611,7 +611,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 )));
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color(
+                                    backgroundColor: Color(
                                         0xFF00adee), // Background color of the button
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 24.0),
@@ -645,7 +645,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         //             CundoctorPage()));
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        primary: Color(
+                                        backgroundColor: Color(
                                             0xFF00adee), // Background color of the button
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 24.0),

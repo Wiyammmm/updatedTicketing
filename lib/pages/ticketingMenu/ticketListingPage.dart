@@ -659,7 +659,7 @@ class _ticketListingPageState extends State<TicketListingPage> {
                                   builder: (context) => TicketingMenuPage()));
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: AppColors
+                          backgroundColor: AppColors
                               .primaryColor, // Background color of the button
                           padding: EdgeInsets.symmetric(horizontal: 24.0),
                           shape: RoundedRectangleBorder(
@@ -723,7 +723,7 @@ class _ticketListingPageState extends State<TicketListingPage> {
                   //         } else {}
                   //       },
                   //       style: ElevatedButton.styleFrom(
-                  //         primary: Color(
+                  //         backgroundColor: Color(
                   //             0xFF00adee), // Background color of the button
                   //         padding: EdgeInsets.symmetric(horizontal: 24.0),
                   //         shape: RoundedRectangleBorder(
@@ -898,7 +898,7 @@ class _ticketListingPageState extends State<TicketListingPage> {
                               Navigator.of(context).pop();
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: AppColors
+                              backgroundColor: AppColors
                                   .primaryColor, // Background color of the button
                               padding: EdgeInsets.symmetric(horizontal: 24.0),
                               shape: RoundedRectangleBorder(
@@ -955,7 +955,7 @@ class _ticketListingPageState extends State<TicketListingPage> {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: AppColors
+                              backgroundColor: AppColors
                                   .primaryColor, // Background color of the button
                               padding: EdgeInsets.symmetric(horizontal: 24.0),
                               shape: RoundedRectangleBorder(

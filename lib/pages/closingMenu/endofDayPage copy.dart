@@ -282,7 +282,7 @@ class _EndofDayPageState extends State<EndofDayPage> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Color(
+                                backgroundColor: Color(
                                     0xFF00adee), // Background color of the button
 
                                 padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -361,7 +361,7 @@ class _EndofDayPageState extends State<EndofDayPage> {
                                   Navigator.of(context).pop();
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: Color(
+                                  backgroundColor: Color(
                                       0xFF00adee), // Background color of the button
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 24.0),
@@ -410,7 +410,7 @@ class _EndofDayPageState extends State<EndofDayPage> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: Color(
+                                  backgroundColor: Color(
                                       0xFF00adee), // Background color of the button
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 24.0),

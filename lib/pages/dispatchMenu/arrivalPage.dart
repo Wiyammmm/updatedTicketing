@@ -212,6 +212,13 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                 arrivalWidget(
                                     isBottom: false,
                                     isTop: false,
+                                    label: "TOTAL EXPENSES",
+                                    value:
+                                        '${fetchService.totalTripExpenses().toStringAsFixed(2)}'),
+                                SizedBox(height: 5),
+                                arrivalWidget(
+                                    isBottom: false,
+                                    isTop: false,
                                     label: "CASH RECEIVED",
                                     value:
                                         '${fetchService.totalTripCashReceived().toStringAsFixed(2)}'),
@@ -299,7 +306,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: AppColors
+                                  backgroundColor: AppColors
                                       .primaryColor, // Background color of the button
 
                                   padding:
@@ -377,7 +384,8 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                         '${dispatcherData['firstName']} ${dispatcherData['middleName'] != '' ? dispatcherData['middleName'][0] : ''}. ${dispatcherData['lastName']} ${dispatcherData['nameSuffix']}',
                                         route ?? '',
                                         "${SESSION['torNo']}",
-                                        "${SESSION['tripType']}");
+                                        "${SESSION['tripType']}",
+                                        fetchService.totalTripExpenses());
                                     if (isprint) {
                                       Navigator.of(context).pop();
                                       Navigator.pushReplacement(
@@ -415,7 +423,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                   // if (isUpdateArrived) {
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: AppColors
+                                  backgroundColor: AppColors
                                       .primaryColor, // Background color of the button
 
                                   padding:

@@ -699,7 +699,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           padding: const EdgeInsets.all(8.0),
                                           child: Center(
                                             child: Text(
-                                              '${fetchService.totalpassengerFareAmountTrip().toStringAsFixed(2)}',
+                                              '${fetchService.totalCashReceivedpassengerFareAmountTrip().toStringAsFixed(2)}',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -740,7 +740,48 @@ class _DashboardPageState extends State<DashboardPage> {
                                           padding: const EdgeInsets.all(8.0),
                                           child: Center(
                                             child: Text(
-                                              '${fetchService.totalBaggageperTrip().toStringAsFixed(2)}',
+                                              '${fetchService.totalCashReceivedBaggageperTrip().toStringAsFixed(2)}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.primaryColor,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                        'EXPENSES',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.3,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Center(
+                                            child: Text(
+                                              '${fetchService.totalTripExpenses().toStringAsFixed(2)}',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -785,7 +826,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           padding: const EdgeInsets.all(8.0),
                                           child: Center(
                                             child: Text(
-                                              '${fetchService.totalTripCashReceived().toStringAsFixed(2)}',
+                                              '${(fetchService.totalTripCashReceived() - fetchService.totalTripExpenses()).toStringAsFixed(2)}',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -862,7 +903,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 TicketingMenuPage()));
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: AppColors
+                                    backgroundColor: AppColors
                                         .primaryColor, // Background color of the button
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 24.0),
@@ -895,7 +936,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 CundoctorPage()));
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: AppColors
+                                    backgroundColor: AppColors
                                         .primaryColor, // Background color of the button
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 24.0),
@@ -1001,7 +1042,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 )));
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: AppColors
+                                    backgroundColor: AppColors
                                         .primaryColor, // Background color of the button
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 24.0),
@@ -1035,7 +1076,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             //             //             CundoctorPage()));
                             //           },
                             //           style: ElevatedButton.styleFrom(
-                            //             primary: Color(
+                            //             backgroundColor: Color(
                             //                 0xFF00adee), // Background color of the button
                             //             padding: EdgeInsets.symmetric(
                             //                 horizontal: 24.0),

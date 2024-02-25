@@ -751,7 +751,8 @@ class TestPrinttt {
       String dispatcherName,
       String route,
       String torNo,
-      String tripType) async {
+      String tripType,
+      double totalExpenses) async {
     final _myBox = Hive.box('myBox');
     // final SESSION = _myBox.get('SESSION');
     final coopData = fetchservice.fetchCoopData();
@@ -910,7 +911,7 @@ class TestPrinttt {
               (fare['additionalFare'] as num).toDouble())
           .fold(0.0, (prev, amount) => prev + amount);
 
-      return totalAmount;
+      return totalAmount - totalExpenses;
     }
 
     double totalAddFare() {
@@ -1018,6 +1019,9 @@ class TestPrinttt {
               "ADD FARE:", "${totalAddFare().toStringAsFixed(2)}", 1);
           bluetooth.printLeftRight("CASH RECEIVED:",
               "${totalTripCashReceived().toStringAsFixed(2)}", 1);
+
+          bluetooth.printLeftRight(
+              "TOTAL EXPENSES:", "${totalExpenses.toStringAsFixed(2)}", 1);
           bluetooth.printLeftRight(
               "GRAND TOTAL:", "${totalTripGrandTotal().toStringAsFixed(2)}", 1);
           // bluetooth.printLeftRight("TOTAL CS:", "0", 1);

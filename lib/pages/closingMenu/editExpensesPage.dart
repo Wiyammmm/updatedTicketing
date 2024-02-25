@@ -324,7 +324,7 @@ class _EditExpensesPageState extends State<EditExpensesPage> {
                               _showAddModal(context, false, 0);
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: AppColors
+                              backgroundColor: AppColors
                                   .primaryColor, // Background color of the button
 
                               padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -357,7 +357,7 @@ class _EditExpensesPageState extends State<EditExpensesPage> {
                                             )));
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: AppColors
+                                backgroundColor: AppColors
                                     .primaryColor, // Background color of the button
 
                                 padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -396,7 +396,7 @@ class _EditExpensesPageState extends State<EditExpensesPage> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: AppColors
+                                backgroundColor: AppColors
                                     .primaryColor, // Background color of the button
 
                                 padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -1036,7 +1036,7 @@ class _EditExpensesPageState extends State<EditExpensesPage> {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: AppColors
+                              backgroundColor: AppColors
                                   .primaryColor, // Background color of the button
 
                               padding: EdgeInsets.symmetric(horizontal: 24.0),

@@ -244,7 +244,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                             _showAddModal(context);
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Color(
+                            backgroundColor: Color(
                                 0xFF00558d), // Background color of the button
 
                             padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -276,7 +276,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                                           TicketingMenuPage()));
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Color(
+                              backgroundColor: Color(
                                   0xFF00adee), // Background color of the button
 
                               padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -313,7 +313,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Color(
+                              backgroundColor: Color(
                                   0xFF00adee), // Background color of the button
 
                               padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -909,7 +909,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Color(
+                              backgroundColor: Color(
                                   0xFF00adee), // Background color of the button
 
                               padding: EdgeInsets.symmetric(horizontal: 24.0),

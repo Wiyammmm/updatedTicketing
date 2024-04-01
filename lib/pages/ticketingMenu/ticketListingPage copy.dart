@@ -55,6 +55,11 @@ class _ticketListingPageState extends State<TicketListingPage> {
     ticketListCopy = ticketListCopy.reversed.toList();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   String formatDateNow() {
     final now = DateTime.now();
     final formattedDate = DateFormat("d MMM y, HH:mm").format(now);

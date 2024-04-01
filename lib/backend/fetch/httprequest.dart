@@ -1,7 +1,6 @@
 import 'package:hive/hive.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'dart:io';
 import 'package:http/http.dart';
 
 class httprequestService {
@@ -25,7 +24,8 @@ class httprequestService {
           'Content-Type': 'application/json',
           // Add other headers if needed`
         },
-      ).timeout(Duration(seconds: 30));
+      );
+//.timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -60,7 +60,8 @@ class httprequestService {
           'Content-Type': 'application/json',
           // Add other headers if needed
         },
-      ).timeout(Duration(seconds: 30));
+      );
+//.timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -93,7 +94,8 @@ class httprequestService {
           'Content-Type': 'application/json',
           // Add other headers if needed
         },
-      ).timeout(Duration(seconds: 240));
+      );
+      // .timeout(Duration(seconds: 240));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -128,7 +130,8 @@ class httprequestService {
           'Content-Type': 'application/json',
           // Add other headers if needed
         },
-      ).timeout(Duration(seconds: 30));
+      );
+//.timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -163,7 +166,8 @@ class httprequestService {
           'Content-Type': 'application/json',
           // Add other headers if needed
         },
-      ).timeout(Duration(seconds: 30));
+      );
+//.timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -206,7 +210,8 @@ class httprequestService {
           'Content-Type': 'application/json',
           // Add other headers if needed
         },
-      ).timeout(Duration(seconds: 30));
+      );
+//.timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -239,7 +244,8 @@ class httprequestService {
           'Content-Type': 'application/json',
           // Add other headers if needed
         },
-      ).timeout(Duration(seconds: 30));
+      );
+//.timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -275,7 +281,8 @@ class httprequestService {
           'Content-Type': 'application/json',
           // Add other headers if needed
         },
-      ).timeout(Duration(seconds: 30));
+      );
+//.timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -312,7 +319,8 @@ class httprequestService {
           'Content-Type': 'application/json',
           // Add other headers if needed
         },
-      ).timeout(Duration(seconds: 30));
+      );
+//.timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -349,7 +357,8 @@ class httprequestService {
           'Content-Type': 'application/json',
           // Add other headers if needed
         },
-      ).timeout(Duration(seconds: 30));
+      );
+//.timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -388,7 +397,8 @@ class httprequestService {
           'Content-Type': 'application/json',
           // Add other headers if needed
         },
-      ).timeout(Duration(seconds: 30));
+      );
+//.timeout(Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -431,17 +441,16 @@ class httprequestService {
         "coopId": "${coopData['_id']}"
       };
 
-      final response = await http
-          .put(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json',
-              // Add other headers if needed
-            },
-            body: jsonEncode(requestBody),
-          )
-          .timeout(Duration(seconds: 10));
+      final response = await http.put(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode(requestBody),
+      );
+// .timeout(Duration(seconds: 10));
       Map<String, dynamic> data = json.decode(response.body);
       if (response.statusCode == 200) {
         // Successful response
@@ -506,17 +515,16 @@ class httprequestService {
         "coopId": "${coopData['_id']}"
       };
 
-      final responseMastercard = await http
-          .put(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json',
-              // Add other headers if needed
-            },
-            body: jsonEncode(MasterCardrequestBody),
-          )
-          .timeout(Duration(seconds: 30));
+      final responseMastercard = await http.put(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode(MasterCardrequestBody),
+      );
+//.timeout(Duration(seconds: 30));
       masterCarddata = json.decode(responseMastercard.body);
       if (responseMastercard.statusCode == 200) {
         // Successful response
@@ -555,7 +563,8 @@ class httprequestService {
           'Content-Type': 'application/json',
           // Add other headers if needed
         },
-      ).timeout(Duration(seconds: 30));
+      );
+//.timeout(Duration(seconds: 30));
       if (response.statusCode == 200) {
         // Successful response
         print('Response data: ${response.body}');
@@ -574,10 +583,50 @@ class httprequestService {
     }
   }
 
+  Future<Map<String, dynamic>> verifyBookingEmman(String ticketNo) async {
+    Map<String, dynamic> bookingData = {};
+
+    String apiUrl = "http://172.232.77.205:3000/api/v1/filipay/booking";
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode({"ticketNo": ticketNo}),
+      );
+// .timeout(Duration(seconds: 10));
+      print('response: ${response.body}');
+      if (response.statusCode == 200) {
+        // Successful response
+        print('Response data: ${response.body}');
+        bookingData = json.decode(response.body);
+      } else {
+        // Handle error responses
+        print('Response Error Code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+      print('http response bookingData: $bookingData');
+      return bookingData;
+    } catch (e) {
+      if (e is ClientException) {
+        return {
+          "messages": {"code": "500", "message": "NO INTERNET"}
+        };
+      }
+      print(e);
+      return {
+        "messages": {"code": "500", "message": "SOMETHING WENT WRONG"}
+      };
+    }
+  }
+
   Future<Map<String, dynamic>> verifyBooking(String ticketNo) async {
     Map<String, dynamic> bookingData = {};
     print('ticketNo: $ticketNo');
-    String apiUrl = "http://filipworks.com/dltb-api/checkin.php";
+    String apiUrl = "https://filipworks.com/dltb-api/checkin.php";
 
     try {
       String token = await getDLTBSessionToken();
@@ -589,7 +638,9 @@ class httprequestService {
           "ticketNo": ticketNo,
           "token": token,
         },
-      ).timeout(Duration(seconds: 30));
+      );
+      // ;
+//.timeout(Duration(seconds: 30));
       print('response: ${response.body}');
       if (response.statusCode == 200) {
         // Successful response
@@ -624,7 +675,7 @@ class httprequestService {
     String deviceId = session['serialNumber'];
     Map<String, dynamic> bookingData = {};
     print('recordId: $recordId');
-    String apiUrl = "http://filipworks.com/dltb-api/updatecheckin.php";
+    String apiUrl = "https://filipworks.com/dltb-api/updatecheckin.php";
 
     try {
       String token = await getDLTBSessionToken();
@@ -633,7 +684,9 @@ class httprequestService {
       final response = await http.post(
         Uri.parse(apiUrl),
         body: {"token": token, "recordId": recordId, "deviceId": deviceId},
-      ).timeout(Duration(seconds: 30));
+      );
+      // ;
+//.timeout(Duration(seconds: 30));
       print('checkInUpdate response: ${response.body}');
       if (response.statusCode == 200) {
         // Successful response
@@ -675,16 +728,16 @@ class httprequestService {
       //   "amount": amount
       // };
 
-      final responseMastercard = await http
-          .post(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json'
-            },
-            body: jsonEncode(item),
-          )
-          .timeout(Duration(seconds: 10));
+      final responseMastercard = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(item),
+      );
+      // ;
+// .timeout(Duration(seconds: 10));
       print('sendtocketTicket Raw Response: ${responseMastercard.body}');
       masterCarddata = json.decode(responseMastercard.body);
       if (responseMastercard.statusCode == 200) {
@@ -737,17 +790,17 @@ class httprequestService {
       //   "amount": amount
       // };
 
-      final responseMastercard = await http
-          .put(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json',
-              // Add other headers if needed
-            },
-            body: jsonEncode(item),
-          )
-          .timeout(Duration(seconds: 30));
+      final responseMastercard = await http.put(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode(item),
+      );
+      // ;
+//.timeout(Duration(seconds: 30));
       updateTorTrip = json.decode(responseMastercard.body);
       if (responseMastercard.statusCode == 200) {
         // Successful response
@@ -789,17 +842,17 @@ class httprequestService {
       //   "amount": amount
       // };
 
-      final responseMastercard = await http
-          .post(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json',
-              // Add other headers if needed
-            },
-            body: jsonEncode(item),
-          )
-          .timeout(Duration(seconds: 30));
+      final responseMastercard = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode(item),
+      );
+      // ;
+//.timeout(Duration(seconds: 30));
       addTorMain = json.decode(responseMastercard.body);
       if (responseMastercard.statusCode == 200) {
         // Successful response
@@ -841,17 +894,16 @@ class httprequestService {
       //   "amount": amount
       // };
 
-      final responseupdateTorMain = await http
-          .put(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json',
-              // Add other headers if needed
-            },
-            body: jsonEncode(item),
-          )
-          .timeout(Duration(seconds: 30));
+      final responseupdateTorMain = await http.put(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode(item),
+      );
+//.timeout(Duration(seconds: 30));
       updateTorMain = json.decode(responseupdateTorMain.body);
       if (responseupdateTorMain.statusCode == 200) {
         // Successful response
@@ -894,17 +946,16 @@ class httprequestService {
       //   "amount": amount
       // };
 
-      final responseMastercard = await http
-          .post(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json',
-              // Add other headers if needed
-            },
-            body: jsonEncode({"fieldData": item}),
-          )
-          .timeout(Duration(seconds: 30));
+      final responseMastercard = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode({"fieldData": item}),
+      );
+//.timeout(Duration(seconds: 30));
       addTorMain = json.decode(responseMastercard.body);
       if (responseMastercard.statusCode == 200) {
         // Successful response
@@ -954,17 +1005,16 @@ class httprequestService {
       //   "amount": amount
       // };
 
-      final responseMastercard = await http
-          .post(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json',
-              // Add other headers if needed
-            },
-            body: jsonEncode(item),
-          )
-          .timeout(Duration(seconds: 30));
+      final responseMastercard = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode(item),
+      );
+//.timeout(Duration(seconds: 30));
       torTrip = json.decode(responseMastercard.body);
       print('sendtorTrip torTrip: $torTrip');
       if (responseMastercard.statusCode == 200) {
@@ -1010,17 +1060,16 @@ class httprequestService {
       //   "amount": amount
       // };
 
-      final responseMastercard = await http
-          .post(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json',
-              // Add other headers if needed
-            },
-            body: jsonEncode(item),
-          )
-          .timeout(Duration(seconds: 30));
+      final responseMastercard = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode(item),
+      );
+//.timeout(Duration(seconds: 30));
       torTrip = json.decode(responseMastercard.body);
       if (responseMastercard.statusCode == 200) {
         // Successful response
@@ -1050,6 +1099,66 @@ class httprequestService {
     }
   }
 
+  Future<Map<String, dynamic>> addTrouble(Map<String, dynamic> item) async {
+    print('addViolation body: ${item}');
+    Map<String, dynamic> torTrouble = {
+      "messages": [
+        {
+          "code": 500,
+          "message": "SOMETHING WENT WRONG",
+        }
+      ],
+      "response": {}
+    };
+    try {
+      String apiUrl = "http://172.232.77.205:3000/api/v1/filipay/tor/trouble";
+
+      // final Map<String, dynamic> MasterCardrequestBody = {
+      //   "masterCardId": "$masterCardId",
+      //   "filipayCardId": "$passengerCardId",
+      //   "amount": amount
+      // };
+
+      print('addTrouble request body: $item');
+      final responseMastercard = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode(item),
+      );
+//.timeout(Duration(seconds: 30));
+
+      if (responseMastercard.statusCode == 200) {
+        // Successful response
+        torTrouble = json.decode(responseMastercard.body);
+        print('addTrouble: $torTrouble');
+        if (torTrouble['messages'][0]['code'].toString() == "0") {
+          return torTrouble;
+        } else {
+          return torTrouble;
+        }
+      } else {
+        // Handle error responses
+        print('addTrouble Error: ${responseMastercard.statusCode}');
+        print('addTrouble Response body: ${responseMastercard.body}');
+        return torTrouble;
+      }
+    } catch (e) {
+      if (e is ClientException) {
+        return {
+          "messages": [
+            {"code": "500", "message": "NO INTERNET"}
+          ]
+        };
+      } else {
+        return torTrouble;
+      }
+    }
+  }
+
   Future<Map<String, dynamic>> addViolation(Map<String, dynamic> item) async {
     print('addViolation body: ${item}');
     Map<String, dynamic> torViolation = {
@@ -1071,17 +1180,16 @@ class httprequestService {
       // };
 
       print('addViolation request body: $item');
-      final responseMastercard = await http
-          .post(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json',
-              // Add other headers if needed
-            },
-            body: jsonEncode(item),
-          )
-          .timeout(Duration(seconds: 30));
+      final responseMastercard = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode(item),
+      );
+//.timeout(Duration(seconds: 30));
 
       if (responseMastercard.statusCode == 200) {
         // Successful response
@@ -1133,17 +1241,16 @@ class httprequestService {
       //   "amount": amount
       // };
 
-      final responsetorRemittance = await http
-          .post(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json',
-              // Add other headers if needed
-            },
-            body: jsonEncode(item),
-          )
-          .timeout(Duration(seconds: 30));
+      final responsetorRemittance = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode(item),
+      );
+//.timeout(Duration(seconds: 30));
 
       if (responsetorRemittance.statusCode == 200) {
         // Successful response
@@ -1202,17 +1309,16 @@ class httprequestService {
       //   "amount": amount
       // };
 
-      final responsAdditionalFare = await http
-          .put(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json',
-              // Add other headers if needed
-            },
-            body: jsonEncode(item),
-          )
-          .timeout(Duration(seconds: 30));
+      final responsAdditionalFare = await http.put(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode(item),
+      );
+//.timeout(Duration(seconds: 30));
 
       print('updateAdditionalFare response: ${responsAdditionalFare.body}');
       if (responsAdditionalFare.statusCode == 200) {
@@ -1283,17 +1389,16 @@ class httprequestService {
       //   "amount": amount
       // };
 
-      final responseupdateLocation = await http
-          .post(
-            Uri.parse(apiUrl),
-            headers: {
-              'Authorization': 'Bearer $bearerToken',
-              'Content-Type': 'application/json',
-              // Add other headers if needed
-            },
-            body: jsonEncode(item),
-          )
-          .timeout(Duration(seconds: 30));
+      final responseupdateLocation = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+          // Add other headers if needed
+        },
+        body: jsonEncode(item),
+      );
+//.timeout(Duration(seconds: 30));
 
       print('updateLocation response: ${responseupdateLocation.body}');
       if (responseupdateLocation.statusCode == 200) {

@@ -33,6 +33,12 @@ class _TopUpMasterCardPageState extends State<TopUpMasterCardPage> {
 
   bool isNfcScanOn = false;
 
+  @override
+  void dispose() {
+    amountController.dispose();
+    super.dispose();
+  }
+
   String formatDateNow() {
     final now = DateTime.now();
     final formattedDate = DateFormat("d MMM y, HH:mm").format(now);
@@ -76,7 +82,7 @@ class _TopUpMasterCardPageState extends State<TopUpMasterCardPage> {
                   double.parse(amountController.text),
                   false,
                   'mastercard',
-                  false);
+                  true);
           if (isUpdateBalance['messages'][0]['code'].toString() != '0') {
             Navigator.of(context).pop();
             ArtSweetAlert.show(
@@ -163,7 +169,7 @@ class _TopUpMasterCardPageState extends State<TopUpMasterCardPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'TOP-UP MASTERCARD CARD',
+                        'TOP-UP CASH CARD',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -224,8 +230,8 @@ class _TopUpMasterCardPageState extends State<TopUpMasterCardPage> {
                                           });
                                         }
 
-                                        _showDialognfcScan(context,
-                                            'MASTER CARD', 'master-card.png');
+                                        _showDialognfcScan(context, 'CASH CARD',
+                                            'master-card.png');
 
                                         _startNFCReader();
                                       } else {
@@ -259,7 +265,7 @@ class _TopUpMasterCardPageState extends State<TopUpMasterCardPage> {
                                     ),
                                   ),
                                   child: Text(
-                                    'TAP MASTER CARD',
+                                    'TAP CASH CARD',
                                     style: TextStyle(
                                         fontSize: 25,
                                         color: Colors.white,

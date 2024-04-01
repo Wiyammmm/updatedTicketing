@@ -47,6 +47,11 @@ class _FirstPageState extends State<FirstPage> {
     _fetchingdata();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   void _fetchingdata() async {
     final torTrip = _myBox.get('torTrip');
     // if (torTrip.isEmpty) {
@@ -77,6 +82,10 @@ class _FirstPageState extends State<FirstPage> {
 
     final coopData = _myBox.get('coopData');
     final session = _myBox.get('SESSION');
+
+    bool isTicketProceed = false;
+    bool isupdateAdditionalFare = false;
+    bool isInspectionProceed = false;
     httprequestService httpRequestServices = httprequestService();
     Location location = Location();
     bool serviceEnabled;
@@ -121,82 +130,89 @@ class _FirstPageState extends State<FirstPage> {
         // }
 
         if (offlineTicket.isNotEmpty) {
-          for (var item in List.from(offlineTicket)) {
-            print('connection offlineTicket item: $item');
-            item['isNegative'] = true;
-            Map<String, dynamic> offlineTorTicket =
-                await httprequestservice.torTicket(item);
-            try {
-              if (offlineTorTicket['messages']['code'].toString() == "0") {
-                print("connection offlineTorTicket success");
-                offlineTicket.remove(item);
-              } else {
-                print(
-                    "connection failed ${offlineTorTicket['messages']['message']}");
-              }
-            } catch (e) {
-              print('connection $e');
-            }
+          if (!isTicketProceed) {
+            for (var item in List.from(offlineTicket)) {
+              print('connection offlineTicket item: $item');
+              item['isNegative'] = true;
+              isTicketProceed = true;
+              Map<String, dynamic> offlineTorTicket =
+                  await httprequestservice.torTicket(item);
 
-            // if (offlineTicket.isEmpty) {
-            //   return;
-            // }
+              try {
+                if (offlineTorTicket['messages']['code'].toString() == "0") {
+                  print("connection offlineTorTicket success");
+                  isTicketProceed = false;
+                  offlineTicket.remove(item);
+                } else {
+                  isTicketProceed = false;
+                  print(
+                      "connection failed ${offlineTorTicket['messages']['message']}");
+                }
+              } catch (e) {
+                isTicketProceed = false;
+                print('connection $e');
+              }
+            }
+            _myBox.put('offlineTicket', offlineTicket);
           }
-          _myBox.put('offlineTicket', offlineTicket);
         }
 
         if (offlineUpdateAdditionalFare.isNotEmpty) {
-          for (var itemAdditionalFare
-              in List.from(offlineUpdateAdditionalFare)) {
-            print('connection offlineTicket item: $itemAdditionalFare');
-            itemAdditionalFare['isNegative'] = true;
-
-            Map<String, dynamic> offlineAdditionalFare =
-                await httprequestservice.updateAdditionalFare(
-                    itemAdditionalFare, true);
-            try {
-              if (offlineAdditionalFare['messages'][0]['code'].toString() ==
-                  "0") {
-                print("offlineUpdateAdditionalFare success");
-                offlineUpdateAdditionalFare.remove(itemAdditionalFare);
-              } else {
-                print(
-                    'offlineUpdateAdditionalFare ${offlineAdditionalFare['messages']['message']}');
-                print("failed");
+          if (!isupdateAdditionalFare) {
+            for (var itemAdditionalFare
+                in List.from(offlineUpdateAdditionalFare)) {
+              print('connection offlineTicket item: $itemAdditionalFare');
+              itemAdditionalFare['isNegative'] = true;
+              isupdateAdditionalFare = true;
+              Map<String, dynamic> offlineAdditionalFare =
+                  await httprequestservice.updateAdditionalFare(
+                      itemAdditionalFare, true);
+              try {
+                if (offlineAdditionalFare['messages'][0]['code'].toString() ==
+                    "0") {
+                  isupdateAdditionalFare = false;
+                  print("offlineUpdateAdditionalFare success");
+                  offlineUpdateAdditionalFare.remove(itemAdditionalFare);
+                } else {
+                  isupdateAdditionalFare = false;
+                  print(
+                      'offlineUpdateAdditionalFare ${offlineAdditionalFare['messages']['message']}');
+                  print("failed");
+                }
+              } catch (e) {
+                isupdateAdditionalFare = false;
+                print("offlineUpdateAdditionalFare error: $e");
               }
-            } catch (e) {
-              print("offlineUpdateAdditionalFare error: $e");
             }
-
-            // if (offlineUpdateAdditionalFare.isEmpty) {
-            //   return;
-            // }
+            _myBox.put(
+                'offlineUpdateAdditionalFare', offlineUpdateAdditionalFare);
           }
-          _myBox.put(
-              'offlineUpdateAdditionalFare', offlineUpdateAdditionalFare);
         }
 
         if (offlineInspection.isNotEmpty) {
-          for (var item in List.from(offlineInspection)) {
-            print('connection offlineInspection item: $item');
-            Map<String, dynamic> resultofflineInspection =
-                await httprequestservice.addInspection(item);
-            try {
-              if (resultofflineInspection['messages'][0]['code'].toString() ==
-                  "0") {
-                print("connection offlineInspection success");
-                offlineInspection.remove(item);
-              } else {
-                print(
-                    "connection offlineInspection failed ${resultofflineInspection['messages']['message']}");
+          if (!isInspectionProceed) {
+            for (var item in List.from(offlineInspection)) {
+              print('connection offlineInspection item: $item');
+              isInspectionProceed = true;
+              Map<String, dynamic> resultofflineInspection =
+                  await httprequestservice.addInspection(item);
+              try {
+                if (resultofflineInspection['messages'][0]['code'].toString() ==
+                    "0") {
+                  isInspectionProceed = false;
+                  print("connection offlineInspection success");
+                  offlineInspection.remove(item);
+                } else {
+                  isInspectionProceed = false;
+                  print(
+                      "connection offlineInspection failed ${resultofflineInspection['messages']['message']}");
+                }
+              } catch (e) {
+                isInspectionProceed = false;
+                print('connection offlineInspection $e');
               }
-            } catch (e) {
-              print('connection offlineInspection $e');
+              _myBox.put('offlinetorInspection', offlineInspection);
             }
-            _myBox.put('offlinetorInspection', offlineInspection);
-            // if (offlineInspection.isEmpty) {
-            //   continue;
-            // }
           }
         }
 

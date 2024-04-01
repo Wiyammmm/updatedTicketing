@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:dltb/backend/fetch/fetchAllData.dart';
+import 'package:dltb/backend/hiveServices/hiveServices.dart';
 import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
 
 class GeneratorServices {
   final _myBox = Hive.box('myBox');
@@ -31,6 +33,35 @@ class GeneratorServices {
 
     return '$year$month$day-$hour$minute';
   }
+
+  // String getNextTicketNo() {
+  //   final ticketList = _myBox.get('torTicket');
+  //   ticketList.sort((a, b) {
+  //     // Extract last 4 digits of ticket_number
+  //     int last4DigitsA = int.parse(a["ticket_no"].split("-")[2]);
+  //     int last4DigitsB = int.parse(b["ticket_no"].split("-")[2]);
+
+  //     // Compare last 4 digits
+  //     return last4DigitsA.compareTo(last4DigitsB);
+  //   });
+
+  //   String input = '${ticketList[ticketList.length - 1]['ticket_no']}';
+
+  //   // Extracting the portion you want to increment
+  //   String targetString = input.split('-')[2];
+
+  //   // Converting the extracted string to an integer and incrementing it
+  //   int intValue = int.parse(targetString) + 1;
+
+  //   // Formatting the integer back to a string with leading zeros
+  //   String incrementedString =
+  //       intValue.toString().padLeft(targetString.length, '0');
+
+  //   // Creating the new string by replacing the original portion with the incremented one
+  //   String output = input.replaceRange(input.lastIndexOf('-') + 1,
+  //       input.lastIndexOf('-') + 5, incrementedString);
+  //   return output;
+  // }
 
   Future<String> generateTicketNo() async {
     // final now = DateTime.now();
@@ -65,9 +96,10 @@ class GeneratorServices {
     String busNumber = torTrip[session['currentTripIndex']]['bus_no'];
 
     // Get the count of entries in the list where fare > 0
-    int fareGreaterThanZeroCount = ticketList
-        .where((ticket) => ticket['control_no'] == "$control_no")
-        .length;
+    // int fareGreaterThanZeroCount = ticketList
+    //     .where((ticket) => ticket['control_no'] == "$control_no")
+    //     .length;
+    int fareGreaterThanZeroCount = ticketList.length;
     print('fareGreaterThanZeroCount: $fareGreaterThanZeroCount');
 
     // Format the count with leading zeros to get the desired length
@@ -95,17 +127,34 @@ class GeneratorServices {
   }
 
   String generateUuid() {
-    final String hexDigits = '0123456789abcdefghijklmnopqrstuvwxyz';
-    Random random = Random.secure();
+    HiveService hiveService = HiveService();
+    String serialNumber = hiveService.getSerialNumber2();
+    var uuid = Uuid();
+    DateTime now = DateTime.now();
+    String formattedMonth = now.month.toString().padLeft(2, '0');
+    String formattedDay = now.day.toString().padLeft(2, '0');
+    String formattedYear = now.year.toString().substring(2).padLeft(2, '0');
+    int hours = now.hour;
+    int minutes = now.minute;
+    int seconds = now.second;
+    int milisec = now.millisecond;
+    // int microSec = now.microsecondsSinceEpoch;
+    String formattedHours = hours.toString().padLeft(2, '0');
+    String formattedMinutes = minutes.toString().padLeft(2, '0');
+    String currentDate =
+        "$formattedMonth$formattedDay$formattedYear$formattedHours$formattedMinutes$seconds$milisec";
+    // final String hexDigits = '0123456789abcdefghijklmnopqrstuvwxyz';
+    // Random random = Random.secure();
 
-    String s(int length) {
-      return Iterable<int>.generate(length)
-          .map((_) => random.nextInt(16))
-          .map((n) => hexDigits[n])
-          .join('');
-    }
+    // String s(int length) {
+    //   return Iterable<int>.generate(length)
+    //       .map((_) => random.nextInt(16))
+    //       .map((n) => hexDigits[n])
+    //       .join('');
+    // }
+    return "${uuid.v1()}-${currentDate}-${serialNumber}";
 
-    return '${s(8)}-${s(4)}-4${s(3)}-a${s(3)}-${s(12)}';
+    // return '${s(8)}-${s(4)}-4${s(3)}-a${s(3)}-${currentDate}';
   }
 
   String referenceNumber() {
@@ -121,4 +170,33 @@ class GeneratorServices {
 
     return '${s(4)}-${s(3)}-4${s(3)}-a${s(3)}-${s(3)}';
   }
+
+  // double getBalance() {
+  //   double amount = 0;
+  //   double amountBalance = 0;
+  //   double newAmount = 0;
+  //   amountBalance = getBalance();
+  //   newAmount = amountBalance - amount;
+
+  //   if (newAmount > 0) {
+  //     if (dltb) {
+  //   bool isSuccessFilemaker= await insertFileMakerTicket();
+  //   if(isSuccessFilemaker){
+  //   bool isSuccess=await insertTicket();
+
+  //   if(isSuccess){
+  //    bool isupdatesuccess= updateBalance();
+
+  //   }
+  //   }
+  //     }else{
+  //        bool isSuccess=await  insertTicket();
+
+  //   if(isSuccess){
+  //     updateBalance();
+  //   }
+  //     }
+  //   }
+  //   return amountBalance;
+  // }
 }

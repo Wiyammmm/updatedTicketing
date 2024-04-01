@@ -239,31 +239,60 @@ class fetchServices {
 // total fetcher
 
   double totalBaggageperTrip() {
-    final torTicket = _myBox.get('torTicket');
-    final session = _myBox.get('SESSION');
-    final torTrip = _myBox.get('torTrip');
-    String control_no = torTrip[session['currentTripIndex']]['control_no'];
-    double sumOfBaggage = torTicket
-        .where((fare) => fare['control_no'] == control_no)
-        .map<double>((fare) => (fare['baggage'] as num).toDouble())
-        .fold(0.0, (prev, baggage) => prev + baggage);
+    try {
+      final torTicket = _myBox.get('torTicket');
+      final session = _myBox.get('SESSION');
+      final torTrip = _myBox.get('torTrip');
+      String control_no = torTrip[session['currentTripIndex']]['control_no'];
+      double sumOfBaggage = torTicket
+          .where((fare) => fare['control_no'] == control_no)
+          .map<double>((fare) => (fare['baggage'] as num).toDouble())
+          .fold(0.0, (prev, baggage) => prev + baggage);
 
-    return sumOfBaggage;
+      return sumOfBaggage;
+    } catch (e) {
+      return 0;
+    }
   }
 
   double totalCashReceivedBaggageperTrip() {
-    final torTicket = _myBox.get('torTicket');
-    final session = _myBox.get('SESSION');
-    final torTrip = _myBox.get('torTrip');
-    String control_no = torTrip[session['currentTripIndex']]['control_no'];
-    double sumOfBaggage = torTicket
-        .where((fare) =>
-            fare['control_no'] == control_no &&
-            (fare['cardType'] == "mastercard" || fare['cardType'] == "cash"))
-        .map<double>((fare) => (fare['baggage'] as num).toDouble())
-        .fold(0.0, (prev, baggage) => prev + baggage);
+    try {
+      final torTicket = _myBox.get('torTicket');
+      final session = _myBox.get('SESSION');
+      final torTrip = _myBox.get('torTrip');
+      String control_no = torTrip[session['currentTripIndex']]['control_no'];
 
-    return sumOfBaggage;
+      double sumOfBaggage = torTicket
+          .where((fare) =>
+              fare['control_no'] == control_no &&
+              (fare['cardType'] == "mastercard" || fare['cardType'] == "cash"))
+          .map<double>((fare) => (fare['baggage'] as num).toDouble())
+          .fold(0.0, (prev, baggage) => prev + baggage);
+
+      return sumOfBaggage;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  double totalCardSalesBaggageperTrip() {
+    try {
+      final torTicket = _myBox.get('torTicket');
+      final session = _myBox.get('SESSION');
+      final torTrip = _myBox.get('torTrip');
+      String control_no = torTrip[session['currentTripIndex']]['control_no'];
+
+      double sumOfBaggage = torTicket
+          .where((fare) =>
+              fare['control_no'] == control_no &&
+              (fare['cardType'] != "mastercard" && fare['cardType'] != "cash"))
+          .map<double>((fare) => (fare['baggage'] as num).toDouble())
+          .fold(0.0, (prev, baggage) => prev + baggage);
+
+      return sumOfBaggage;
+    } catch (e) {
+      return 0;
+    }
   }
 
 // counter fetcher
@@ -290,7 +319,6 @@ class fetchServices {
     final session = _myBox.get('SESSION');
     final torTrip = _myBox.get('torTrip');
 
-    String control_no = torTrip[session['currentTripIndex']]['control_no'];
     // int totalBaggageCount = torTicket
     //     .where((item) =>
     //         item['cardType'] != 'mastercard' &&
@@ -298,6 +326,7 @@ class fetchServices {
     //     .length;
     int sumOfPax = 0;
     try {
+      String control_no = torTrip[session['currentTripIndex']]['control_no'];
       sumOfPax = torTicket
           .where((ticket) =>
               ticket['control_no'] == control_no &&
@@ -312,33 +341,41 @@ class fetchServices {
   }
 
   int baggageOnlyCount() {
-    final torTicket = _myBox.get('torTicket');
-    final session = _myBox.get('SESSION');
-    final torTrip = _myBox.get('torTrip');
+    try {
+      final torTicket = _myBox.get('torTicket');
+      final session = _myBox.get('SESSION');
+      final torTrip = _myBox.get('torTrip');
 
-    String control_no = torTrip[session['currentTripIndex']]['control_no'];
-    int totalBaggageCount = torTicket
-        .where((item) =>
-            (item['baggage'] is num && item['baggage'] > 0) &&
-            item['control_no'] == control_no &&
-            (item['fare'] is num && item['fare'] == 0))
-        .length;
-    return totalBaggageCount;
+      String control_no = torTrip[session['currentTripIndex']]['control_no'];
+      int totalBaggageCount = torTicket
+          .where((item) =>
+              (item['baggage'] is num && item['baggage'] > 0) &&
+              item['control_no'] == control_no &&
+              (item['fare'] is num && item['fare'] == 0))
+          .length;
+      return totalBaggageCount;
+    } catch (e) {
+      return 0;
+    }
   }
 
   int baggageWithPassengerCount() {
-    final torTicket = _myBox.get('torTicket');
-    final session = _myBox.get('SESSION');
-    final torTrip = _myBox.get('torTrip');
+    try {
+      final torTicket = _myBox.get('torTicket');
+      final session = _myBox.get('SESSION');
+      final torTrip = _myBox.get('torTrip');
 
-    String control_no = torTrip[session['currentTripIndex']]['control_no'];
-    int totalBaggageCount = torTicket
-        .where((item) =>
-            (item['baggage'] is num && item['baggage'] > 0) &&
-            item['control_no'] == control_no &&
-            (item['fare'] is num && item['fare'] > 0))
-        .length;
-    return totalBaggageCount;
+      String control_no = torTrip[session['currentTripIndex']]['control_no'];
+      int totalBaggageCount = torTicket
+          .where((item) =>
+              (item['baggage'] is num && item['baggage'] > 0) &&
+              item['control_no'] == control_no &&
+              (item['fare'] is num && item['fare'] > 0))
+          .length;
+      return totalBaggageCount;
+    } catch (e) {
+      return 0;
+    }
   }
 
   int allBaggageCount() {
@@ -424,17 +461,31 @@ class fetchServices {
     double totalPassengerAmount = 0.0;
 
     final torTicket = _myBox.get('torTicket');
+
     String control_no = getCurrentControlNumber();
 
     for (Map<String, dynamic> item in torTicket) {
       if (item['control_no'].toString() == control_no &&
           (item['cardType'] == "mastercard" || item['cardType'] == "cash")) {
-        totalPassengerAmount +=
-            (item['fare'] * item['pax']) + item['additionalFare'];
+        totalPassengerAmount += (item['fare'] * item['pax']);
       }
     }
 
-    return totalPassengerAmount;
+    return totalPassengerAmount + totalCashAdditionalFarePassengerPerTrip();
+  }
+
+  double totalCashAdditionalFarePassengerPerTrip() {
+    double total = 0;
+    final torTicket = _myBox.get('torTicket');
+    String control_no = getCurrentControlNumber();
+    for (Map<String, dynamic> item in torTicket) {
+      if (item['control_no'].toString() == control_no &&
+          (item['additionalFareCardType'] == "mastercard" ||
+              item['additionalFareCardType'] == "cash")) {
+        total += item['additionalFare'];
+      }
+    }
+    return total;
   }
 
   String getCurrentControlNumber() {
@@ -492,7 +543,7 @@ class fetchServices {
                 fare['additionalFareCardType'] == "cash"))
         .map<num>((fare) => (fare['additionalFare'] as num).toDouble())
         .fold(0.0, (prev, amount) => prev + amount);
-    return totalAmount + totaladdFareAmount;
+    return totalAmount + totaladdFareAmount + getTotalTopUpperTrip();
   }
 
   double grandTotalCashReceived() {
@@ -515,6 +566,49 @@ class fetchServices {
     return grantotal;
   }
 
+  double grandTotal() {
+    final fareList = _myBox.get('torTicket');
+    // String cardTypeToFilter = 'mastercard';
+    double grantotal = 0;
+
+    double totalAmount = fareList
+        .map<num>((fare) => (fare['subtotal'] as num))
+        .fold(0.0, (prev, amount) => prev + amount);
+
+    double totaladdFareAmount = fareList
+        .map<num>((fare) => (fare['additionalFare'] as num).toDouble())
+        .fold(0.0, (prev, amount) => prev + amount);
+    grantotal = totalAmount + totaladdFareAmount;
+    return grantotal;
+  }
+
+  double grandTotalAddFare() {
+    final fareList = _myBox.get('torTicket');
+    double total = 0;
+
+    // double totaladdFareAmount = fareList
+    //     .map<num>((fare) => (fare['additionalFare'] as num).toDouble())
+    //     .fold(0.0, (prev, amount) => prev + amount);
+    int i = 0;
+    for (var element in fareList) {
+      print("element [$i]: $element");
+      i++;
+      total += double.parse(element['additionalFare'].toString());
+    }
+
+    return total;
+  }
+
+  double grandTotalBaggage() {
+    final fareList = _myBox.get('torTicket');
+
+    double grandTotalBaggage = fareList
+        .map<num>((fare) => (fare['baggage'] as num).toDouble())
+        .fold(0.0, (prev, amount) => prev + amount);
+
+    return grandTotalBaggage;
+  }
+
   double totalTripGrandTotal() {
     final fareList = _myBox.get('torTicket');
 
@@ -528,7 +622,84 @@ class fetchServices {
             (fare['additionalFare'] as num).toDouble())
         .fold(0.0, (prev, amount) => prev + amount);
 
-    return totalAmount - totalTripExpenses();
+    return totalAmount +
+        getTotalTopUpperTrip() +
+        totalPrepaidPassengerRevenueperTrip() +
+        totalPrepaidBaggageRevenueperTrip() -
+        totalTripExpenses();
+  }
+
+  double totalTripTicketRevenue() {
+    final fareList = _myBox.get('torTicket');
+
+    String controlNumberToFilter = getCurrentControlNumber();
+
+    double totalAmount = fareList
+        .where((fare) => fare['control_no'] == controlNumberToFilter)
+        .map<num>((fare) =>
+            ((fare['fare'] as num).toDouble() * fare['pax']) +
+            (fare['baggage'] as num).toDouble() +
+            (fare['additionalFare'] as num).toDouble())
+        .fold(0.0, (prev, amount) => prev + amount);
+
+    return totalAmount;
+  }
+
+  double totalCharter() {
+    double total = 0;
+    final torTrip = _myBox.get('torTrip');
+    for (var element in torTrip) {
+      total += double.parse(element['ticket_revenue_charter'].toString());
+    }
+    return total;
+  }
+
+  double totalWaybill() {
+    double total = 0;
+    final torTrip = _myBox.get('torTrip');
+    for (var element in torTrip) {
+      total += double.parse(element['ticket_revenue_waybill'].toString());
+    }
+    return total;
+  }
+
+  double totalTripCardSalesPassenger() {
+    final fareList = _myBox.get('torTicket');
+
+    String controlNumberToFilter = getCurrentControlNumber();
+
+    double totalAmount = fareList
+        .where((fare) =>
+            fare['control_no'] == controlNumberToFilter &&
+            fare['fare'] > 0 &&
+            (fare['cardType'] != "mastercard" && fare['cardType'] != "cash"))
+        .map<num>((fare) => ((fare['fare'] as num).toDouble() * fare['pax']))
+        .fold(0.0, (prev, amount) => prev + amount);
+
+    double totaladdFareAmount = fareList
+        .where((fare) =>
+            fare['control_no'] == controlNumberToFilter &&
+            fare['additionalFareCardType'] != "mastercard" &&
+            fare['additionalFareCardType'] != "cash")
+        .map<num>((fare) => (fare['additionalFare'] as num).toDouble())
+        .fold(0.0, (prev, amount) => prev + amount);
+    return totalAmount + totaladdFareAmount;
+  }
+
+  double totalTripCardSalesBaggage() {
+    final fareList = _myBox.get('torTicket');
+
+    String controlNumberToFilter = getCurrentControlNumber();
+
+    double totalAmount = fareList
+        .where((fare) =>
+            fare['control_no'] == controlNumberToFilter &&
+            fare['baggage'] > 0 &&
+            (fare['cardType'] != "mastercard" && fare['cardType'] != "cash"))
+        .map<num>((fare) => ((fare['baggage'] as num).toDouble()))
+        .fold(0.0, (prev, amount) => prev + amount);
+
+    return totalAmount;
   }
 
   double totalTripCardSales() {
@@ -1534,9 +1705,9 @@ class fetchServices {
 
       String control_no = torTrip[session['currentTripIndex']]['control_no'];
       // print('torNo: $torNo');
-      List<Map<String, dynamic>> currentTorTicket = torTicket
-          .where((item) => item['control_no'] == control_no && item['fare'] > 0)
-          .toList();
+      // List<Map<String, dynamic>> currentTorTicket = torTicket
+      //     .where((item) => item['control_no'] == control_no && item['fare'] > 0)
+      //     .toList();
       int sumOfPax = 0;
       try {
         sumOfPax = torTicket
@@ -1562,6 +1733,36 @@ class fetchServices {
     }
   }
 
+  int fetchPassengerCountATM() {
+    int sumOfPax = 0;
+    try {
+      final torTicket = _myBox.get('torTicket');
+      final session = _myBox.get('SESSION');
+      final torTrip = _myBox.get('torTrip');
+
+      print('all torTicket: $torTicket');
+
+      String control_no = torTrip[session['currentTripIndex']]['control_no'];
+      // print('torNo: $torNo');
+      // List<Map<String, dynamic>> currentTorTicket = torTicket
+      //     .where((item) => item['control_no'] == control_no && item['fare'] > 0)
+      //     .toList();
+
+      try {
+        sumOfPax = torTicket
+            .where((ticket) =>
+                ticket['control_no'] == control_no && (ticket['fare'] ?? 0) > 0)
+            .fold(0, (sum, ticket) => sum + (ticket['pax'] ?? 1));
+      } catch (e) {
+        print("fetchAllPassengerCount: $e");
+      }
+
+      return sumOfPax;
+    } catch (e) {
+      return sumOfPax;
+    }
+  }
+
   List<Map<String, dynamic>> fetchTorTicket() {
     try {
       final torTicket = _myBox.get('torTicket');
@@ -1572,12 +1773,16 @@ class fetchServices {
 
       String control_no = torTrip[session['currentTripIndex']]['control_no'];
       // print('torNo: $torNo');
-      List<Map<String, dynamic>> currentTorTicket = torTicket
-          .where((item) => item['control_no'] == control_no
-              // && item['fare'] > 0
-              )
-          .toList();
-      print('success fetchTorTicket: $currentTorTicket');
+      int i = 0;
+      List<Map<String, dynamic>> currentTorTicket = [];
+      for (var element in torTicket) {
+        print("element [$i]: $element");
+        i++;
+        if (element['control_no'] == control_no) {
+          currentTorTicket.add(element);
+        }
+      }
+
       return currentTorTicket;
     } catch (e) {
       print('fetchTorTicket error: $e');
@@ -1594,10 +1799,12 @@ class fetchServices {
       print('all torTicket: $torTicket');
 
       String control_no = torTrip[session['currentTripIndex']]['control_no'];
-      // print('torNo: $torNo');
-      List<Map<String, dynamic>> currentTorTicket =
-          torTicket.where((item) => item['control_no'] == control_no).toList();
-      print('success fetchTorTicket: $currentTorTicket');
+      List<Map<String, dynamic>> currentTorTicket = [];
+      for (var element in torTicket) {
+        if (element['control_no'] == control_no) {
+          currentTorTicket.add(element);
+        }
+      }
       return currentTorTicket;
     } catch (e) {
       print('fetchTorTicket error: $e');
@@ -1636,8 +1843,12 @@ class fetchServices {
 
       String control_no = torTrip[session['currentTripIndex']]['control_no'];
       // print('torNo: $torNo');
-      List<Map<String, dynamic>> currentTorTicket =
-          torTicket.where((item) => item['control_no'] == control_no).toList();
+      List<Map<String, dynamic>> currentTorTicket = [];
+      for (var element in torTicket) {
+        if (element['control_no'] == control_no) {
+          currentTorTicket.add(element);
+        }
+      }
       print('success fetchTorTicket: $currentTorTicket');
       return currentTorTicket;
     } catch (e) {
@@ -1656,10 +1867,13 @@ class fetchServices {
 
       String control_no = torTrip[session['currentTripIndex']]['control_no'];
       // print('torNo: $torNo');
-      List<Map<String, dynamic>> currentTorTicket = torTicket
-          .where(
-              (item) => item['control_no'] == control_no && item['baggage'] > 0)
-          .toList();
+
+      List<Map<String, dynamic>> currentTorTicket = [];
+      for (var element in torTicket) {
+        if (element['control_no'] == control_no && element['baggage'] > 0) {
+          currentTorTicket.add(element);
+        }
+      }
       print('success fetchTorTicket: $currentTorTicket');
       return currentTorTicket;
     } catch (e) {
@@ -1678,8 +1892,12 @@ class fetchServices {
 
       String control_no = torTrip[session['currentTripIndex']]['control_no'];
       // print('torNo: $torNo');
-      List<Map<String, dynamic>> currentTorTicket =
-          torTicket.where((item) => item['control_no'] == control_no).toList();
+      List<Map<String, dynamic>> currentTorTicket = [];
+      for (var element in torTicket) {
+        if (element['control_no'] == control_no) {
+          currentTorTicket.add(element);
+        }
+      }
       print('success fetchTorTicket: $currentTorTicket');
       return currentTorTicket;
     } catch (e) {
@@ -1724,8 +1942,8 @@ class fetchServices {
         filteredStations[SESSION['currentStationIndex']]['rowNo'].toString());
     print('onBoardPassenger currentStation: $currentStation');
 
-    String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
     try {
+      String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
       // int onboardPassenger = 0;
 
       // onboardPassenger = torTicket.where((item) {
@@ -1764,9 +1982,9 @@ class fetchServices {
 
     bool isReverseOBP = false;
 
-    String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
-    print('kmrun control_no: $control_no');
     try {
+      String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
+      print('kmrun control_no: $control_no');
       int onboardPassenger = 0;
       print('kmRun currentKM:  $currentKM');
       onboardPassenger = torTicket.fold(0, (sum, item) {
@@ -1777,7 +1995,7 @@ class fetchServices {
         print('kmRun isNegative: $Negative');
 
         double kmRun = double.parse(item['to_km'].toString());
-        if (Negative < 0) {
+        if (Negative <= 0) {
           print('kmrun lessthan to');
           isReverseOBP = true;
           kmRun = kmRun.abs();
@@ -1856,8 +2074,8 @@ class fetchServices {
         filteredStations[SESSION['currentStationIndex']]['rowNo'].toString());
     print('onboardBaggage currentStation: $currentStation');
 
-    String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
     try {
+      String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
       int onboardBaggage = 0;
 
       onboardBaggage = torTicket.where((item) {
@@ -1890,8 +2108,8 @@ class fetchServices {
         filteredStations[SESSION['currentStationIndex']]['rowNo'].toString());
     print('onboardBaggage currentStation: $currentStation');
 
-    String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
     try {
+      String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
       int onboardBaggageOnly = 0;
 
       onboardBaggageOnly = torTicket.where((item) {
@@ -1904,8 +2122,7 @@ class fetchServices {
         return stationNo > currentStation &&
             torNoInTicket == control_no &&
             reverseNum == SESSION['reverseNum'] &&
-            baggage > 0 &&
-            fare == 0;
+            baggage > 0;
       }).length;
 
       return onboardBaggageOnly;
@@ -1922,9 +2139,10 @@ class fetchServices {
     final SESSION = _myBox.get('SESSION');
     final filteredStations = filteredStation();
     // int currentKM = stations[SESSION['currentStationIndex']]['km'];
-    String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
+
     bool isReverse = false;
     try {
+      String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
       int onboardBaggage = 0;
       onboardBaggage = torTicket.where((item) {
         print('onboard baggage only fare: ${item}');
@@ -1932,7 +2150,7 @@ class fetchServices {
         double isNegative = double.parse(item['from_km'].toString()) -
             double.parse(item['to_km'].toString());
         double kmRun = double.parse(item['to_km'].toString());
-        if (isNegative < 0) {
+        if (isNegative <= 0) {
           isReverse = true;
           kmRun = kmRun.abs();
         } else {
@@ -1950,33 +2168,31 @@ class fetchServices {
           return false; // Handle non-integer "km_run" values
         }
         if (!isReverse) {
-          if (kmRun == double.parse(filteredStations[0]['km'].toString())) {
-            return kmRun <= currentKM &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'] &&
-                baggage > 0 &&
-                fare == 0;
-          } else {
-            return kmRun < currentKM &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'] &&
-                baggage > 0 &&
-                fare == 0;
-          }
+          // if (kmRun == double.parse(filteredStations[0]['km'].toString())) {
+          //   return kmRun <= currentKM &&
+          //       torNoInTicket == control_no &&
+          //       reverseNum == SESSION['reverseNum'] &&
+          //       baggage > 0 &&
+          //       fare == 0;
+          // } else {
+          return kmRun < currentKM &&
+              torNoInTicket == control_no &&
+              reverseNum == SESSION['reverseNum'] &&
+              baggage > 0;
+          // }
         } else {
-          if (kmRun == 0) {
-            return kmRun >= currentKM &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'] &&
-                baggage > 0 &&
-                fare == 0;
-          } else {
-            return kmRun > currentKM &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'] &&
-                baggage > 0 &&
-                fare == 0;
-          }
+          // if (kmRun == 0) {
+          //   return kmRun >= currentKM &&
+          //       torNoInTicket == control_no &&
+          //       reverseNum == SESSION['reverseNum'] &&
+          //       baggage > 0 &&
+          //       fare == 0;
+          // } else {
+          return kmRun > currentKM &&
+              torNoInTicket == control_no &&
+              reverseNum == SESSION['reverseNum'] &&
+              baggage > 0;
+          // }
         }
       }).length;
       return onboardBaggage;
@@ -1993,15 +2209,16 @@ class fetchServices {
     final filteredStations = filteredStation();
     double currentKM = double.parse(
         filteredStations[SESSION['currentStationIndex']]['km'].toString());
-    String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
+
     bool isReverse = false;
     try {
+      String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
       int onboardBaggage = 0;
       onboardBaggage = torTicket.where((item) {
         double isNegative = double.parse(item['from_km'].toString()) -
             double.parse(item['to_km'].toString());
         double kmRun = double.parse(item['to_km'].toString());
-        if (isNegative < 0) {
+        if (isNegative <= 0) {
           isReverse = true;
           kmRun = kmRun.abs();
         } else {
@@ -2019,33 +2236,33 @@ class fetchServices {
           return false; // Handle non-integer "km_run" values
         }
         if (!isReverse) {
-          if (kmRun == double.parse(filteredStations[0]['km'].toString())) {
-            return kmRun <= currentKM &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'] &&
-                baggage > 0 &&
-                fare > 0;
-          } else {
-            return kmRun < currentKM &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'] &&
-                baggage > 0 &&
-                fare > 0;
-          }
+          // if (kmRun == double.parse(filteredStations[0]['km'].toString())) {
+          //   return kmRun <= currentKM &&
+          //       torNoInTicket == control_no &&
+          //       reverseNum == SESSION['reverseNum'] &&
+          //       baggage > 0 &&
+          //       fare > 0;
+          // } else {
+          return kmRun < currentKM &&
+              torNoInTicket == control_no &&
+              reverseNum == SESSION['reverseNum'] &&
+              baggage > 0 &&
+              fare > 0;
+          // }
         } else {
-          if (kmRun == 0) {
-            return kmRun >= currentKM &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'] &&
-                baggage > 0 &&
-                fare > 0;
-          } else {
-            return kmRun > currentKM &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'] &&
-                baggage > 0 &&
-                fare > 0;
-          }
+          // if (kmRun == 0) {
+          //   return kmRun >= currentKM &&
+          //       torNoInTicket == control_no &&
+          //       reverseNum == SESSION['reverseNum'] &&
+          //       baggage > 0 &&
+          //       fare > 0;
+          // } else {
+          return kmRun > currentKM &&
+              torNoInTicket == control_no &&
+              reverseNum == SESSION['reverseNum'] &&
+              baggage > 0 &&
+              fare > 0;
+          // }
         }
       }).length;
       return onboardBaggage;
@@ -2061,15 +2278,16 @@ class fetchServices {
     final SESSION = _myBox.get('SESSION');
     final filteredStations = filteredStation();
     // int currentKM = filteredStations[SESSION['currentStationIndex']]['km'];
-    String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
+
     bool isReverse = false;
     try {
+      String control_no = torTrip[SESSION['currentTripIndex']]['control_no'];
       int onboardBaggage = 0;
       onboardBaggage = torTicket.where((item) {
         double isNegative = double.parse(item['from_km'].toString()) -
             double.parse(item['to_km'].toString());
         double kmRun = double.parse(item['to_km'].toString());
-        if (isNegative < 0) {
+        if (isNegative <= 0) {
           isReverse = true;
           kmRun = kmRun.abs();
         } else {
@@ -2087,33 +2305,33 @@ class fetchServices {
           return false; // Handle non-integer "km_run" values
         }
         if (!isReverse) {
-          if (kmRun == double.parse(filteredStations[0]['km'].toString())) {
-            return kmRun <= currentKM &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'] &&
-                baggage > 0 &&
-                fare > 0;
-          } else {
-            return kmRun < currentKM &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'] &&
-                baggage > 0 &&
-                fare > 0;
-          }
+          // if (kmRun == double.parse(filteredStations[0]['km'].toString())) {
+          //   return kmRun <= currentKM &&
+          //       torNoInTicket == control_no &&
+          //       reverseNum == SESSION['reverseNum'] &&
+          //       baggage > 0 &&
+          //       fare > 0;
+          // } else {
+          return kmRun < currentKM &&
+              torNoInTicket == control_no &&
+              reverseNum == SESSION['reverseNum'] &&
+              baggage > 0 &&
+              fare > 0;
+          // }
         } else {
-          if (kmRun == 0) {
-            return kmRun >= currentKM &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'] &&
-                baggage > 0 &&
-                fare > 0;
-          } else {
-            return kmRun > currentKM &&
-                torNoInTicket == control_no &&
-                reverseNum == SESSION['reverseNum'] &&
-                baggage > 0 &&
-                fare > 0;
-          }
+          // if (kmRun == 0) {
+          //   return kmRun >= currentKM &&
+          //       torNoInTicket == control_no &&
+          //       reverseNum == SESSION['reverseNum'] &&
+          //       baggage > 0 &&
+          //       fare > 0;
+          // } else {
+          return kmRun > currentKM &&
+              torNoInTicket == control_no &&
+              reverseNum == SESSION['reverseNum'] &&
+              baggage > 0 &&
+              fare > 0;
+          // }
         }
       }).length;
       return onboardBaggage;
@@ -2154,7 +2372,8 @@ class fetchServices {
           'Content-Type': 'application/json',
           // Add other headers if needed
         },
-      ).timeout(Duration(seconds: 15));
+      );
+      // .timeout(Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -2284,5 +2503,239 @@ class fetchServices {
 
   String _bytesToHex(List<int> bytes) {
     return bytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join('');
+  }
+
+  num convertNumToIntegerOrDecimal(num number) {
+    // Convert the number to a string
+    String numberString = number.toString();
+    int decimalIndex = numberString.indexOf('.');
+    // Check if the number contains a decimal point or is greater than 0 as a double
+    if (decimalIndex != -1 && decimalIndex < numberString.length - 1) {
+      // If it contains a decimal or is greater than 0, return it as a double
+      String decimalPart = numberString.substring(decimalIndex + 1);
+      if (double.parse(decimalPart) > 0) {
+        return double.parse(numberString);
+      } else {
+        return number.toInt();
+      }
+    } else {
+      // If it doesn't contain a decimal and is not greater than 0, return it as an integer
+      return number.toInt();
+    }
+  }
+
+  double getAllCashRecevied() {
+    final torTrip = _myBox.get('torTrip');
+    double cashreceived = 0;
+    if (torTrip.isNotEmpty) {
+      for (var element in torTrip) {
+        cashreceived += double.parse(element['cashReceived'].toString());
+      }
+
+      return cashreceived;
+    } else {
+      return cashreceived;
+    }
+  }
+
+  double getTotalTopUpper() {
+    double total = 0;
+    final topUpList = _myBox.get('topUpList');
+
+    if (topUpList.isNotEmpty) {
+      for (var element in topUpList) {
+        total += double.parse((element['response']['mastercard']
+                    ['previousBalance'] -
+                element['response']['mastercard']['newBalance'])
+            .toString());
+      }
+    }
+    return total;
+  }
+
+  double getTotalTopUpperTrip() {
+    double total = 0;
+    final topUpList = _myBox.get('topUpList');
+    final control_no = getCurrentControlNumber();
+
+    if (topUpList.isNotEmpty) {
+      for (var element in topUpList) {
+        if (element['response']['control_no'].toString() == "$control_no") {
+          total += double.parse((element['response']['mastercard']
+                      ['previousBalance'] -
+                  element['response']['mastercard']['newBalance'])
+              .toString());
+        }
+      }
+    }
+    return total;
+  }
+
+  List<Map<String, dynamic>> getCurrentTopupList() {
+    final topUpList = _myBox.get('topUpList');
+    List<Map<String, dynamic>> filteredtopuplist = [];
+    final control_no = getCurrentControlNumber();
+    for (var element in topUpList) {
+      if (element['response']['control_no'].toString() == control_no) {
+        filteredtopuplist.add(element);
+      }
+    }
+    return filteredtopuplist;
+  }
+
+  double totalPrepaidPassengerRevenueperTrip() {
+    double total = 0;
+    final control_no = getCurrentControlNumber();
+    final prePaidList = _myBox.get('prepaidTicket');
+    for (var element in prePaidList) {
+      if (element['control_no'] == control_no) {
+        total += element['totalAmount'];
+      }
+    }
+
+    return total;
+  }
+
+  double totalPrepaidPassengerRevenue() {
+    double total = 0;
+
+    final prePaidList = _myBox.get('prepaidTicket');
+    for (var element in prePaidList) {
+      total += element['totalAmount'];
+    }
+
+    return total;
+  }
+
+  double totalPrepaidPassengerCountperTrip() {
+    double total = 0;
+    final control_no = getCurrentControlNumber();
+    final prePaidList = _myBox.get('prepaidTicket');
+    for (var element in prePaidList) {
+      if (element['control_no'] == control_no) {
+        total++;
+      }
+    }
+
+    return total;
+  }
+
+  double totalPrepaidBaggageRevenueperTrip() {
+    double total = 0;
+    final control_no = getCurrentControlNumber();
+    final prePaidList = _myBox.get('prepaidBaggage');
+    for (var element in prePaidList) {
+      if (element['control_no'] == control_no) {
+        total += element['totalAmount'];
+      }
+    }
+
+    return total;
+  }
+
+  double totalPrepaidBaggageRevenue() {
+    double total = 0;
+
+    final prePaidList = _myBox.get('prepaidBaggage');
+    for (var element in prePaidList) {
+      total += element['totalAmount'];
+    }
+
+    return total;
+  }
+
+  double totalPrepaidBaggageCountperTrip() {
+    double total = 0;
+    final control_no = getCurrentControlNumber();
+    final prePaidList = _myBox.get('prepaidBaggage');
+    for (var element in prePaidList) {
+      if (element['control_no'] == control_no) {
+        total++;
+      }
+    }
+
+    return total;
+  }
+
+  double getFuelLitersPerTrip() {
+    double total = 0;
+    try {
+      final fuel = _myBox.get('fuel');
+      final control_no = getCurrentControlNumber();
+      for (var element in fuel) {
+        if (element['control_no'].toString() == "$control_no") {
+          total += double.parse(element['fuel_liters'].toString());
+        }
+      }
+      return total;
+    } catch (e) {
+      return total;
+    }
+  }
+
+  double getFuelLiters() {
+    double total = 0;
+    try {
+      final fuel = _myBox.get('fuel');
+      for (var element in fuel) {
+        total += double.parse(element['fuel_liters'].toString());
+      }
+      return total;
+    } catch (e) {
+      return total;
+    }
+  }
+
+  double getTotalNetCollection() {
+    double total = 0;
+
+    try {
+      final torMain = _myBox.get('torMain');
+      total += torMain[0]['net_collections'];
+      // for (var element in torMain) {
+      //   total += element['gross_revenue'];
+      //   print('gross_revenue: ${element['gross_revenue']}');
+      // }
+      return total;
+    } catch (e) {
+      print(e);
+      return total;
+    }
+  }
+
+  double getTotalGrossRevenue() {
+    double total = 0;
+
+    try {
+      final torMain = _myBox.get('torMain');
+      total += torMain[0]['gross_revenue'];
+      // for (var element in torMain) {
+      //   total += element['gross_revenue'];
+      //   print('gross_revenue: ${element['gross_revenue']}');
+      // }
+      return total;
+    } catch (e) {
+      print(e);
+      return total;
+    }
+  }
+
+  double getFinalRemittance() {
+    double total = 0;
+
+    try {
+      final torMain = _myBox.get('torMain');
+      final net_collections = torMain[0]['net_collections'];
+
+      total = net_collections - (totalCharter() + totalWaybill());
+      // for (var element in torMain) {
+      //   total += element['gross_revenue'];
+      //   print('gross_revenue: ${element['gross_revenue']}');
+      // }
+      return total;
+    } catch (e) {
+      print(e);
+      return total;
+    }
   }
 }

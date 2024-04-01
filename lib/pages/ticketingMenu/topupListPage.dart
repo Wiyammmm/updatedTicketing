@@ -24,7 +24,8 @@ class _TopUpListPageState extends State<TopUpListPage> {
   @override
   void initState() {
     super.initState();
-    topUpList = _myBox.get('topUpList');
+    topUpList = fetchservices.getCurrentTopupList();
+
     total = topUpList.length;
   }
 
@@ -32,6 +33,11 @@ class _TopUpListPageState extends State<TopUpListPage> {
     final now = DateTime.now();
     final formattedDate = DateFormat("d MMM y, HH:mm").format(now);
     return formattedDate;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -73,7 +79,7 @@ class _TopUpListPageState extends State<TopUpListPage> {
                     child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
                               height: 40,
@@ -86,7 +92,26 @@ class _TopUpListPageState extends State<TopUpListPage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  'TOTAL $total',
+                                  'TOTAL ${fetchservices.getTotalTopUpperTrip().toStringAsFixed(2)}',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: AppColors.primaryColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: 40,
+                              width: MediaQuery.of(context).size.width * 0.35,
+                              decoration: BoxDecoration(
+                                  color: AppColors.secondaryColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: AppColors.primaryColor, width: 2)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'COUNT $total',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: AppColors.primaryColor,
@@ -138,7 +163,7 @@ class _TopUpListPageState extends State<TopUpListPage> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  'MASTER CARD OWNER: ',
+                                                  'CASH CARD OWNER: ',
                                                   style: TextStyle(
                                                       color: lightbg
                                                           ? Colors.white
@@ -223,7 +248,7 @@ class _TopUpListPageState extends State<TopUpListPage> {
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  'MASTERCARD',
+                                                  'CASH CARD',
                                                   style: TextStyle(
                                                       color: lightbg
                                                           ? Colors.white

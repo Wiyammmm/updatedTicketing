@@ -33,6 +33,11 @@ class _DispatcherPageState extends State<DispatcherPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final formattedDate = formatDateNow();
     return Scaffold(

@@ -120,6 +120,9 @@ class _TicketingPageState extends State<TicketingPage> {
     storedData = _myBox.get('SESSION');
 
     isFix = storedData['isFix'] ?? false;
+    if (isFix) {
+      passengerType = storedData['selectedPassengerType'];
+    }
     sessionBox = _myBox.get('SESSION');
 
     // if (sessionBox['isViceVersa']) {
@@ -164,6 +167,7 @@ class _TicketingPageState extends State<TicketingPage> {
       try {
         kmrun = double.parse(stations[currentStationIndex]['km'].toString()) -
             double.parse(sessionBox['selectedDestination']['km'].toString());
+
         if (kmrun < 0) {
           isNegative = true;
         }
@@ -292,7 +296,10 @@ class _TicketingPageState extends State<TicketingPage> {
       print('selectedDestination: $selectedDestination');
     }
     // }
-    findNearestStation(stations, double.parse(toKmPostController.text));
+    if (!fetchService.getIsNumeric()) {
+      findNearestStation(stations, double.parse(toKmPostController.text));
+    }
+
     _updateAmount(isDiscounted);
   }
 
@@ -757,7 +764,7 @@ class _TicketingPageState extends State<TicketingPage> {
           storedData['isFix'] = isFix;
           if (isFix) {
             storedData['selectedDestination'] = selectedDestination;
-
+            storedData['selectedPassengerType'] = passengerType;
             _myBox.put('SESSION', storedData);
 
             print("new selectedDestination: $selectedDestination");
@@ -852,7 +859,7 @@ class _TicketingPageState extends State<TicketingPage> {
                 discountPercent,
                 quantity,
                 newBalance,
-                "${cardData[0]['sNo'] ?? ""}");
+                "${cardData?.isNotEmpty ?? false ? cardData![0]['sNo'] : ""}");
           }
           Navigator.of(context).pop();
           ArtSweetAlert.show(
@@ -1045,6 +1052,12 @@ class _TicketingPageState extends State<TicketingPage> {
 
   @override
   void dispose() {
+    selectedStationNameController.dispose();
+    editAmountController.dispose();
+    baggagePrice.dispose();
+    fromKmPostController.dispose();
+    toKmPostController.dispose();
+    passengerTypeController.dispose();
     super.dispose();
   }
 
@@ -1272,7 +1285,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                     child: FittedBox(
                                                       fit: BoxFit.scaleDown,
                                                       child: Text(
-                                                        '$route',
+                                                        ' $route ',
                                                         textAlign:
                                                             TextAlign.center,
                                                         style: TextStyle(
@@ -1423,7 +1436,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                                 const EdgeInsets
                                                                     .all(8.0),
                                                             child: Text(
-                                                                '${stations[currentStationIndex]['stationName']}'),
+                                                                ' ${stations[currentStationIndex]['stationName']} '),
                                                           )),
                                                     )),
                                                     SizedBox(
@@ -1725,6 +1738,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                                       currentStationIndex]
                                                                   ['km']
                                                               .toString());
+
                                                       if (kmrun > 0) {
                                                         isNegative = false;
                                                       }
@@ -1878,7 +1892,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                                         index -
                                                                             1]
                                                                     ['rowNo']
-                                                                .toString()) <
+                                                                .toString()) <=
                                                             double.parse(stations[
                                                                         currentStationIndex]
                                                                     ['rowNo']
@@ -1986,9 +2000,9 @@ class _TicketingPageState extends State<TicketingPage> {
                                                                               child: FittedBox(
                                                                                 fit: BoxFit.scaleDown,
                                                                                 child: Text(
-                                                                                  item['stationName'] as String,
+                                                                                  " ${item['stationName']} ",
                                                                                   style: const TextStyle(
-                                                                                    fontSize: 14,
+                                                                                    fontSize: 22,
                                                                                   ),
                                                                                 ),
                                                                               ),
@@ -2054,7 +2068,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                                       maxHeight:
                                                                           200,
                                                                       width:
-                                                                          200),
+                                                                          300),
                                                               menuItemStyleData:
                                                                   const MenuItemStyleData(
                                                                 height: 40,
@@ -2749,11 +2763,11 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   try {
                                                     double baggageprice =
                                                         double.parse(value);
-                                                    if (baggageprice <= 0) {
+                                                    if (baggageprice < 0) {
                                                       baggagePrice.text = "";
                                                     }
                                                   } catch (e) {}
-                                                  _updateAmount(false);
+                                                  _updateAmount(isDiscounted);
                                                 },
                                                 onTap: () {
                                                   try {
@@ -2949,7 +2963,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                             fit: BoxFit
                                                                 .scaleDown,
                                                             child: Text(
-                                                              'FILIPAY',
+                                                              ' FILIPAY ',
                                                               textAlign:
                                                                   TextAlign
                                                                       .center,
@@ -3002,7 +3016,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                           child: FittedBox(
                                             fit: BoxFit.scaleDown,
                                             child: Text(
-                                              'MENU',
+                                              'ISSUANCE',
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize:
@@ -3034,7 +3048,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                 cardType = "mastercard";
                                                 _showDialognfcScan(
                                                     context,
-                                                    'MASTER CARD',
+                                                    'CASH CARD',
                                                     'master-card.png');
                                               } else {
                                                 _showDialognfcScan(
@@ -3069,7 +3083,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                           child: FittedBox(
                                             fit: BoxFit.scaleDown,
                                             child: Text(
-                                              'PROCEED',
+                                              'TAP CARD',
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize:
@@ -3352,7 +3366,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                 child: FittedBox(
                                                   fit: BoxFit.scaleDown,
                                                   child: Text(
-                                                    '$route',
+                                                    ' $route ',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         color: AppColors
@@ -3425,16 +3439,21 @@ class _TicketingPageState extends State<TicketingPage> {
                                                       print(
                                                           'selectedStationName: $selectedStationName');
 
-                                                      double stationKM = (double
-                                                                  .parse(station[
-                                                                          stationkm] ??
-                                                                      0
-                                                                          .toString()) -
+                                                      double thiskm = 0.0;
+                                                      double currentstationkm =
+                                                          0.0;
+                                                      try {
+                                                        thiskm = double.parse(
+                                                            station['km']
+                                                                .toString());
+                                                      } catch (e) {}
+
+                                                      double stationKM = (thiskm -
                                                               double.parse(stations[
                                                                           currentStationIndex]
                                                                       [
                                                                       stationkm] ??
-                                                                  0.toString()))
+                                                                  '0'))
                                                           .abs();
                                                       if (fetchService
                                                           .getIsNumeric()) {
@@ -4162,8 +4181,10 @@ class _TicketingPageState extends State<TicketingPage> {
                                                                 .toStringAsFixed(
                                                                     2);
 
-                                                        kmRun = formatDouble(
-                                                            stationKM);
+                                                        // kmRun = formatDouble(
+                                                        //     stationKM);
+                                                        kmRun =
+                                                            "${fetchService.convertNumToIntegerOrDecimal(stationKM)}";
                                                       });
                                                       print(
                                                           'selectedDestination: $selectedDestination');
@@ -4410,8 +4431,10 @@ class _TicketingPageState extends State<TicketingPage> {
                                                                   minimumFare);
                                                         }
 
-                                                        kmRun = formatDouble(
-                                                            stationKM);
+                                                        // kmRun = formatDouble(
+                                                        //     stationKM);
+                                                        kmRun =
+                                                            "${fetchService.convertNumToIntegerOrDecimal(stationKM)}";
                                                       });
                                                       print(
                                                           'selectedDestination: $selectedDestination');
@@ -4619,8 +4642,10 @@ class _TicketingPageState extends State<TicketingPage> {
                                                                 subtotal,
                                                                 minimumFare)
                                                             .toStringAsFixed(2);
+                                                    // kmRun =
+                                                    //     formatDouble(stationKM);
                                                     kmRun =
-                                                        formatDouble(stationKM);
+                                                        "${fetchService.convertNumToIntegerOrDecimal(stationKM)}";
                                                   });
                                                   print('price: $price');
                                                   if (coopData['coopType'] ==
@@ -4806,12 +4831,22 @@ class _TicketingPageState extends State<TicketingPage> {
     print('current station KM: ${stations[currentStationIndex][stationkm]}');
 
     final torTicket = fetchservice.fetchTorTicket();
+    torTicket.sort((a, b) {
+      // Extract last 4 digits of ticket_number
+      int last4DigitsA = int.parse(a["ticket_no"].split("-")[2]);
+      int last4DigitsB = int.parse(b["ticket_no"].split("-")[2]);
+
+      // Compare last 4 digits
+      return last4DigitsA.compareTo(last4DigitsB);
+    });
     if (torTicket.isNotEmpty) {
       lastTicketNo = '${torTicket[torTicket.length - 1]['ticket_no']}';
     }
-    int onboardPassenger = fetchservice.onBoardPassenger();
+    int onboardPassenger = fetchservice.inspectorOnBoardPassenger(double.parse(
+        stations[sessionBox['currentStationIndex']]['km'].toString()));
 
-    int onboardBaggage = fetchservice.onBoardBaggage();
+    int onboardBaggage = fetchservice.inspectorOnBoardBaggageOnly(double.parse(
+        stations[sessionBox['currentStationIndex']]['km'].toString()));
     print('total passenger onboard: $onboardPassenger');
     print('total passenger onboardBaggage: $onboardBaggage');
     showDialog(
@@ -4822,7 +4857,7 @@ class _TicketingPageState extends State<TicketingPage> {
           content: Container(
             height: coopData['coopType'] == "Jeepney"
                 ? MediaQuery.of(context).size.height * 0.4
-                : MediaQuery.of(context).size.height * 0.6,
+                : MediaQuery.of(context).size.height * 0.65,
             decoration: BoxDecoration(
                 color: AppColors.primaryColor,
                 borderRadius: BorderRadius.circular(10)),
@@ -4835,7 +4870,7 @@ class _TicketingPageState extends State<TicketingPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'TICKETING MENU',
+                      'TICKET ISSUANCE',
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),
@@ -4870,6 +4905,13 @@ class _TicketingPageState extends State<TicketingPage> {
                                       count: fetchservice
                                           .totalTripCashReceived()
                                           .toDouble()),
+                                if (coopData['coopType'] == "Bus")
+                                  ticketingmenuWidget(
+                                      title: 'Card Sales',
+                                      count: double.parse(fetchservice
+                                          .totalTripCardSales()
+                                          .toDouble()
+                                          .toStringAsFixed(2))),
                                 Padding(
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 4.0),
@@ -5094,7 +5136,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                             Navigator.of(context).pop();
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: passengerType == 'regular'
+                                            backgroundColor: passengerType ==
+                                                    'regular'
                                                 ? Color(0xff00558d)
                                                 : Color(
                                                     0xFF46aef2), // Background color of the button
@@ -5173,7 +5216,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                             Navigator.of(context).pop();
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: passengerType == 'senior'
+                                            backgroundColor: passengerType ==
+                                                    'senior'
                                                 ? Color(0xff00558d)
                                                 : Color(
                                                     0xFF46aef2), // Background color of the button
@@ -5252,7 +5296,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                             Navigator.of(context).pop();
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: passengerType == 'student'
+                                            backgroundColor: passengerType ==
+                                                    'student'
                                                 ? Color(0xff00558d)
                                                 : Color(
                                                     0xFF46aef2), // Background color of the button
@@ -5328,7 +5373,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                             Navigator.of(context).pop();
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: passengerType == 'pwd'
+                                            backgroundColor: passengerType ==
+                                                    'pwd'
                                                 ? Color(0xff00558d)
                                                 : Color(
                                                     0xFF46aef2), // Background color of the button
@@ -5563,17 +5609,16 @@ class _TicketingPageState extends State<TicketingPage> {
                                           isNfcScanOn = true;
                                         });
                                         _startNFCReader('mastercard');
-                                        _showDialognfcScan(context,
-                                            'MASTER CARD', 'master-card.png');
+                                        _showDialognfcScan(context, 'CASH CARD',
+                                            'master-card.png');
                                       } else {
                                         _startNFCReader('mastercard');
                                       }
                                     }
                                   },
                                   child: typeofCardsWidget(
-                                      title: isNoMasterCard
-                                          ? 'CASH'
-                                          : 'MASTER CARD',
+                                      title:
+                                          isNoMasterCard ? 'CASH' : 'CASH CARD',
                                       image: isNoMasterCard
                                           ? 'cash.png'
                                           : 'master-card.png'),
@@ -6039,11 +6084,12 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    backgroundColor: passengerType ==
-                                                            'regular'
-                                                        ? Color(0xff00558d)
-                                                        : Color(
-                                                            0xFF46aef2), // Background color of the button
+                                                    backgroundColor:
+                                                        passengerType ==
+                                                                'regular'
+                                                            ? Color(0xff00558d)
+                                                            : Color(
+                                                                0xFF46aef2), // Background color of the button
                                                     padding:
                                                         EdgeInsets.symmetric(
                                                             horizontal: 24.0),
@@ -6146,11 +6192,12 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    backgroundColor: passengerType ==
-                                                            'senior'
-                                                        ? Color(0xff00558d)
-                                                        : Color(
-                                                            0xFF46aef2), // Background color of the button
+                                                    backgroundColor:
+                                                        passengerType ==
+                                                                'senior'
+                                                            ? Color(0xff00558d)
+                                                            : Color(
+                                                                0xFF46aef2), // Background color of the button
                                                     padding:
                                                         EdgeInsets.symmetric(
                                                             horizontal: 24.0),
@@ -6253,11 +6300,12 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    backgroundColor: passengerType ==
-                                                            'student'
-                                                        ? Color(0xff00558d)
-                                                        : Color(
-                                                            0xFF46aef2), // Background color of the button
+                                                    backgroundColor:
+                                                        passengerType ==
+                                                                'student'
+                                                            ? Color(0xff00558d)
+                                                            : Color(
+                                                                0xFF46aef2), // Background color of the button
                                                     padding:
                                                         EdgeInsets.symmetric(
                                                             horizontal: 24.0),
@@ -6349,11 +6397,11 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    backgroundColor: passengerType ==
-                                                            'pwd'
-                                                        ? Color(0xff00558d)
-                                                        : Color(
-                                                            0xFF46aef2), // Background color of the button
+                                                    backgroundColor:
+                                                        passengerType == 'pwd'
+                                                            ? Color(0xff00558d)
+                                                            : Color(
+                                                                0xFF46aef2), // Background color of the button
                                                     padding:
                                                         EdgeInsets.symmetric(
                                                             horizontal: 24.0),
@@ -6567,7 +6615,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                 child: typeofCardsWidget(
                                                     title: isNoMasterCard
                                                         ? 'CASH'
-                                                        : 'MASTER CARD',
+                                                        : 'CASH CARD',
                                                     image: isNoMasterCard
                                                         ? 'cash.png'
                                                         : 'master-card.png'),
@@ -6722,10 +6770,15 @@ class _TicketingPageState extends State<TicketingPage> {
 
   void _updateAmount(bool isthisDiscounted) {
     double baggageprice = 0;
-    double stationKM =
-        (double.parse((selectedDestination['km'] ?? 0.0).toString()) -
-                double.parse(stations[currentStationIndex]['km'].toString()))
-            .abs();
+    double stationKM = 0;
+    double temptoKM = 0;
+    if (!fetchService.getIsNumeric()) {
+      temptoKM = double.parse((selectedDestination['km'] ?? 0.0).toString());
+      stationKM = (double.parse((selectedDestination['km'] ?? 0.0).toString()) -
+              double.parse(stations[currentStationIndex]['km'].toString()))
+          .abs();
+    }
+
     try {
       baggageprice = double.parse(baggagePrice.text);
     } catch (e) {
@@ -6750,8 +6803,9 @@ class _TicketingPageState extends State<TicketingPage> {
       }
 
       subtotal = price - discount + baggageprice;
-      kmRun = "$stationKM";
-      toKM = double.parse("${selectedDestination['km']}");
+      // kmRun = "$stationKM";
+      kmRun = "${fetchService.convertNumToIntegerOrDecimal(stationKM)}";
+      toKM = temptoKM;
     });
   }
 }

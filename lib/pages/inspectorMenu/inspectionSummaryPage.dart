@@ -89,6 +89,20 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
     super.initState();
     coopData = fetchservice.fetchCoopData();
     torTicket = fetchservice.fetchallPerTripTicket();
+
+    torTicket.sort((a, b) {
+      // Extract last 4 digits of ticket_number
+      int last4DigitsA = int.parse(a["ticket_no"].split("-")[2]);
+      int last4DigitsB = int.parse(b["ticket_no"].split("-")[2]);
+
+      // Compare last 4 digits
+      return last4DigitsA.compareTo(last4DigitsB);
+    });
+
+    torTicket.forEach((ticket) {
+      print('sorted torTicketzz: $ticket');
+    });
+
     allpassengerTicket = fetchservice.fetchAllPassengerCount();
 
     // filteredTorBagage = fetchservice.fetchTorBaggage();
@@ -132,7 +146,11 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
     } catch (e) {
       currentKM = 0;
     }
-    kmPostController.text = "$currentKM";
+    if (coopData['coopType'] != "Bus") {
+      kmPostController.text =
+          "${fetchservice.convertNumToIntegerOrDecimal(currentKM)}";
+    }
+
     control_no = torTrip[SESSION['currentTripIndex']]['control_no'].toString();
     print(
         'trip control_no: ${torTrip[SESSION['currentTripIndex']]['control_no']}');
@@ -156,8 +174,8 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
         .toList();
     if (!fetchservice.getIsNumeric()) {
       baggageOnlyController.text = fetchservice.onBoardBaggageOnly().toString();
-      baggageWithPassengerController.text =
-          fetchservice.onBoardBaggageWithPassenger().toString();
+      // baggageWithPassengerController.text =
+      //     fetchservice.onBoardBaggageWithPassenger().toString();
       onboardBaggage = fetchservice.onBoardBaggage();
       onboardPassenger = fetchservice.onBoardPassenger();
       allBaggage = fetchservice.baggageCount();
@@ -173,7 +191,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
 
         bool isReverse = false;
 
-        if (isNegative < 0) {
+        if (isNegative <= 0) {
           isReverse = true;
           kmRun = kmRun.abs();
         } else {
@@ -188,17 +206,17 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
         print('onboardfilteredTorTicket firstkm: ${filteredStations[0]['km']}');
         print('onboardfilteredTorTicket currentKM: $currentKM');
         if (!isReverse) {
-          if (kmRun == double.parse(filteredStations[0]['km'].toString())) {
-            return kmRun <= currentKM && torNoInTicket == control_no;
-          } else {
-            return kmRun < currentKM && torNoInTicket == control_no;
-          }
+          // if (kmRun == double.parse(filteredStations[0]['km'].toString())) {
+          //   return kmRun <= currentKM && torNoInTicket == control_no;
+          // } else {
+          return kmRun < currentKM && torNoInTicket == control_no;
+          // }
         } else {
-          if (kmRun == 0) {
-            return kmRun >= currentKM && torNoInTicket == control_no;
-          } else {
-            return kmRun > currentKM && torNoInTicket == control_no;
-          }
+          // if (kmRun == 0) {
+          //   return kmRun >= currentKM && torNoInTicket == control_no;
+          // } else {
+          return kmRun > currentKM && torNoInTicket == control_no;
+          // }
         }
       }).toList();
       for (int i = 0; i < filteredTorTicket.length; i++) {
@@ -218,19 +236,17 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
 
       List<Map<String, dynamic>> filteredTicketsBaggageOnly = torTicket
           .where((ticket) =>
-              ticket['control_no'] == control_no &&
-              (ticket['baggage'] > 0 && ticket['fare'] == 0))
+              ticket['control_no'] == control_no && (ticket['baggage'] > 0))
           .toList();
 
-      List<Map<String, dynamic>> filteredTicketsBaggageWithPass = torTicket
-          .where((ticket) =>
-              ticket['control_no'] == control_no &&
-              (ticket['baggage'] > 0 && ticket['fare'] > 0))
-          .toList();
+      // List<Map<String, dynamic>> filteredTicketsBaggageWithPass = torTicket
+      //     .where((ticket) =>
+      //         ticket['control_no'] == control_no &&
+      //         (ticket['baggage'] > 0 && ticket['fare'] > 0))
+      //     .toList();
 
       baggageOnlyController.text = filteredTicketsBaggageOnly.length.toString();
-      baggageWithPassengerController.text =
-          filteredTicketsBaggageWithPass.length.toString();
+
       passengerController.text =
           fetchservice.fetchAllPassengerCount().toString();
       baggageController.text = "${fetchservice.baggageCount()}";
@@ -246,7 +262,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
     //     '${driverData['firstName']} ${driverData['middleName'][0]}. ${driverData['lastName']}';
     try {
       discrepancyController.text =
-          "${(int.parse(passengerController.text) + int.parse(baggageOnlyController.text) + int.parse(baggageWithPassengerController.text)) - (int.parse(headCountController.text) + int.parse(baggageCountController.text))}";
+          "${(int.parse(passengerController.text) + int.parse(baggageOnlyController.text)) - (int.parse(headCountController.text) + int.parse(baggageCountController.text))}";
     } catch (e) {
       discrepancyController.text = "0";
     }
@@ -254,40 +270,60 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
     findNearestStation(filteredStations, currentKM.toDouble());
   }
 
+  @override
+  void dispose() {
+    ticketIssuedController.dispose();
+    headCountController.dispose();
+    baggageCountController.dispose();
+    passengerController.dispose();
+    baggageController.dispose();
+    kmPostController.dispose();
+    discrepancyController.dispose();
+    onboardplaceController.dispose();
+    baggageOnlyController.dispose();
+    baggageWithPassengerController.dispose();
+    passengerTransferController.dispose();
+    passengerWithPassController.dispose();
+    passengerWithPrepaidController.dispose();
+    super.dispose();
+  }
+
   String findNearestStation(
       List<Map<String, dynamic>> thisstations, double targetKm) {
-    if (filteredStations.isEmpty) {
+    if (thisstations.isEmpty) {
       return ''; // Handle the case where the list is empty
     }
     setState(() {
-      stationNames = [];
+      selectedOnboardPlace = null;
     });
+
+    List<Map<String, dynamic>> tempstationNames = [];
+
     // updateStationName(stations);
-    for (var station in filteredStations) {
+    // if (coopData['coopType'] != "Bus") {
+    for (var station in thisstations) {
       double km = station['km']?.toDouble() ?? 0.0;
       // int numrow = station['rowNo'].toInt();
+
       if (targetKm.toDouble() == km) {
-        setState(() {
-          stationNames.add(station);
-        });
+        tempstationNames.add(station);
       }
-
-      // if (km == targetKm) {
-      //   // String stationName = station['stationName']?.toString() ?? '';
-
-      //   setState(() {
-      //     stationNames.add(station);
-      //   });
-      // }
     }
-    if (stationNames.isEmpty) {
+
+    if (tempstationNames.isEmpty) {
       print('stationNames no stations');
       setState(() {
-        stationNames = filteredStations;
+        stationNames = thisstations;
+      });
+    } else {
+      setState(() {
+        stationNames = tempstationNames;
+        selectedOnboardPlace = "${tempstationNames[0]['stationName']}";
       });
     }
-    print('stationNames filteredStations: $filteredStations');
-    print('stationNames: $stationNames');
+    print('stationNames filteredStations: $thisstations');
+    print('tempstationNames: $tempstationNames');
+    print('selectedOnboardPlace: $selectedOnboardPlace');
 
     // setState(() {
     //   // stationNames = stations.map((station) {
@@ -324,13 +360,14 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
   void updateOnboardPassenger(double currentkmpost, String control_no) {
     setState(() {
       onboardfilteredTorTicket = torTicket.where((item) {
-        double isNegative = item['from_km'] - item['to_km'];
-        double kmRun = item['to_km'];
+        double isNegative = double.parse(item['from_km'].toString()) -
+            double.parse(item['to_km'].toString());
+        double kmRun = double.parse(item['to_km'].toString());
         final torNoInTicket = item['control_no'];
         final reverseNum = item['reverseNum'];
         bool isReverse = false;
 
-        if (isNegative < 0) {
+        if (isNegative <= 0) {
           isReverse = true;
           kmRun = kmRun.abs();
         } else {
@@ -366,6 +403,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
           // }
         }
       }).toList();
+      print('onboardfilteredTorTicket: $onboardfilteredTorTicket');
     });
   }
 
@@ -412,23 +450,23 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
         SESSION['lastInspectorEmpNo'].toString()) {
       String uuid = await generatorServices.generateUuid();
       String onboardTime = await dateservice.departedTime();
-      String onboardPlace =
-          filteredStations[SESSION['currentStationIndex']]['stationName'];
-      if (coopData['coopType'] == "Bus") {
-        onboardPlace = filteredStations[0]['stationName'];
-      }
-      try {
-        // onboardPlace = fetchservice.getInspectorCurrentStation(
-        //     filteredStations, double.parse(kmPostController.text));
-        onboardPlace = findNearestStation(
-            filteredStations, double.parse(kmPostController.text));
-      } catch (e) {
-        onboardPlace =
-            filteredStations[SESSION['currentStationIndex']]['stationName'];
-        if (coopData['coopType'] == "Bus") {
-          onboardPlace = filteredStations[0]['stationName'];
-        }
-      }
+      // String onboardPlace =
+      //     filteredStations[SESSION['currentStationIndex']]['stationName'];
+      // if (coopData['coopType'] == "Bus") {
+      //   onboardPlace = filteredStations[0]['stationName'];
+      // }
+      // try {
+      //   // onboardPlace = fetchservice.getInspectorCurrentStation(
+      //   //     filteredStations, double.parse(kmPostController.text));
+      //   onboardPlace = findNearestStation(
+      //       filteredStations, double.parse(kmPostController.text));
+      // } catch (e) {
+      //   onboardPlace =
+      //       filteredStations[SESSION['currentStationIndex']]['stationName'];
+      //   if (coopData['coopType'] == "Bus") {
+      //     onboardPlace = filteredStations[0]['stationName'];
+      //   }
+      // }
       int passengerCountPrepaid = 0;
       int baggageCount = 0;
 
@@ -475,7 +513,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
           "passenger_count_paid": int.parse(passengerController.text),
           "passenger_count_with_pass": "${passengerWithPassController.text}",
           "passenger_count_transfer": "${passengerTransferController.text}",
-          "passenger_count_cash": int.parse(headCountController.text),
+          "passenger_count_cash": "${int.parse(headCountController.text)}",
           "passenger_count_total":
               int.parse(headCountController.text) + baggageCount,
           "actual_count": int.parse(headCountController.text) + baggageCount,
@@ -563,6 +601,11 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
         return;
       }
     }
+    SESSION['lastInspectorEmpNo'] = "${inspectorData['empNo']}";
+
+    SESSION['inspectorKmPost'] = double.parse(kmPostController.text);
+    SESSION['inspectorOnBoardPlace'] = "$selectedOnboardPlace";
+    _myBox.put('SESSION', SESSION);
     _showDialogPrinting('PRINTING PLEASE WAIT...', false);
     int passengerTransfer = 0;
     int passengerWithPass = 0;
@@ -595,7 +638,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
         type,
         torNo,
         passengerController.text,
-        '${int.parse(baggageOnlyController.text) + int.parse(baggageWithPassengerController.text)}',
+        '${int.parse(baggageOnlyController.text)}',
         headCountController.text,
         kmPostController.text,
         driverName,
@@ -613,9 +656,6 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
         baggageCount);
 
     if (isprintDone) {
-      SESSION['inspectorKmPost'] = double.parse(kmPostController.text);
-      SESSION['inspectorOnBoardPlace'] = "$selectedOnboardPlace";
-      _myBox.put('SESSION', SESSION);
       Navigator.of(context).pop();
       ArtSweetAlert.show(
         context: context,
@@ -931,14 +971,14 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                                   double thisvalue =
                                                       double.parse(value);
 
-                                                  selectedOnboardPlace = null;
+                                                  // selectedOnboardPlace = null;
                                                   findNearestStation(
                                                       filteredStations,
-                                                      double.parse(value));
+                                                      thisvalue);
+                                                  print(
+                                                      'selectedOnboardPlace: $selectedOnboardPlace');
                                                 } catch (e) {
                                                   print('km post error: $e');
-
-                                                  print(e);
 
                                                   setState(() {
                                                     stationNames =
@@ -964,8 +1004,9 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                                       print(
                                                           'kmrun updateOnboardPassenger');
                                                       setState(() {
-                                                        selectedOnboardPlace =
-                                                            null;
+                                                        // selectedOnboardPlace =
+                                                        //     null;
+
                                                         updateOnboardPassenger(
                                                             double.parse(
                                                                 kmPostController
@@ -1006,7 +1047,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
 
                                                         discrepancyController
                                                                 .text =
-                                                            "${(int.parse(passengerController.text) + int.parse(baggageOnlyController.text) + int.parse(baggageWithPassengerController.text)) - (int.parse(headCountController.text) + int.parse(baggageCountController.text))}";
+                                                            "${(int.parse(passengerController.text) + int.parse(baggageOnlyController.text)) - (int.parse(headCountController.text) + int.parse(baggageCountController.text))}";
                                                       });
                                                     }
                                                   } catch (e) {
@@ -1096,7 +1137,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                                                     as String,
                                                                 style:
                                                                     const TextStyle(
-                                                                  fontSize: 14,
+                                                                  fontSize: 22,
                                                                 ),
                                                               ),
                                                             ),
@@ -1117,11 +1158,12 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                                               .isNotEmpty
                                                           ? selectedStations[0]
                                                           : {};
+
                                                   setState(() {
                                                     selectedOnboardPlace =
                                                         value ?? '';
                                                     kmPostController.text =
-                                                        "${selectedStation['km']}";
+                                                        "${fetchservice.convertNumToIntegerOrDecimal(selectedStation['km'])}";
                                                     updateOnboardPassenger(
                                                         double.parse(
                                                             kmPostController
@@ -1159,7 +1201,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                                             .toString();
 
                                                     discrepancyController.text =
-                                                        "${(int.parse(passengerController.text) + int.parse(baggageOnlyController.text) + int.parse(baggageWithPassengerController.text)) - (int.parse(headCountController.text) + int.parse(baggageCountController.text))}";
+                                                        "${(int.parse(passengerController.text) + int.parse(baggageOnlyController.text)) - (int.parse(headCountController.text) + int.parse(baggageCountController.text))}";
                                                   });
                                                 },
                                                 buttonStyleData:
@@ -1171,8 +1213,8 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                                 ),
                                                 dropdownStyleData:
                                                     const DropdownStyleData(
-                                                  maxHeight: 200,
-                                                ),
+                                                        maxHeight: 200,
+                                                        width: 300),
                                                 menuItemStyleData:
                                                     const MenuItemStyleData(
                                                   height: 40,
@@ -1450,12 +1492,21 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                                 // discrepancyController.text =
                                                 //     "${int.parse(passengerController.text) - int.parse(headCountController.text)}";
                                                 discrepancyController.text =
-                                                    "${(int.parse(passengerController.text) + int.parse(baggageOnlyController.text) + int.parse(baggageWithPassengerController.text)) - (int.parse(headCountController.text) + int.parse(baggageCountController.text))}";
+                                                    "${(int.parse(passengerController.text) + int.parse(baggageOnlyController.text)) - (int.parse(headCountController.text) + int.parse(baggageCountController.text))}";
                                               } catch (e) {
                                                 discrepancyController.text =
                                                     "0";
                                               }
                                             });
+                                          },
+                                          onTap: () {
+                                            try {
+                                              int thisvalue = int.parse(
+                                                  headCountController.text);
+                                              if (thisvalue <= 0) {
+                                                headCountController.text = "";
+                                              }
+                                            } catch (e) {}
                                           },
                                         ),
                                       )
@@ -1524,7 +1575,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                     padding: const EdgeInsets.all(4.0),
                                     child: Center(
                                       child: Text(
-                                          '${int.parse(baggageOnlyController.text) + int.parse(baggageWithPassengerController.text)}'),
+                                          '${int.parse(baggageOnlyController.text)}'),
                                     ),
                                   ),
                                 )
@@ -1590,12 +1641,21 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                             // discrepancyController.text =
                                             //     "${int.parse(passengerController.text) - int.parse(headCountController.text)}";
                                             discrepancyController.text =
-                                                "${(int.parse(passengerController.text) + (int.parse(baggageOnlyController.text) + int.parse(baggageWithPassengerController.text))) - (int.parse(headCountController.text) + int.parse(baggageCountController.text))}";
+                                                "${(int.parse(passengerController.text) + (int.parse(baggageOnlyController.text))) - (int.parse(headCountController.text) + int.parse(baggageCountController.text))}";
                                           } catch (e) {
                                             discrepancyController.text =
-                                                "${(int.parse(passengerController.text) + (int.parse(baggageOnlyController.text) + int.parse(baggageWithPassengerController.text))) - (int.parse(headCountController.text))}";
+                                                "${(int.parse(passengerController.text) + (int.parse(baggageOnlyController.text))) - (int.parse(headCountController.text))}";
                                           }
                                         });
+                                      },
+                                      onTap: () {
+                                        try {
+                                          int thisvalue = int.parse(
+                                              baggageCountController.text);
+                                          if (thisvalue <= 0) {
+                                            baggageCountController.text = "";
+                                          }
+                                        } catch (e) {}
                                       },
                                     ),
                                   )
@@ -1756,9 +1816,9 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                               Container(
                                 decoration: BoxDecoration(
                                   color: AppColors.primaryColor,
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(20),
-                                      bottomRight: Radius.circular(20)),
+                                  // borderRadius: BorderRadius.only(
+                                  //     bottomLeft: Radius.circular(20),
+                                  //     bottomRight: Radius.circular(20)),
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(5.0),
@@ -1815,12 +1875,13 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
                                               filled: true,
                                               fillColor: Colors.white,
                                               border: OutlineInputBorder(
-                                                  borderSide: BorderSide.none,
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                          bottomRight:
-                                                              Radius.circular(
-                                                                  20)))),
+                                                borderSide: BorderSide.none,
+                                                // borderRadius:
+                                                //     BorderRadius.only(
+                                                //         bottomRight:
+                                                //             Radius.circular(
+                                                //                 20))
+                                              )),
                                         ),
                                       )
                                     ],

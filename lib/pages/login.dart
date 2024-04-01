@@ -121,12 +121,13 @@ class _LoginPageState extends State<LoginPage> {
     // Printy();
   }
 
-  // @override
-  // void dispose() {
-  //   textEditingController.dispose();
-  //   isExit = true;
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    torNoController.dispose();
+    isExit = true;
+    super.dispose();
+  }
 
   void _checkRepeatDriverTor(String employeeID) {
     try {
@@ -160,6 +161,7 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         if (isManualTor) {
           setState(() {
+            // torNoController.text = "";
             isManualTor = !isManualTor;
           });
         }
@@ -220,6 +222,13 @@ class _LoginPageState extends State<LoginPage> {
       NfcManager.instance.startSession(
         onDiscovered: (NfcTag tag) async {
           print('${tag.data}');
+
+          int i = 0;
+          final torTicket = _myBox.get('torTicket');
+          for (var element in torTicket) {
+            print("elements [$i]: $element");
+            i++;
+          }
           // Do something with an NfcTag instance.
           String tagId = fetchservice.extractTagId(tag);
           // setState(() {
@@ -1030,8 +1039,25 @@ class _LoginPageState extends State<LoginPage> {
 
                                                 selectedRouteID =
                                                     '${routeList[selectedRouteIndex]['_id']}';
+
+                                                List<Map<String, dynamic>>
+                                                    filteredStations =
+                                                    stationList
+                                                        .where((station) =>
+                                                            station['routeId']
+                                                                .toString() ==
+                                                            selectedRouteID)
+                                                        .toList();
+
+                                                filteredStations.sort((a, b) {
+                                                  int rowNoA = a['rowNo'] ?? 0;
+                                                  int rowNoB = b['rowNo'] ?? 0;
+                                                  return rowNoA
+                                                      .compareTo(rowNoB);
+                                                });
+
                                                 departedPlace =
-                                                    '${routeList[selectedRouteIndex]['origin']}';
+                                                    '${filteredStations[0]['code']}';
                                                 print(
                                                     'selected Route ID: ${routeList[selectedRouteIndex]['_id']}');
                                                 selectedBound =
@@ -1296,6 +1322,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 "PLEASE FILL UP THE TOR NUMBER"));
                                     return;
                                   }
+
                                   setState(() {
                                     isExit = true;
 
@@ -1312,7 +1339,19 @@ class _LoginPageState extends State<LoginPage> {
                                     isConductorLogin,
                                   );
                                   bool? isValid = await isDispatchValid;
-
+                                  if (SESSION['torNo'].toString() != "") {
+                                    if (SESSION['torNo'].toString() !=
+                                        torNoController.text) {
+                                      ArtSweetAlert.show(
+                                          context: context,
+                                          artDialogArgs: ArtDialogArgs(
+                                              type: ArtSweetAlertType.warning,
+                                              title: "INVALID",
+                                              text:
+                                                  "DIFFERENT TOR NO, YOU MUST END TRIP FIRST"));
+                                      return;
+                                    }
+                                  }
                                   if (isValid != null && isValid) {
                                     loadingModal.showLoading(context);
 
@@ -1361,16 +1400,26 @@ class _LoginPageState extends State<LoginPage> {
                                           selectedVehicle,
                                       orElse: () => {'plate_number': ''},
                                     )['plate_number'];
-                                    bool isaddDispatch =
-                                        await hiveService.addDispatch({
-                                      'driverEmpNo': driverEmpNo,
-                                      'conductorEmpNo': conductorEmpNo,
-                                      'dispatcher1': dispatcherEmpNo,
-                                      'dispatcher2': '',
-                                      'vehicleNo': '$selectedVehicle',
-                                      'plate_number': '$plateNumber',
-                                      'tor_no': '${torNoController.text}'
-                                    });
+                                    bool isaddDispatch = false;
+                                    bool isAlreadyInsertTrip = bool.parse(
+                                        SESSION['isAlreadyInsertTrip']
+                                            .toString());
+                                    if (!isAlreadyInsertTrip) {
+                                      isaddDispatch =
+                                          await hiveService.addDispatch({
+                                        'driverEmpNo': driverEmpNo,
+                                        'conductorEmpNo': conductorEmpNo,
+                                        'dispatcher1': dispatcherEmpNo,
+                                        'dispatcher2': '',
+                                        'vehicleNo': '$selectedVehicle',
+                                        'plate_number': '$plateNumber',
+                                        'tor_no': '${torNoController.text}',
+                                        'control_no': '$controlNo'
+                                      });
+                                    } else {
+                                      isaddDispatch = true;
+                                    }
+
                                     String uuid =
                                         generatorService.generateUuid();
 
@@ -1426,6 +1475,8 @@ class _LoginPageState extends State<LoginPage> {
                                       "ticket_count_cancelled": 0,
                                       "ticket_amount_passes": 0,
                                       "ticket_count_passes": 0,
+                                      "ticket_revenue_reserved": 0,
+                                      "ticket_count_reserved": 0,
                                       "passenger_revenue": 0,
                                       "baggage_revenue": 0,
                                       "gross_revenue": 0,
@@ -1441,25 +1492,37 @@ class _LoginPageState extends State<LoginPage> {
                                       "arrival_lat": "",
                                       "arrival_long": "",
                                       "inspection_made": 0,
+                                      "cashReceived": 0,
+                                      "cardSales": 0,
+                                      "total_topup":0,
                                       "coopId": "${coopData['_id']}"
                                     };
-                                    Map<String, dynamic> addTorTrip =
-                                        await httpRequestServices
-                                            .torTrip(requestBodyItemTorTrip);
+                                    if (!SESSION['isAlreadyInsertTrip']) {
+                                      Map<String, dynamic> addTorTrip =
+                                          await httpRequestServices
+                                              .torTrip(requestBodyItemTorTrip);
 
-                                    if (addTorTrip['messages'][0]['code']
-                                            .toString() !=
-                                        '0') {
-                                      Navigator.of(context).pop();
-                                      ArtSweetAlert.show(
-                                          context: context,
-                                          artDialogArgs: ArtDialogArgs(
-                                              type: ArtSweetAlertType.danger,
-                                              title: "ERROR",
-                                              text:
-                                                  "${addTorTrip['messages'][0]['message'].toString().toUpperCase()}"));
-                                      return;
+                                      if (addTorTrip['messages'][0]['code']
+                                              .toString() !=
+                                          '0') {
+                                        Navigator.of(context).pop();
+                                        ArtSweetAlert.show(
+                                            context: context,
+                                            artDialogArgs: ArtDialogArgs(
+                                                type: ArtSweetAlertType.danger,
+                                                title: "ERROR",
+                                                text:
+                                                    "${addTorTrip['messages'][0]['message'].toString().toUpperCase()}"));
+                                        return;
+                                      }
                                     }
+                                    if (!isAlreadyInsertTrip) {
+                                      SESSION['isAlreadyInsertTrip'] = true;
+                                      print(
+                                          'isAlreadyInsertTrip: ${SESSION['isAlreadyInsertTrip']}');
+                                      _myBox.put('SESSION', SESSION);
+                                    }
+
                                     bool isAddedTrip = await hiveService
                                         .addTrip(requestBodyItemTorTrip);
                                     // bool isClose =
@@ -1469,6 +1532,8 @@ class _LoginPageState extends State<LoginPage> {
                                     // _startNFCReader();
                                     Navigator.of(context).pop();
                                     if (isAddedTrip && isaddDispatch) {
+                                      SESSION['isAlreadyInsertTrip'] = false;
+                                      _myBox.put('SESSION', SESSION);
                                       SESSION['routeID'] = '$selectedRouteID';
                                       SESSION['tripType'] =
                                           isRegularTrip ? 'regular' : 'special';

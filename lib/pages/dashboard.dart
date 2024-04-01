@@ -396,6 +396,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   ),
                                   Expanded(
                                     child: Container(
+                                      height: 60,
                                       decoration: BoxDecoration(
                                         color: AppColors.primaryColor,
                                       ),
@@ -414,18 +415,21 @@ class _DashboardPageState extends State<DashboardPage> {
                                                         FontWeight.bold),
                                               ),
                                             ),
-                                            Container(
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(3.0),
-                                                child: FittedBox(
-                                                  fit: BoxFit.scaleDown,
-                                                  child: Text(
-                                                    '${route}',
-                                                    textAlign: TextAlign.center,
+                                            Expanded(
+                                              child: Container(
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(3.0),
+                                                  child: FittedBox(
+                                                    fit: BoxFit.scaleDown,
+                                                    child: Text(
+                                                      ' ${route} ',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -522,7 +526,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 child: FittedBox(
                                                   fit: BoxFit.scaleDown,
                                                   child: Text(
-                                                    '${torTrip.length > SESSION['currentTripIndex'] ? torTrip[SESSION['currentTripIndex']]['tor_no'] ?? "" : ""}',
+                                                    ' ${torTrip.length > SESSION['currentTripIndex'] ? torTrip[SESSION['currentTripIndex']]['tor_no'] ?? " " : " "} ',
                                                     textAlign: TextAlign.center,
                                                   ),
                                                 ),
@@ -568,7 +572,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           child: FittedBox(
                                             fit: BoxFit.scaleDown,
                                             child: Text(
-                                              '$driverName',
+                                              ' $driverName ',
                                               textAlign: TextAlign.center,
                                             ),
                                           ),
@@ -615,7 +619,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           child: FittedBox(
                                             fit: BoxFit.scaleDown,
                                             child: Text(
-                                              '$conductorName',
+                                              ' $conductorName ',
                                               textAlign: TextAlign.center,
                                             ),
                                           ),
@@ -681,12 +685,15 @@ class _DashboardPageState extends State<DashboardPage> {
                                   child: Row(
                                     children: [
                                       Expanded(
-                                          child: Text(
-                                        'PASSENGER REVENUE',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
+                                          child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          'PASSENGER CASH REVENUE',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                       )),
                                       Container(
                                         width:
@@ -722,12 +729,15 @@ class _DashboardPageState extends State<DashboardPage> {
                                   child: Row(
                                     children: [
                                       Expanded(
-                                          child: Text(
-                                        'BAGGAGE REVENUE',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
+                                          child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          'BAGGAGE CASH REVENUE',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                       )),
                                       Container(
                                         width:
@@ -751,6 +761,182 @@ class _DashboardPageState extends State<DashboardPage> {
                                   ),
                                 ),
                               ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.primaryColor,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          'PASSENGER CARD REVENUE',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      )),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.3,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Center(
+                                            child: Text(
+                                              '${fetchService.totalTripCardSalesPassenger().toStringAsFixed(2)}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.primaryColor,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          'BAGGAGE CARD REVENUE',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      )),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.3,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Center(
+                                            child: Text(
+                                              '${fetchService.totalTripCardSalesBaggage().toStringAsFixed(2)}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.primaryColor,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          'PREPAID PASS REVENUE',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      )),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.3,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Center(
+                                            child: Text(
+                                              '${fetchService.totalPrepaidPassengerRevenueperTrip().toStringAsFixed(2)}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              // SizedBox(
+                              //   height: 5,
+                              // ),
+                              // Container(
+                              //   decoration: BoxDecoration(
+                              //     color: AppColors.primaryColor,
+                              //   ),
+                              //   child: Padding(
+                              //     padding: const EdgeInsets.all(2.0),
+                              //     child: Row(
+                              //       children: [
+                              //         Expanded(
+                              //             child: FittedBox(
+                              //           fit: BoxFit.scaleDown,
+                              //           child: Text(
+                              //             'PREPAID BAGG REVENUE',
+                              //             textAlign: TextAlign.center,
+                              //             style: TextStyle(
+                              //                 color: Colors.white,
+                              //                 fontWeight: FontWeight.bold),
+                              //           ),
+                              //         )),
+                              //         Container(
+                              //           width:
+                              //               MediaQuery.of(context).size.width *
+                              //                   0.3,
+                              //           decoration: BoxDecoration(
+                              //             color: Colors.white,
+                              //           ),
+                              //           child: Padding(
+                              //             padding: const EdgeInsets.all(8.0),
+                              //             child: Center(
+                              //               child: Text(
+                              //                 '${fetchService.totalPrepaidBaggageRevenueperTrip().toStringAsFixed(2)}',
+                              //                 style: TextStyle(
+                              //                     fontWeight: FontWeight.bold),
+                              //               ),
+                              //             ),
+                              //           ),
+                              //         )
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
                               SizedBox(
                                 height: 5,
                               ),
@@ -797,6 +983,47 @@ class _DashboardPageState extends State<DashboardPage> {
                               ),
                               Container(
                                 decoration: BoxDecoration(
+                                  color: AppColors.primaryColor,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                        'TOP UP REVENUE',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.3,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Center(
+                                            child: Text(
+                                              '${fetchService.getTotalTopUpperTrip().toStringAsFixed(2)}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
                                     color: AppColors.primaryColor,
                                     borderRadius: BorderRadius.only(
                                         bottomLeft: Radius.circular(20),
@@ -826,7 +1053,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           padding: const EdgeInsets.all(8.0),
                                           child: Center(
                                             child: Text(
-                                              '${(fetchService.totalTripCashReceived() - fetchService.totalTripExpenses()).toStringAsFixed(2)}',
+                                              '${fetchService.totalTripGrandTotal()}',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -1175,7 +1402,7 @@ class employeeWidget extends StatelessWidget {
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  '$conductorName',
+                  ' $conductorName ',
                   style: TextStyle(color: Colors.white),
                 ),
               )
@@ -1228,7 +1455,7 @@ class dashboardWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Text(
-                      '$number',
+                      ' $number ',
                       style: TextStyle(
                           color: Color(0xFF00558d),
                           fontSize: MediaQuery.of(context).size.width * 0.07),

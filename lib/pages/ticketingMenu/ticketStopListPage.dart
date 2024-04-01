@@ -66,6 +66,11 @@ class _TicketStopListPageState extends State<TicketStopListPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     print(ticketStops);
     final formattedDate = formatDateNow();

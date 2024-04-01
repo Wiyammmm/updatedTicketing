@@ -1,3 +1,4 @@
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dltb/components/appbar.dart';
 import 'package:dltb/components/color.dart';
 import 'package:dltb/pages/dashboard.dart';
@@ -141,67 +142,95 @@ class ticketingMenuSecond extends StatelessWidget {
         Expanded(
           child: GestureDetector(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PrePaidListingPage()));
+              ArtSweetAlert.show(
+                  context: context,
+                  artDialogArgs: ArtDialogArgs(
+                      type: ArtSweetAlertType.danger,
+                      title: "OOPS..",
+                      text: "This Prepaid Listing is not yet available"));
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => PrePaidListingPage()));
             },
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Container(
-                      // height: 70,
-                      // width: 70,
-                      decoration: BoxDecoration(
-                        color: AppColors.secondaryColor,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Stack(
-                          children: [
-                            Image.asset(
-                              'assets/history.png',
-                              width: MediaQuery.of(context).size.width * 0.2,
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: Container(
+                          // height: 70,
+                          // width: 70,
+                          decoration: BoxDecoration(
+                            color: AppColors.secondaryColor,
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Stack(
+                              children: [
+                                Image.asset(
+                                  'assets/history.png',
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                ),
+                                Align(
+                                  alignment: Alignment(1.5, 1.5),
+                                  child: Image.asset(
+                                    'assets/ticket.png',
+                                    width: MediaQuery.of(context).size.width *
+                                        0.05,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Align(
-                              alignment: Alignment(1.5, 1.5),
-                              child: Image.asset(
-                                'assets/ticket.png',
-                                width: MediaQuery.of(context).size.width * 0.05,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 100,
-                    height: 30,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        'PREPAID\nLISTING',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white),
+                      SizedBox(
+                        width: 100,
+                        height: 30,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'PREPAID\nLISTING',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
                       ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 120,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: const Color.fromARGB(97, 0, 0, 0),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Center(
+                    child: Text(
+                      'NOT AVAILABLE',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -398,52 +427,18 @@ class ticketingMenuFirst extends StatelessWidget {
           width: 2,
         ),
         Expanded(
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => PrepaidPage()));
+          child: ticketingMenuButton(
+            imageName: "tickets.png",
+            label: "PREPAID",
+            isAvailable: false,
+            thisFunction: () {
+              ArtSweetAlert.show(
+                  context: context,
+                  artDialogArgs: ArtDialogArgs(
+                      type: ArtSweetAlertType.danger,
+                      title: "OOPS..",
+                      text: "This Prepaid Page is not yet available"));
             },
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Container(
-                      // height: 70,
-                      // width: 70,
-                      decoration: BoxDecoration(
-                        color: AppColors.secondaryColor,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Image.asset(
-                          'assets/tickets.png',
-                          width: MediaQuery.of(context).size.width * 0.2,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                    child: Text(
-                      'PREPAID',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                ],
-              ),
-            ),
           ),
         ),
         SizedBox(
@@ -515,6 +510,87 @@ class ticketingMenuFirst extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class ticketingMenuButton extends StatelessWidget {
+  const ticketingMenuButton(
+      {super.key,
+      required this.label,
+      required this.thisFunction,
+      required this.imageName,
+      required this.isAvailable});
+  final String label;
+  final void Function() thisFunction;
+  final String imageName;
+  final bool isAvailable;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: thisFunction,
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.primaryColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Container(
+                    // height: 70,
+                    // width: 70,
+                    decoration: BoxDecoration(
+                      color: AppColors.secondaryColor,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Image.asset(
+                        'assets/$imageName',
+                        width: MediaQuery.of(context).size.width * 0.2,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                  child: Text(
+                    '$label',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+              ],
+            ),
+          ),
+          if (!isAvailable)
+            Container(
+              height: 120,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  color: const Color.fromARGB(97, 0, 0, 0),
+                  borderRadius: BorderRadius.circular(10)),
+              child: Center(
+                child: Text(
+                  'NOT AVAILABLE',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

@@ -157,7 +157,7 @@ class appbar extends StatelessWidget {
                           FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
-                              'PASS\nCOUNT',
+                              'TOTAL\nPASS',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white,
@@ -178,28 +178,32 @@ class appbar extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Container(
+                width: double.infinity,
                 decoration: BoxDecoration(
                   color: AppColors.primaryColor,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (coopData['_id'] == "655321a339c1307c069616e9")
-                      Image.asset(
-                        'assets/dltblogo.png',
-                        width: 80,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (coopData['_id'] == "655321a339c1307c069616e9")
+                        Image.asset(
+                          'assets/dltblogo.png',
+                          width: 80,
+                        ),
+                      SizedBox(
+                        width: 10,
                       ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                        '${coopData['cooperativeCodeName'].toString().toUpperCase()}',
-                        style: GoogleFonts.blackHanSans(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 30,
-                            letterSpacing: 5))
-                  ],
+                      Text(
+                          '${coopData['cooperativeCodeName'].toString().toUpperCase()}',
+                          style: GoogleFonts.blackHanSans(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 30,
+                              letterSpacing: 5))
+                    ],
+                  ),
                 ),
               ),
             ),

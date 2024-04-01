@@ -167,6 +167,11 @@ class _SyncingMenuPageState extends State<SyncingMenuPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final formattedDate = formatDateNow();
     return WillPopScope(

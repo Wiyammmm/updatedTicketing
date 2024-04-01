@@ -86,6 +86,15 @@ class _ExpensesPageState extends State<ExpensesPage> {
   }
 
   @override
+  void dispose() {
+    fuelStationController.dispose();
+    fuelLitersController.dispose();
+    fuelPricePerLiterController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final formattedDate = formatDateNow();
     return RefreshIndicator(
@@ -715,6 +724,9 @@ class _ExpensesPageState extends State<ExpensesPage> {
                                                       AppColors.primaryColor),
                                               borderRadius:
                                                   BorderRadius.circular(10))),
+                                      onTap: () {
+                                        expensesAmountController.text = "";
+                                      },
                                       validator: (value) {
                                         if (value!.isEmpty) {
                                           return 'Required';

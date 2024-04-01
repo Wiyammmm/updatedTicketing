@@ -27,6 +27,12 @@ class _PrepaidPageState extends State<PrepaidPage> {
   }
 
   @override
+  void dispose() {
+    ticketNoController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final formattedDate = formatDateNow();
     return Scaffold(
@@ -94,29 +100,43 @@ class _PrepaidPageState extends State<PrepaidPage> {
                           loadinglmodal.showProcessing(context);
                           Map<String, dynamic> bookingData =
                               await httpRequestServices
-                                  .verifyBooking(ticketNoController.text);
-                          if (bookingData['messages'][0]['code'].toString() ==
-                              '0') {
-                            if (bookingData['response']['data'][0]['fieldData']
-                                    ['checkIn'] ==
-                                "") {
-                              Navigator.of(context).pop();
-                              print('bookingData: $bookingData');
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CheckInPage(
-                                          bookingData: bookingData)));
+                                  .verifyBookingEmman(ticketNoController.text);
+                          try {
+                            if (bookingData['messages']['code'].toString() ==
+                                '0') {
+                              if (bookingData['response']['data'][0]
+                                          ['fieldData']['checkIn']
+                                      .toString() ==
+                                  "") {
+                                Navigator.of(context).pop();
+                                print('bookingData: $bookingData');
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CheckInPage(
+                                            bookingData: bookingData)));
+                              } else {
+                                Navigator.of(context).pop();
+                                ArtSweetAlert.show(
+                                    context: context,
+                                    artDialogArgs: ArtDialogArgs(
+                                        type: ArtSweetAlertType.warning,
+                                        title: "ALREADY IN USED",
+                                        text:
+                                            "THIS TICKET IS ALREADY IN USED"));
+                              }
                             } else {
                               Navigator.of(context).pop();
                               ArtSweetAlert.show(
                                   context: context,
                                   artDialogArgs: ArtDialogArgs(
                                       type: ArtSweetAlertType.warning,
-                                      title: "ALREADY IN USED",
-                                      text: "THIS TICKET IS ALREADY IN USED"));
+                                      title: "ERROR",
+                                      text:
+                                          "${bookingData['messages'][0]['message'].toString().toUpperCase()}"));
                             }
-                          } else {
+                          } catch (e) {
+                            print("error prepaid: $e");
                             Navigator.of(context).pop();
                             ArtSweetAlert.show(
                                 context: context,
@@ -124,7 +144,7 @@ class _PrepaidPageState extends State<PrepaidPage> {
                                     type: ArtSweetAlertType.warning,
                                     title: "ERROR",
                                     text:
-                                        "${bookingData['messages'][0]['message'].toString().toUpperCase()}"));
+                                        "SOMETHING WENT WRONG, PLEASE TRY AGAIN"));
                           }
                         },
                         style: ElevatedButton.styleFrom(

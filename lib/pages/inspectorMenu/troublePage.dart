@@ -8,20 +8,22 @@ import 'package:dltb/backend/service/generator.dart';
 import 'package:dltb/backend/service/services.dart';
 import 'package:dltb/components/appbar.dart';
 import 'package:dltb/components/color.dart';
+import 'package:dltb/components/container.dart';
 import 'package:dltb/components/loadingModal.dart';
 import 'package:dltb/pages/inspectorMenuPage.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hive/hive.dart';
 
-class ViolationPage extends StatefulWidget {
-  const ViolationPage({super.key, required this.inspectorData});
+class TroublePage extends StatefulWidget {
+  const TroublePage({super.key, required this.inspectorData});
   final inspectorData;
   @override
-  State<ViolationPage> createState() => _ViolationPageState();
+  State<TroublePage> createState() => _TroublePageState();
 }
 
-class _ViolationPageState extends State<ViolationPage> {
+class _TroublePageState extends State<TroublePage> {
   final _myBox = Hive.box('myBox');
   Map<String, dynamic> inspectorData = {};
   fetchServices fetchservice = fetchServices();
@@ -32,43 +34,26 @@ class _ViolationPageState extends State<ViolationPage> {
   TestPrinttt printservice = TestPrinttt();
   HiveService hiveservice = HiveService();
 
-  TextEditingController kmPostController = TextEditingController();
-  TextEditingController onboardplaceController = TextEditingController();
-  String? selectedOnboardPlace;
-  String routeid = "";
-
   List<Map<String, dynamic>> torTrip = [];
   List<Map<String, dynamic>> stations = [];
   Map<String, dynamic> SESSION = {};
   TextEditingController employeeNameController = TextEditingController();
+  TextEditingController troubleDescriptionController = TextEditingController();
+  TextEditingController kmPostController = TextEditingController();
+  TextEditingController onboardplaceController = TextEditingController();
+  String? selectedOnboardPlace;
+  String route = "";
   Map<String, dynamic> coopData = {};
   final List<String> items = [
-    'Passengers Overload',
-    'OVER/UNDERCHARGING PASSENGER/BAGGAGE FARE',
-    'DELAYING SUBMISSION OF COLLECTION',
-    'SHORTENING DISTANCE FARE NOT YET COLLECTED',
-    'DELAYED ISSUANCE OF TICKET',
-    'SHORTENING DISTANCE FULL FARE PASSENGER',
-    'ISSUING HALF FARE 70 FULL FARE COLLECTED',
-    'ACT OF DEFRAUDING',
-    'DRIVING EXPIRED LICENSE',
-    'DISCOURTESY TO PASSENGERS',
-    'DISCOURTESY TO SUPERIOR',
-    'INSUBORDINATION',
-    'NOT WEARING SHOES',
-    'NOT/IMPROPER UNIFORM',
-    'STOPPING BUS ON PROHIBITED/DANGEROUS ZONES',
-    'SPEEDING',
-    'DISREGARDING SAFETY TRAFFIC SIGNS',
-    'OVERTAKING ON PROHIBITED ZONES',
-    'FOLLOWING CLOSE',
-    'OVERTAKING WITHOUT SUFFICIENT CLEARANCE',
-    'OVER SPEEDING'
+    'ENGINE TROUBLE',
+    'INVOLVED IN ACCIDENT',
   ];
   List<Map<String, dynamic>> stationNames = [];
   List<Map<String, dynamic>> filteredStations = [];
   String? selectedValue;
+  String vehicleNo = "";
   final TextEditingController textEditingController = TextEditingController();
+  String routeid = "";
   @override
   void initState() {
     super.initState();
@@ -78,16 +63,19 @@ class _ViolationPageState extends State<ViolationPage> {
     SESSION = _myBox.get('SESSION');
     stations = fetchservice.fetchStationList();
     routeid = SESSION['routeID'];
+    vehicleNo = "${torTrip[SESSION['currentTripIndex']]['bus_no']}";
     filteredStations = stations
         .where((station) => station['routeId'].toString() == routeid)
         .toList();
     stationNames = filteredStations;
+    route = " ${torTrip[SESSION['currentTripIndex']]['route']} ";
   }
 
   @override
   void dispose() {
     employeeNameController.dispose();
     textEditingController.dispose();
+    troubleDescriptionController.dispose();
     super.dispose();
   }
 
@@ -169,7 +157,7 @@ class _ViolationPageState extends State<ViolationPage> {
                   decoration: BoxDecoration(color: Colors.white),
                   child: Center(
                       child: Text(
-                    'VIOLATION REPORT',
+                    'TROUBLE REPORT',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   )),
                 ),
@@ -185,6 +173,32 @@ class _ViolationPageState extends State<ViolationPage> {
                       children: [
                         SizedBox(
                           height: 20,
+                        ),
+                        DLTBContainer(
+                            isTop: true,
+                            isBottom: false,
+                            label:
+                                "${coopData['coopType'].toString().toUpperCase()} NO",
+                            value: ' $vehicleNo '),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        DLTBContainer(
+                            isTop: false,
+                            isBottom: false,
+                            label: "ROUTE",
+                            value: '$route'),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        DLTBContainer(
+                            isTop: false,
+                            isBottom: true,
+                            label: "DATE OF TRIP",
+                            value:
+                                ' ${torTrip[SESSION['currentTripIndex']]['date_of_trip']} '),
+                        SizedBox(
+                          height: 10,
                         ),
                         if (!fetchservice.getIsNumeric())
                           Row(
@@ -478,236 +492,64 @@ class _ViolationPageState extends State<ViolationPage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                              color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20))),
-                          child: Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '* ',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20),
-                                      ),
-                                      Text(
-                                        'EMPLOYEE NAME',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  height: 40,
-                                  decoration: BoxDecoration(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
                                     color: Colors.white,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Center(
-                                      child: TextField(
-                                        controller: employeeNameController,
-                                        textAlign: TextAlign.center,
-                                        style:
-                                            TextStyle(color: Color(0xff5f6062)),
-                                        decoration: InputDecoration(
-                                            // contentPadding:
-                                            //     EdgeInsets.only(bottom: 10),
-                                            hintText: 'Enter Employee Name',
-                                            hintStyle: TextStyle(
-                                                fontSize: 10,
-                                                color: Colors.black),
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            border: OutlineInputBorder(
-                                                borderSide: BorderSide.none,
-                                                borderRadius: BorderRadius.only(
-                                                    bottomLeft:
-                                                        Radius.circular(20)))),
-                                        onChanged: (value) {
-                                          try {
-                                            double thisvalue =
-                                                double.parse(value);
-
-                                            // selectedOnboardPlace = null;
-                                            findNearestStation(
-                                                filteredStations, thisvalue);
-                                            print(
-                                                'selectedOnboardPlace: $selectedOnboardPlace');
-                                          } catch (e) {
-                                            print('km post error: $e');
-
-                                            setState(() {
-                                              stationNames = filteredStations;
-                                              selectedOnboardPlace = null;
-                                            });
-                                            print(
-                                                'km post error stationNames: $stationNames');
-                                            return;
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                              color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(20),
-                                  bottomRight: Radius.circular(20))),
-                          child: Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '* ',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20),
-                                      ),
-                                      Text(
-                                        'VIOLATION',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(20),
-                                          bottomRight: Radius.circular(20))),
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 40,
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton2<String>(
-                                      isExpanded: true,
-                                      hint: Text(
-                                        'Select Violation',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Theme.of(context).hintColor,
-                                        ),
-                                      ),
-
-                                      items: items
-                                          .map((item) => DropdownMenuItem(
-                                                value: item,
-                                                child: FittedBox(
-                                                  fit: BoxFit.scaleDown,
-                                                  child: Text(
-                                                    "$item",
-                                                    style: const TextStyle(
-                                                      fontSize: 20,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ))
-                                          .toList(),
-                                      value: selectedValue,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedValue = value;
-                                        });
-                                      },
-                                      buttonStyleData: const ButtonStyleData(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          height: 40,
-                                          width: 200,
-                                          decoration: BoxDecoration(
-                                              color: Colors.transparent)),
-                                      dropdownStyleData:
-                                          const DropdownStyleData(
-                                              maxHeight: 200,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                              )),
-                                      menuItemStyleData:
-                                          const MenuItemStyleData(
-                                        height: 40,
-                                      ),
-                                      dropdownSearchData: DropdownSearchData(
-                                        searchController: textEditingController,
-                                        searchInnerWidgetHeight: 50,
-                                        searchInnerWidget: Container(
-                                          height: 50,
-                                          padding: const EdgeInsets.only(
-                                            top: 8,
-                                            bottom: 4,
-                                            right: 8,
-                                            left: 8,
-                                          ),
-                                          child: TextFormField(
-                                            expands: true,
-                                            maxLines: null,
-                                            controller: textEditingController,
-                                            decoration: InputDecoration(
-                                              isDense: true,
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 8,
-                                              ),
-                                              hintText:
-                                                  'Search for an violation...',
-                                              hintStyle:
-                                                  const TextStyle(fontSize: 12),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        searchMatchFn: (item, searchValue) {
-                                          return item.value
-                                              .toString()
-                                              .toUpperCase()
-                                              .contains(
-                                                  searchValue.toUpperCase());
-                                        },
-                                      ),
-                                      //This to clear the search value when you close the menu
-                                      onMenuStateChange: (isOpen) {
-                                        if (!isOpen) {
-                                          textEditingController.clear();
+                                    border: Border.all(
+                                        color: AppColors.primaryColor,
+                                        width: 2),
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: TypeAheadField<City>(
+                                  suggestionsCallback: (search) =>
+                                      CityService.of(context).find(search),
+                                  builder: (context, controller, focusNode) {
+                                    return TextFormField(
+                                      textAlign: TextAlign.center,
+                                      controller: troubleDescriptionController,
+                                      focusNode: focusNode,
+                                      decoration: InputDecoration(
+                                          labelText: "Trouble Description",
+                                          labelStyle: TextStyle(
+                                              backgroundColor: Colors.white,
+                                              color: AppColors.primaryColor,
+                                              fontWeight: FontWeight.bold),
+                                          border: OutlineInputBorder(
+                                              borderSide: BorderSide.none),
+                                          hintText: "Trouble Description"),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Required';
                                         }
+                                        return null;
                                       },
-                                    ),
-                                  ),
+                                    );
+                                  },
+                                  itemBuilder: (context, city) {
+                                    return ListTile(
+                                      titleAlignment:
+                                          ListTileTitleAlignment.center,
+                                      title: Text(
+                                        city.name,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    );
+                                  },
+                                  onSelected: (city) {
+                                    setState(() {
+                                      troubleDescriptionController.text =
+                                          city.name.toString();
+                                    });
+
+                                    print(
+                                        "troubleDescriptionController:  ${troubleDescriptionController.text}");
+                                  },
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                         SizedBox(
                           height: 30,
@@ -790,24 +632,16 @@ class _ViolationPageState extends State<ViolationPage> {
                                         return;
                                       }
                                     }
-                                    if (employeeNameController.text == '') {
+
+                                    if (troubleDescriptionController.text ==
+                                        '') {
                                       ArtSweetAlert.show(
                                           context: context,
                                           artDialogArgs: ArtDialogArgs(
                                               type: ArtSweetAlertType.info,
                                               title: 'MISSING',
                                               text:
-                                                  "PLEASE FILL EMPLOYEE NAME"));
-                                      return;
-                                    }
-                                    if (selectedValue == null ||
-                                        selectedValue == '') {
-                                      ArtSweetAlert.show(
-                                          context: context,
-                                          artDialogArgs: ArtDialogArgs(
-                                              type: ArtSweetAlertType.info,
-                                              title: 'MISSING',
-                                              text: "PLEASE SELECT VIOLATION"));
+                                                  "PLEASE FILL TROUBLE DESCRIPTION"));
                                       return;
                                     }
                                     ArtSweetAlert.show(
@@ -821,7 +655,7 @@ class _ViolationPageState extends State<ViolationPage> {
                                           confirmButtonText: 'YES',
                                           onConfirm: () async {
                                             Navigator.of(context).pop();
-                                            _addViolation();
+                                            _addTrouble();
                                           },
                                           onDeny: () {
                                             print('deny');
@@ -872,7 +706,7 @@ class _ViolationPageState extends State<ViolationPage> {
     );
   }
 
-  void _addViolation() async {
+  void _addTrouble() async {
     bool isOffline = false;
     bool isProceed = false;
     loadingModal.showProcessing(context);
@@ -881,12 +715,11 @@ class _ViolationPageState extends State<ViolationPage> {
     String onboardTime = await dateservice.departedTime();
     String onboardPlace =
         stations[SESSION['currentStationIndex']]['stationName'];
-    double onboard_km_post = 0;
+    int onboard_km_post = 0;
     try {
-      onboard_km_post = double.parse(kmPostController.text);
-    } catch (e) {
-      print(e);
-    }
+      onboard_km_post =
+          int.parse(stations[SESSION['currentStationIndex']]['km'].toString());
+    } catch (e) {}
 
     Map<String, dynamic> item = {
       "coopId": "${coopData['_id']}",
@@ -904,16 +737,15 @@ class _ViolationPageState extends State<ViolationPage> {
       "inspector_emp_name": "${inspectorData['idName']}",
       "onboard_time": "$onboardTime",
       "onboard_place": "${selectedOnboardPlace}",
-      "onboard_km_post": onboard_km_post,
-      "employee_name": "${employeeNameController.text}",
-      "employee_violation": "$selectedValue",
+      "onboard_km_post": double.parse(kmPostController.text),
+      "trouble_description": "${troubleDescriptionController.text}",
       "timestamp": "$onboardTime",
       "lat": "14.076688",
       "long": "120.866036"
     };
 
     Map<String, dynamic> isAddedViolation =
-        await httprequestServices.addViolation(item);
+        await httprequestServices.addTrouble(item);
 
     if (isAddedViolation['messages'][0]['code'].toString() != '0') {
       Navigator.of(context).pop();
@@ -969,14 +801,8 @@ class _ViolationPageState extends State<ViolationPage> {
     } else {
       Navigator.of(context).pop();
     }
-    double kmpost = 0;
-    try {
-      kmpost = double.parse(kmPostController.text);
-    } catch (e) {
-      print(e);
-    }
 
-    bool isprintdone = await printservice.printViolation(
+    bool isprintdone = await printservice.printTrouble(
         "${torTrip[SESSION['currentTripIndex']]['tor_no']}",
         "${torTrip[SESSION['currentTripIndex']]['route']}",
         "${torTrip[SESSION['currentTripIndex']]['date_of_trip']}",
@@ -985,9 +811,8 @@ class _ViolationPageState extends State<ViolationPage> {
             : "${torTrip[SESSION['currentTripIndex']]['bus_no']}",
         "${torTrip[SESSION['currentTripIndex']]['bound']}",
         "${inspectorData['idName']}",
-        "${employeeNameController.text}",
-        "$selectedValue",
-        "${fetchservice.convertNumToIntegerOrDecimal(kmpost)}",
+        "${troubleDescriptionController.text}",
+        "${kmPostController.text}",
         "${selectedOnboardPlace}");
     if (isprintdone) {
       ArtSweetAlert.show(
@@ -1001,7 +826,7 @@ class _ViolationPageState extends State<ViolationPage> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    ViolationPage(inspectorData: widget.inspectorData)));
+                    TroublePage(inspectorData: widget.inspectorData)));
       });
     } else {
       ArtSweetAlert.show(
@@ -1012,5 +837,48 @@ class _ViolationPageState extends State<ViolationPage> {
               text:
                   "SUCCESSFULLY SUBMITTED BUT THERE IS SOMETHING WRONG IN THE PRINTER"));
     }
+  }
+}
+
+class CityService {
+  // Replace this with your actual data-fetching logic.
+  List<City> find(String search) {
+    // For demonstration purposes, returning a static list.
+    return [
+      City(name: 'ENGINE TROUBLE'),
+      City(name: 'INVOLVED IN ACCIDENT'),
+
+      // Add more cities as needed.
+    ];
+  }
+
+  static CityService of(BuildContext context) {
+    // Implement this method if you are using a service locator or dependency injection.
+    // For simplicity, returning a new instance for demonstration purposes.
+    return CityService();
+  }
+}
+
+class City {
+  final String name;
+
+  City({required this.name});
+}
+
+class CityPage extends StatelessWidget {
+  final City city;
+
+  CityPage({required this.city});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('City Details'),
+      ),
+      body: Center(
+        child: Text('City: ${city.name}'),
+      ),
+    );
   }
 }

@@ -189,7 +189,10 @@ class TestPrinttt {
         // bluetooth.printLeftRight("ATM:", "PP352/190300749", 1);
         bluetooth.printCustom("DATE: $formattedDate", 1, 1);
         bluetooth.printLeftRight("TRIP NO.:", "$tripNo", 1);
-        bluetooth.printLeftRight("VEHICLE NO.:", "$vehicleNo", 1);
+        bluetooth.printLeftRight(
+            "${coopData['coopType'].toString().toUpperCase()} NO.:",
+            "$vehicleNo",
+            1);
 
         // bluetooth.print3Column('ATM', ':', 'PP352/190300749', 1);
         // bluetooth.print3Column('DATE', ':', '$formattedDate', 1);
@@ -339,7 +342,10 @@ class TestPrinttt {
         // } else {
         //   bluetooth.printLeftRight("Route:", "$route", 1);
         // }
-        bluetooth.printLeftRight("VEHICLE NO:", "$vehicleNo", 1);
+        bluetooth.printLeftRight(
+            "${coopData['coopType'].toString().toUpperCase()} NO:",
+            "$vehicleNo",
+            1);
         // bluetooth.printLeftRight("TRAVEL:", "${from}KM - ${to}KM", 1);
         if (!fetchservice.getIsNumeric()) {
           bluetooth.printLeftRight("ORIGIN:", "$origin", 1);
@@ -602,7 +608,10 @@ class TestPrinttt {
           // } else {
           //   bluetooth.printLeftRight("Route:", "$route", 1);
           // }
-          bluetooth.printLeftRight("VEHICLE NO:", "$vehicleNo", 1);
+          bluetooth.printLeftRight(
+              "${coopData['coopType'].toString().toUpperCase()} NO:",
+              "$vehicleNo",
+              1);
           if (!fetchservice.getIsNumeric()) {
             bluetooth.printLeftRight("ORIGIN:", "$origin", 1);
             bluetooth.printLeftRight("DESTINATION:", "$destination", 1);
@@ -683,7 +692,10 @@ class TestPrinttt {
 
           bluetooth.printCustom("DATE: $formattedDate", 1, 1);
           if (vehicleNo != "") {
-            bluetooth.printCustom("VEHICLE NO: $vehicleNo", 1, 1);
+            bluetooth.printCustom(
+                "${coopData['coopType'].toString().toUpperCase()} NO: $vehicleNo",
+                1,
+                1);
           }
           List<Map<String, dynamic>> othersExpenses = [];
           bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
@@ -713,9 +725,13 @@ class TestPrinttt {
             bluetooth.printLeftRight("OTHERS", "", 1);
             for (var expense in othersExpenses) {
               String expenseDescription = expense['particular'];
+              if (expenseDescription == "EMPLOYEE BENEFITS") {
+                expenseDescription = "EMP BENEFITS";
+              }
               double expenseAmount = double.parse(expense['amount'].toString());
+
               bluetooth.printLeftRight(
-                  "  ${expenseDescription}",
+                  " ${expenseDescription}",
                   "${isDltb ? expenseAmount.round() : expenseAmount.toStringAsFixed(2)}",
                   1);
             }
@@ -765,9 +781,22 @@ class TestPrinttt {
     } catch (e) {
       control_no = torTrip[session['currentTripIndex']]['control_no'];
     }
-    List<Map<String, dynamic>> filteredTickets = torTicket
-        .where((ticket) => ticket['control_no'] == control_no)
-        .toList();
+    double getTotalTopUpperTrip() {
+      double total = 0;
+      final topUpList = _myBox.get('topUpList');
+
+      if (topUpList.isNotEmpty) {
+        for (var element in topUpList) {
+          if (element['response']['control_no'].toString() == "$control_no") {
+            total += double.parse((element['response']['mastercard']
+                        ['previousBalance'] -
+                    element['response']['mastercard']['newBalance'])
+                .toString());
+          }
+        }
+      }
+      return total;
+    }
 
     // int baggageWithPassengerCount = fetchservice.baggageWithPassengerCount();
     int baggageWithPassengerCount() {
@@ -853,6 +882,32 @@ class TestPrinttt {
       return sumOfBaggage;
     }
 
+    double totalPrepaidPassengerRevenueperTrip() {
+      double total = 0;
+
+      final prePaidList = _myBox.get('prepaidTicket');
+      for (var element in prePaidList) {
+        if (element['control_no'] == control_no) {
+          total += element['totalAmount'];
+        }
+      }
+
+      return total;
+    }
+
+    double totalPrepaidBaggageRevenueperTrip() {
+      double total = 0;
+
+      final prePaidList = _myBox.get('prepaidBaggage');
+      for (var element in prePaidList) {
+        if (element['control_no'] == control_no) {
+          total += element['totalAmount'];
+        }
+      }
+
+      return total;
+    }
+
     double totalTripCardSales() {
       final fareList = _myBox.get('torTicket');
 
@@ -897,7 +952,7 @@ class TestPrinttt {
                   fare['additionalFareCardType'] == "cash"))
           .map<num>((fare) => (fare['additionalFare'] as num).toDouble())
           .fold(0.0, (prev, amount) => prev + amount);
-      return totalAmount + totaladdFareAmount;
+      return totalAmount + totaladdFareAmount + getTotalTopUpperTrip();
     }
 
     double totalTripGrandTotal() {
@@ -911,7 +966,11 @@ class TestPrinttt {
               (fare['additionalFare'] as num).toDouble())
           .fold(0.0, (prev, amount) => prev + amount);
 
-      return totalAmount - totalExpenses;
+      return totalAmount +
+          getTotalTopUpperTrip() +
+          totalPrepaidPassengerRevenueperTrip() +
+          totalPrepaidBaggageRevenueperTrip() -
+          totalExpenses;
     }
 
     double totalAddFare() {
@@ -968,11 +1027,17 @@ class TestPrinttt {
           bluetooth.printCustom("DATE: $formattedDate", 1, 1);
 
           bluetooth.printCustom("TOR#: $torNo", 1, 1);
-          bluetooth.printCustom("TRIP TYPE: $tripType", 1, 1);
+          bluetooth.printCustom("TRIP TYPE: ${tripType.toUpperCase()}", 1, 1);
           if (tripType == "special") {
             bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+            bluetooth.printLeftRight("PASSENGER COUNT", "$totalPassenger", 1);
+            bluetooth.printLeftRight(
+                "PASS REVENUE:", "$totalPassengerAmount", 1);
             bluetooth.printLeftRight("TRIP NO:", "$tripNo", 1);
-            bluetooth.printLeftRight("VEHICLE NO:", "$vehicleNo", 1);
+            bluetooth.printLeftRight(
+                "${coopData['coopType'].toString().toUpperCase()} NO:",
+                "$vehicleNo",
+                1);
             bluetooth.printLeftRight("CONDUCTOR:", "$conductorName", 1);
             bluetooth.printLeftRight("DRIVER:", "$driverName", 1);
             bluetooth.printLeftRight("DISPATCHER:", "$dispatcherName", 1);
@@ -988,8 +1053,7 @@ class TestPrinttt {
           if (opening != 'NO TICKET') {
             bluetooth.printCustom("OPENING:    $opening", 1, 1);
           } else {
-            bluetooth.printLeftRight(
-                "OPENING:", "${filteredTickets[0]['ticket_no']}", 1);
+            bluetooth.printLeftRight("OPENING:", "$opening", 1);
           }
           if (closing != 'NO TICKET') {
             bluetooth.printCustom("CLOSING:    $closing", 1, 1);
@@ -1009,9 +1073,16 @@ class TestPrinttt {
           bluetooth.printLeftRight("CS ISSUED:", "${cardSalesCount()}", 1);
 
           // bluetooth.printLeftRight("TOTAL PASSES:", "0", 1);
-          bluetooth.printLeftRight("CARD SALES:", "${totalTripCardSales()}", 1);
+
           bluetooth.printLeftRight(
               "BAGGAGE AMOUNT:", "${totalBaggageperTrip()}", 1);
+
+          bluetooth.printLeftRight(
+              "PREPAID PASS:", "${totalPrepaidPassengerRevenueperTrip()}", 1);
+
+          // bluetooth.printLeftRight(
+          //     "PREPAID BAGG:", "${totalPrepaidBaggageRevenueperTrip()}", 1);
+
           bluetooth.printLeftRight("TOTAL FARE:",
               "${fetchservice.totalTripFare().toStringAsFixed(2)}", 1);
 
@@ -1019,15 +1090,24 @@ class TestPrinttt {
               "ADD FARE:", "${totalAddFare().toStringAsFixed(2)}", 1);
           bluetooth.printLeftRight("CASH RECEIVED:",
               "${totalTripCashReceived().toStringAsFixed(2)}", 1);
+          bluetooth.printLeftRight("CARD SALES:", "${totalTripCardSales()}", 1);
+
+          // bluetooth.printLeftRight("CASH RECEIVED:",
+          //     "${totalTripCashReceived().toStringAsFixed(2)}", 1);
 
           bluetooth.printLeftRight(
               "TOTAL EXPENSES:", "${totalExpenses.toStringAsFixed(2)}", 1);
+          bluetooth.printLeftRight("TOPUP TOTAL:",
+              "${getTotalTopUpperTrip().toStringAsFixed(2)}", 1);
           bluetooth.printLeftRight(
               "GRAND TOTAL:", "${totalTripGrandTotal().toStringAsFixed(2)}", 1);
           // bluetooth.printLeftRight("TOTAL CS:", "0", 1);
           bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
           bluetooth.printLeftRight("TRIP NO:", "$tripNo", 1);
-          bluetooth.printLeftRight("VEHICLE NO:", "$vehicleNo", 1);
+          bluetooth.printLeftRight(
+              "${coopData['coopType'].toString().toUpperCase()} NO:",
+              "$vehicleNo",
+              1);
           bluetooth.printLeftRight("CONDUCTOR:", "$conductorName", 1);
           bluetooth.printLeftRight("DRIVER:", "$driverName", 1);
           bluetooth.printLeftRight("DISPATCHER:", "$dispatcherName", 1);
@@ -1046,6 +1126,154 @@ class TestPrinttt {
       return true;
     } catch (e) {
       print(e);
+      return false;
+    }
+  }
+
+  Future<bool> printTripReportFinal(
+      String totalTrip,
+      String torNo,
+      String totalBaggage,
+      String prepaidPass,
+      // String prepaidBagg,
+      String puncherTR,
+      String puncherTC,
+      String puncherBR,
+      String puncherBC,
+      String passengerTR,
+      String passengerTC,
+      String waybillrevenue,
+      String waybillcount,
+      String baggageTR,
+      String baggageTC,
+      String charterPR,
+      String charterPC,
+      String finalRemitt,
+      String shortOver,
+      String cashReceived,
+      String cardSales,
+      String addFare,
+      String topupTotal,
+      String grandTotal,
+      String netCollection) async {
+    try {
+      final expensesList = fetchservice.fetchExpensesList();
+      final coopData = fetchservice.fetchCoopData();
+      bool isDltb = false;
+      if (coopData['_id'] == "655321a339c1307c069616e9") {
+        isDltb = true;
+      }
+      List<Map<String, dynamic>> othersExpenses = [];
+      bluetooth.isConnected.then((isConnected) {
+        if (isConnected == true) {
+          String formatDateNow() {
+            final now = DateTime.now();
+            final formattedDate =
+                DateFormat("MMM dd, yyyy HH:mm:ss").format(now);
+            return formattedDate;
+          }
+
+          String dateConverter(String dateString) {
+            DateTime dateTime = DateTime.parse(dateString);
+            String formattedDateTime =
+                DateFormat('MMM dd, yyyy EEE hh:mm:ss a').format(dateTime);
+            return formattedDateTime;
+          }
+
+          final formattedDate = formatDateNow();
+          bluetooth.printCustom(
+              breakString("${coopData['cooperativeName']}", 24), 1, 1);
+          if (coopData['telephoneNumber'] != null) {
+            bluetooth.printCustom(
+                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+          }
+          // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
+          // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
+
+          bluetooth.printCustom("POWERED BY: FILIPAY", 1, 1);
+          bluetooth.printCustom("TRIP SUMMARY", 1, 1);
+          bluetooth.printCustom("DATE: $formattedDate", 1, 1);
+          bluetooth.printLeftRight("TOTAL TRIPS", "$totalTrip", 1);
+          bluetooth.printLeftRight("TOR#:", "$torNo", 1);
+          bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+          if (expensesList.isNotEmpty) {
+            bluetooth.printCustom("EXPENSES", 1, 1);
+            bluetooth.printLeftRight("PARTICULAR:", "AMOUNT", 1);
+            double totalExpenses = 0;
+            for (var expense in expensesList) {
+              totalExpenses += expense['amount'];
+              String expenseDescription = expense['particular'];
+              double expenseAmount = double.parse(expense['amount'].toString());
+              // bluetooth.printLeftRight(
+              //     "PARTICULAR:", "${expenseDescription.toUpperCase()}", 1);
+              if (expense['particular'] == "SERVICES" ||
+                  expense['particular'] == "CALLER'S FEE" ||
+                  expense['particular'] == "EMPLOYEE BENEFITS" ||
+                  expense['particular'] == "MATERIALS" ||
+                  expense['particular'] == "REPRESENTATION" ||
+                  expense['particular'] == "REPAIR") {
+                othersExpenses.add(expense);
+              } else {
+                bluetooth.printLeftRight(
+                    "$expenseDescription",
+                    "${isDltb ? expenseAmount.round() : expenseAmount.toStringAsFixed(2)}",
+                    1);
+              }
+            }
+            if (othersExpenses.isNotEmpty) {
+              bluetooth.printLeftRight("OTHERS", "", 1);
+              for (var expense in othersExpenses) {
+                String expenseDescription = expense['particular'];
+                if (expenseDescription == "EMPLOYEE BENEFITS") {
+                  expenseDescription = "EMP BENEFITS";
+                }
+                double expenseAmount =
+                    double.parse(expense['amount'].toString());
+
+                bluetooth.printLeftRight(
+                    " ${expenseDescription}",
+                    "${isDltb ? expenseAmount.round() : expenseAmount.toStringAsFixed(2)}",
+                    1);
+              }
+            }
+            bluetooth.printLeftRight(
+                "TOTAL EXPENSES", "${totalExpenses.toStringAsFixed(2)}", 1);
+            bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+          }
+          bluetooth.printLeftRight("TOTAL BAGGAGE:", "$totalBaggage", 1);
+          bluetooth.printLeftRight("PREPAID PASS:", "$prepaidPass", 1);
+          // bluetooth.printLeftRight("PREPAID BAGG:", "$prepaidBagg", 1);
+          bluetooth.printLeftRight("PUNCHER TR:", "$puncherTR", 1);
+          bluetooth.printLeftRight("PUNCHER TC:", "$puncherTC", 1);
+          bluetooth.printLeftRight("PUNCHER BR:", "$puncherBR", 1);
+          bluetooth.printLeftRight("PUNCHER BC:", "$puncherBC", 1);
+          bluetooth.printLeftRight("PASSENGER TR:", "$passengerTR", 1);
+          bluetooth.printLeftRight("PASSENGER TC:", "$passengerTC", 1);
+          bluetooth.printLeftRight("WAYBILL TR:", "$waybillrevenue", 1);
+          bluetooth.printLeftRight("WAYBILL TC:", "$waybillcount", 1);
+          bluetooth.printLeftRight("BAGGAGE TR:", "$baggageTR", 1);
+          bluetooth.printLeftRight("BAGGAGE TC:", "$baggageTC", 1);
+          bluetooth.printLeftRight("CHARTER PR:", "$charterPR", 1);
+          bluetooth.printLeftRight("CHARTER PC:", "$charterPC", 1);
+          bluetooth.printLeftRight("FINAL REMITT:", "$finalRemitt", 1);
+          bluetooth.printLeftRight("SHORT/OVER:", "$shortOver", 1);
+          bluetooth.printLeftRight("CASH RECEIVED:", "$cashReceived", 1);
+          bluetooth.printLeftRight("CARD SALES:", "$cardSales", 1);
+          bluetooth.printLeftRight("ADD FARE:", "$addFare", 1);
+          bluetooth.printLeftRight("TOPUP TOTAL:", "$topupTotal", 1);
+          bluetooth.printLeftRight("GROSS REVENUE:", "$grandTotal", 1);
+          bluetooth.printLeftRight("NET COLLECTION:", "$netCollection", 1);
+          bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+
+          bluetooth.printCustom("NOT AN OFFICIAL RECEIPT", 1, 1);
+          bluetooth.printNewLine();
+          bluetooth.printNewLine();
+          bluetooth.paperCut();
+        }
+      });
+      return true;
+    } catch (e) {
+      print("printTripReportFinal error: $e");
       return false;
     }
   }
@@ -1072,7 +1300,13 @@ class TestPrinttt {
       double puncherTR,
       double puncherTC,
       double puncherBR,
-      double puncherBC) async {
+      double puncherBC,
+      double passengerRevenue,
+      double passengerCount,
+      double baggageRevenue,
+      double baggageCount,
+      double charterTicketRevenue,
+      double charterTicketCount) async {
     try {
       final expensesList = fetchservice.fetchExpensesList();
 
@@ -1404,9 +1638,12 @@ class TestPrinttt {
                   if (othersExpenses.isNotEmpty) {
                     bluetooth.printLeftRight("OTHERS", "", 1);
                     for (var element in othersExpenses) {
-                      if ("${element['particular']}".length > 16) {
-                        element['particular'] =
-                            element['particular'].substring(0, 13) + ".";
+                      // if ("${element['particular']}".length > 16) {
+                      //   element['particular'] =
+                      //       element['particular'].substring(0, 13) + ".";
+                      // }
+                      if (element['particular'] == "EMPLOYEE BENEFITS") {
+                        element['particular'] = "EMP BENEFITS";
                       }
                       bluetooth.printLeftRight(" ${element['particular']}",
                           "${element['amount']}", 1);
@@ -1427,13 +1664,13 @@ class TestPrinttt {
           }
           bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
           grandTotalCashRecived += puncherTR + puncherBR;
-          bluetooth.printLeftRight(
-              "TOTAL BAGGAGE:", "${grandBaggage.toStringAsFixed(2)}", 1);
+          bluetooth.printLeftRight("TOTAL BAGGAGE:",
+              "${fetchservice.grandTotalBaggage().toStringAsFixed(2)}", 1);
           if (coopData['coopType'] == "Bus") {
             bluetooth.printLeftRight("PREPAID PASS:",
                 "${grandPrepaidPassengerTotal.toStringAsFixed(2)}", 1);
-            bluetooth.printLeftRight("PREPAID BAGG:",
-                "${grandPrepaidBaggageTotal.toStringAsFixed(2)}", 1);
+            // bluetooth.printLeftRight("PREPAID BAGG:",
+            //     "${grandPrepaidBaggageTotal.toStringAsFixed(2)}", 1);
           }
 
           bluetooth.printLeftRight("PUNCHER TR:", "${puncherTR}", 1);
@@ -1441,6 +1678,17 @@ class TestPrinttt {
 
           bluetooth.printLeftRight("PUNCHER BR:", "${puncherBR}", 1);
           bluetooth.printLeftRight("PUNCHER BC:", "${puncherBC}", 1);
+          // NEW
+          bluetooth.printLeftRight("PASSENGER TR:", "${passengerRevenue}", 1);
+          bluetooth.printLeftRight("PASSENGER TC:", "${passengerCount}", 1);
+
+          bluetooth.printLeftRight("BAGAGGE TR:", "${baggageRevenue}", 1);
+          bluetooth.printLeftRight("BAGGAGE TC:", "${baggageCount}", 1);
+
+          bluetooth.printLeftRight("CHARTER PR:", "${charterTicketRevenue}", 1);
+          bluetooth.printLeftRight("CHARTER PC:", "${charterTicketCount}", 1);
+
+          // END NEW
 
           // bluetooth.printLeftRight("BO TOTAL:",
           //     "${fetchservice.totalBaggageOnly().toStringAsFixed(2)}", 1);
@@ -1456,45 +1704,49 @@ class TestPrinttt {
           bluetooth.printLeftRight("SHORT/OVER:", "$shortOver", 1);
 
           bluetooth.printLeftRight("CASH RECEIVED:",
-              "${hiveService.getCashReceived().toStringAsFixed(2)}", 1);
+              "${fetchservice.getAllCashRecevied().toStringAsFixed(2)}", 1);
           bluetooth.printLeftRight("CARD SALES:",
               "${fetchservice.grandTotalCardSales().toStringAsFixed(2)}", 1);
-          bluetooth.printLeftRight("ADD FARE:", "$additionalFare", 1);
-
           bluetooth.printLeftRight(
-              "GRAND TOTAL:", "${grandTotalCashRecived.toStringAsFixed(2)}", 1);
+              "ADD FARE:", "${fetchservice.grandTotalAddFare()}", 1);
+          bluetooth.printLeftRight("TOPUP TOTAL:",
+              "${fetchservice.getTotalTopUpper().toStringAsFixed(2)}", 1);
+          bluetooth.printLeftRight(
+              "GRAND TOTAL:",
+              "${(fetchservice.getAllCashRecevied() + fetchservice.grandTotalCardSales() + fetchservice.totalPrepaidPassengerRevenue() + fetchservice.totalPrepaidBaggageRevenue()).toStringAsFixed(2)}",
+              1);
 
-          if (coopData['coopType'] != "Bus") {
-            try {
-              for (int i = 0; i < torTrip.length; i++) {
-                // bluetooth.printLeftRight("ROUTE:", "DISTRICT - STAR MALL", 1);
-                if (expensesList.isNotEmpty) {
-                  if (torTrip[i]['control_no'] ==
-                      expensesList[i]['control_no']) {
-                    bluetooth.printCustom(
-                        "- - - - - - - - - - - - - - -", 1, 1);
-                    double totalExpenses = 0;
-                    List<Map<String, dynamic>> filteredExpenses = expensesList
-                        .where((expenses) =>
-                            expenses['control_no'] == torTrip[i]['control_no'])
-                        .toList();
+          // if (coopData['coopType'] != "Bus") {
+          //   try {
+          //     for (int i = 0; i < torTrip.length; i++) {
+          //       // bluetooth.printLeftRight("ROUTE:", "DISTRICT - STAR MALL", 1);
+          //       if (expensesList.isNotEmpty) {
+          //         if (torTrip[i]['control_no'] ==
+          //             expensesList[i]['control_no']) {
+          //           bluetooth.printCustom(
+          //               "- - - - - - - - - - - - - - -", 1, 1);
+          //           double totalExpenses = 0;
+          //           List<Map<String, dynamic>> filteredExpenses = expensesList
+          //               .where((expenses) =>
+          //                   expenses['control_no'] == torTrip[i]['control_no'])
+          //               .toList();
 
-                    bluetooth.printCustom("EXPENSES", 1, 1);
-                    bluetooth.printLeftRight("PARTICULAR:", "AMOUNT", 1);
-                    for (var element in filteredExpenses) {
-                      totalExpenses +=
-                          double.parse(element['amount'].toString());
-                      bluetooth.printLeftRight("${element['particular']}",
-                          "${element['amount']}", 1);
-                    }
-                    bluetooth.printLeftRight("TOTAL:", "$totalExpenses", 1);
-                  }
-                }
-              }
-            } catch (e) {
-              print(e);
-            }
-          }
+          //           bluetooth.printCustom("EXPENSES", 1, 1);
+          //           bluetooth.printLeftRight("PARTICULAR:", "AMOUNT", 1);
+          //           for (var element in filteredExpenses) {
+          //             totalExpenses +=
+          //                 double.parse(element['amount'].toString());
+          //             bluetooth.printLeftRight("${element['particular']}",
+          //                 "${element['amount']}", 1);
+          //           }
+          //           bluetooth.printLeftRight("TOTAL:", "$totalExpenses", 1);
+          //         }
+          //       }
+          //     }
+          //   } catch (e) {
+          //     print(e);
+          //   }
+          // }
 
           bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
           bluetooth.printCustom("NOT AN OFFICIAL RECEIPT", 1, 1);
@@ -1503,6 +1755,7 @@ class TestPrinttt {
           bluetooth.paperCut();
         }
       });
+
       return true;
     } catch (e) {
       print('print report error: $e');
@@ -1549,7 +1802,8 @@ class TestPrinttt {
           bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
           // bluetooth.printLeftRight("ATM:", "1", 1);
           bluetooth.printLeftRight("DISPATCHED:", "$formattedDate", 1);
-          bluetooth.printLeftRight("VEHICLE NO:", "103", 1);
+          bluetooth.printLeftRight(
+              "${coopData['coopType'].toString().toUpperCase()} NO:", "103", 1);
           bluetooth.printLeftRight("CONDUCTOR:", "Juan Dela Cruz", 1);
           bluetooth.printLeftRight("DRIVER:", "Juan Dela Cruz", 1);
           bluetooth.printLeftRight("DISPATCHER:", "Juan Dela Cruz", 1);
@@ -1648,7 +1902,10 @@ class TestPrinttt {
           bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
           // bluetooth.printLeftRight("ATM:", "1", 1);
           bluetooth.printCustom("DATE: $formattedDate", 1, 1);
-          bluetooth.printLeftRight("VEHICLE NO:", "$vehicleNo", 1);
+          bluetooth.printLeftRight(
+              "${coopData['coopType'].toString().toUpperCase()} NO:",
+              "$vehicleNo",
+              1);
           bluetooth.printLeftRight("INSPECTOR:", "$inspectorName", 1);
           bluetooth.printLeftRight("CONDUCTOR:", "$conductorName", 1);
           bluetooth.printLeftRight("DRIVER:", "$driverName", 1);
@@ -2502,7 +2759,10 @@ class TestPrinttt {
           bluetooth.printCustom("REF NO: $referenceNumber", 1, 1);
           bluetooth.printCustom("SN: $MCsNo", 1, 1);
           bluetooth.printCustom("DATE: $formattedDate", 1, 1);
-          bluetooth.printLeftRight("VEHICLE NO:", "$vehicleNo", 1);
+          bluetooth.printLeftRight(
+              "${coopData['coopType'].toString().toUpperCase()} NO:",
+              "$vehicleNo",
+              1);
           bluetooth.printLeftRight(
               "AMOUNT:", "${amount.toStringAsFixed(2)}", 1);
           bluetooth.printLeftRight("PREV BALANCE:",
@@ -2526,7 +2786,10 @@ class TestPrinttt {
           // bluetooth.printLeftRight("ATM:", "1", 1);
           bluetooth.printCustom("REF NO: $referenceNumber", 1, 1);
           bluetooth.printCustom("DATE: $formattedDate", 1, 1);
-          bluetooth.printLeftRight("VEHICLE NO:", "$vehicleNo", 1);
+          bluetooth.printLeftRight(
+              "${coopData['coopType'].toString().toUpperCase()} NO:",
+              "$vehicleNo",
+              1);
           bluetooth.printLeftRight(
               "AMOUNT:", "${amount.toStringAsFixed(2)}", 1);
           bluetooth.printLeftRight(
@@ -2711,6 +2974,88 @@ class TestPrinttt {
     }
   }
 
+  Future<bool> printTrouble(
+      String torNo,
+      String route,
+      String dateoftrip,
+      String vehicleNo,
+      String bound,
+      String inspectorName,
+      String trouble,
+      String kmPost,
+      String onboardPlace) async {
+    final coopData = fetchservice.fetchCoopData();
+    String formatDateNow() {
+      final now = DateTime.now();
+      final formattedDate = DateFormat("MMM dd, yyyy HH:mm:ss").format(now);
+      return formattedDate;
+    }
+
+    try {
+      final formattedDate = formatDateNow();
+      // if (route.length <= 16) {
+      //   // route = route.substring(0, 12) + "..";
+      //   isrouteLong = true;
+      // } else if (route.length > 25) {
+      //   isrouteLong = true;
+      //   route = route.substring(0, 23) + "..";
+      // }
+
+      bluetooth.isConnected.then((isConnected) {
+        if (isConnected == true) {
+          // bluetooth.printNewLine();
+          bluetooth.printCustom(
+              breakString("${coopData['cooperativeName']}", 24), 1, 1);
+          if (coopData['telephoneNumber'] != null) {
+            bluetooth.printCustom(
+                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+          }
+          // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
+          // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
+
+          bluetooth.printCustom("POWERED BY: FILIPAY", 1, 1);
+
+          bluetooth.printCustom("TROUBLE REPORT", 1, 1);
+          bluetooth.printCustom("DATE: $formattedDate", 1, 1);
+          // bluetooth.printCustom("${type.toUpperCase()}", 1, 1);
+          // bluetooth.printCustom("TOR#: 123-456-789-910", 1, 1);
+          // bluetooth.printCustom("OT#: 123-456-789-910", 1, 1);
+          // bluetooth.printCustom("CT#: 123-456-789-910", 1, 1);
+          bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+          // bluetooth.printLeftRight("ATM:", "1", 1);
+
+          bluetooth.printCustom("TOR NO: $torNo", 1, 1);
+          bluetooth.printCustom("ROUTE: $route", 1, 1);
+          bluetooth.printCustom("DATE OF TRIP: $dateoftrip", 1, 1);
+          bluetooth.printLeftRight(
+              '${coopData['coopType'].toString().toUpperCase()} No',
+              '$vehicleNo',
+              1);
+          bluetooth.printLeftRight('Bound', '$bound', 1);
+
+          bluetooth.printLeftRight('INSP NAME:', '$inspectorName', 1);
+          if (!fetchservice.getIsNumeric()) {
+            bluetooth.printLeftRight('KM POST', '$kmPost', 1);
+            bluetooth.printLeftRight('ONBOARD PLACE', '$onboardPlace', 1);
+          }
+
+          bluetooth.printCustom("TROUBLE DESC: $trouble", 1, 1);
+
+          bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+          bluetooth.printCustom("NOT AN OFFICIAL RECEIPT", 1, 1);
+          bluetooth.printNewLine();
+
+          bluetooth.printNewLine();
+          bluetooth.paperCut();
+        }
+      });
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
   Future<bool> printViolation(
       String torNo,
       String route,
@@ -2719,7 +3064,9 @@ class TestPrinttt {
       String bound,
       String inspectorName,
       String employeeName,
-      String violation) async {
+      String violation,
+      String kmpost,
+      String onboardplace) async {
     final coopData = fetchservice.fetchCoopData();
     String formatDateNow() {
       final now = DateTime.now();
@@ -2763,8 +3110,16 @@ class TestPrinttt {
           bluetooth.printCustom("TOR NO: $torNo", 1, 1);
           bluetooth.printCustom("ROUTE: $route", 1, 1);
           bluetooth.printCustom("DATE OF TRIP: $dateoftrip", 1, 1);
-          bluetooth.printLeftRight('Vehicle No', '$vehicleNo', 1);
-          bluetooth.printLeftRight('Bound', '$bound', 1);
+          bluetooth.printLeftRight(
+              '${coopData['coopType'].toString().toUpperCase()} No',
+              '$vehicleNo',
+              1);
+          bluetooth.printLeftRight('BOUND', '$bound', 1);
+          if (!fetchservice.getIsNumeric()) {
+            bluetooth.printLeftRight('KM POST', '$kmpost', 1);
+            bluetooth.printLeftRight('ONBOARD PLACE', '$onboardplace', 1);
+          }
+
           bluetooth.printLeftRight('INSP NAME:', '$inspectorName', 1);
           bluetooth.printLeftRight('EMP NAME:', '$employeeName', 1);
           bluetooth.printCustom("VIOLATION: $violation", 1, 1);
@@ -2890,7 +3245,10 @@ class TestPrinttt {
           bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
           // bluetooth.printLeftRight("ATM:", "1", 1);
 
-          bluetooth.printCustom("VEHICLE#: ${item['bus_no']}", 1, 1);
+          bluetooth.printCustom(
+              "${coopData['coopType'].toString().toUpperCase()}#: ${item['bus_no']}",
+              1,
+              1);
           bluetooth.printCustom("ROUTE: ${item['route']}", 1, 1);
           bluetooth.printCustom("ATTENDANT: ${item['fuel_attendant']}", 1, 1);
           bluetooth.printLeftRight('STATION', '${item['fuel_station']}', 1);
@@ -2909,7 +3267,97 @@ class TestPrinttt {
       });
       return true;
     } catch (e) {
-      print(e);
+      print("$e");
+      return false;
+    }
+  }
+
+  Future<bool> printPrepaid(Map<String, dynamic> item) async {
+    final coopData = fetchservice.fetchCoopData();
+
+    String formatDateNow() {
+      final now = DateTime.now();
+      final formattedDate = DateFormat("MMM dd, yyyy HH:mm:ss").format(now);
+      return formattedDate;
+    }
+
+    try {
+      final formattedDate = formatDateNow();
+      // if (route.length <= 16) {
+      //   // route = route.substring(0, 12) + "..";
+      //   isrouteLong = true;
+      // } else if (route.length > 25) {
+      //   isrouteLong = true;
+      //   route = route.substring(0, 23) + "..";
+      // }
+
+      bluetooth.isConnected.then((isConnected) {
+        if (isConnected == true) {
+          // bluetooth.printNewLine();
+          bluetooth.printCustom(
+              breakString("${coopData['cooperativeName']}", 24), 1, 1);
+          if (coopData['telephoneNumber'] != null) {
+            bluetooth.printCustom(
+                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+          }
+          // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
+          // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
+
+          bluetooth.printCustom("POWERED BY: FILIPAY", 1, 1);
+
+          bluetooth.printCustom("PREPAID RECEIPT", 1, 1);
+          bluetooth.printCustom("DATE: $formattedDate", 1, 1);
+          // bluetooth.printCustom("${type.toUpperCase()}", 1, 1);
+          // bluetooth.printCustom("TOR#: 123-456-789-910", 1, 1);
+          // bluetooth.printCustom("OT#: 123-456-789-910", 1, 1);
+          // bluetooth.printCustom("CT#: 123-456-789-910", 1, 1);
+          bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+          // bluetooth.printLeftRight("ATM:", "1", 1);
+
+          bluetooth.printCustom(
+              "${coopData['coopType'].toString().toUpperCase()}#: ${item['bus_no']}",
+              1,
+              1);
+
+          bluetooth.printCustom("ROUTE: ${item['route']}", 1, 1);
+          bluetooth.printLeftRight('FROM', '${item['from']}', 1);
+          bluetooth.printLeftRight('TO', '${item['to']}', 1);
+          bluetooth.printLeftRight('PAX', '${item['pax']}', 1);
+          bluetooth.printLeftRight('PASSENGERS:', '', 1);
+          bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+          for (var element in item['passengers']) {
+            bluetooth.printCustom(
+                "  NAME: ${element['fieldData']['nameOfPassenger']}", 1, 0);
+            bluetooth.printCustom(
+                "  SEAT#: ${element['fieldData']['seatNo']}", 1, 0);
+            bluetooth.printCustom(
+                "  FARE#: ${element['fieldData']['amount']}", 1, 0);
+            bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+            // bluetooth.printLeftRight(
+            //     'NAME:', '${element['fieldData']['nameOfPassenger']}', 1);
+            // bluetooth.printLeftRight(
+            //     'SEAT#:', '${element['fieldData']['seatNo']}', 1);
+            // bluetooth.printLeftRight(
+            //     'FARE:',
+            //     '${double.parse(element['fieldData']['amount'].toString()).toStringAsFixed(2)}',
+            //     1);
+          }
+
+          bluetooth.printLeftRight('TOTAL FARE', '${item['fare']}', 1);
+          bluetooth.printLeftRight('BAGGAGE', '${item['baggage']}', 1);
+
+          bluetooth.printLeftRight('TOTAL AMOUNT', '${item['total']}', 1);
+          bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+          bluetooth.printCustom("NOT AN OFFICIAL RECEIPT", 1, 1);
+          bluetooth.printNewLine();
+
+          bluetooth.printNewLine();
+          bluetooth.paperCut();
+        }
+      });
+      return true;
+    } catch (e) {
+      print("prepaid error: $e");
       return false;
     }
   }

@@ -13,14 +13,20 @@ import 'package:hive/hive.dart';
 
 import '../../backend/service/services.dart';
 
-class ArrivalPage extends StatefulWidget {
-  const ArrivalPage({super.key, required this.dispatcherData});
+class SpecialArrivalPage extends StatefulWidget {
+  const SpecialArrivalPage(
+      {super.key,
+      required this.dispatcherData,
+      required this.passengerCount,
+      required this.passengerRevenue});
   final dispatcherData;
+  final int passengerCount;
+  final double passengerRevenue;
   @override
-  State<ArrivalPage> createState() => _ArrivalPageState();
+  State<SpecialArrivalPage> createState() => _SpecialArrivalPageState();
 }
 
-class _ArrivalPageState extends State<ArrivalPage> {
+class _SpecialArrivalPageState extends State<SpecialArrivalPage> {
   final _myBox = Hive.box('myBox');
 
   LoadingModal loadingModal = LoadingModal();
@@ -36,6 +42,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
   List<Map<String, dynamic>> torTrip = [];
   List<Map<String, dynamic>> torTicket = [];
   Map<String, dynamic> coopData = {};
+  String torNo = "";
   String conductorName = '';
   String driverName = '';
   String dispatcherName = '';
@@ -46,6 +53,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
   int totalbaggageonly = 0;
   int totalbaggagewithpassenger = 0;
   int totalpassengerCount = 0;
+  String route = "";
   // int fetchAllPassengerCount() {
   //   int allPassenger = 0;
   //   try {
@@ -79,10 +87,13 @@ class _ArrivalPageState extends State<ArrivalPage> {
   @override
   void initState() {
     super.initState();
+
     coopData = fetchService.fetchCoopData();
     SESSION = _myBox.get('SESSION');
     torDispatch = _myBox.get('torDispatch');
     torTrip = _myBox.get('torTrip');
+    torNo = " ${torTrip[SESSION['currentTripIndex']]['tor_no']} ";
+    route = " ${torTrip[SESSION['currentTripIndex']]['route']} ";
     torTicket = fetchService.fetchTorTicket();
     torTicket.sort((a, b) {
       // Extract last 4 digits of ticket_number
@@ -187,92 +198,14 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                 arrivalWidget(
                                     isBottom: false,
                                     isTop: true,
-                                    label: "Opening",
-                                    value:
-                                        '${torTicket.isNotEmpty ? torTicket[0]['ticket_no'] : "NO TICKET"}'),
-                                SizedBox(height: 5),
-                                arrivalWidget(
-                                    isBottom: false,
-                                    isTop: false,
-                                    label: "Closing",
-                                    value:
-                                        '${torTicket.isNotEmpty ? torTicket[torTicket.length - 1]['ticket_no'] : "NO TICKET"}'),
-                                SizedBox(height: 5),
-                                arrivalWidget(
-                                    isBottom: false,
-                                    isTop: false,
-                                    label: "PASSENGER ISSUED",
-                                    value:
-                                        '${fetchService.fetchAllPassengerCount()}'),
-                                SizedBox(height: 5),
-                                arrivalWidget(
-                                    isBottom: false,
-                                    isTop: false,
-                                    label: "BAGGAGE ISSUED",
-                                    value: '${fetchService.baggageCount()}'),
-                                SizedBox(height: 5),
-                                arrivalWidget(
-                                    isBottom: false,
-                                    isTop: false,
-                                    label: "TOTAL FARE",
-                                    value:
-                                        '${fetchService.totalTripFare().toStringAsFixed(2)}'),
-                                SizedBox(height: 5),
-                                arrivalWidget(
-                                    isBottom: false,
-                                    isTop: false,
-                                    label: "TOTAL BAGGAGE",
-                                    value:
-                                        '${fetchService.totalBaggageperTrip()}'),
-                                SizedBox(height: 5),
-                                arrivalWidget(
-                                    isBottom: false,
-                                    isTop: false,
-                                    label: "PREPAID PASS REVENUE",
-                                    value:
-                                        '${fetchService.totalPrepaidPassengerRevenueperTrip()}'),
-                                // SizedBox(height: 5),
-                                // arrivalWidget(
-                                //     isBottom: false,
-                                //     isTop: false,
-                                //     label: "PREPAID BAGG REVENUE",
-                                //     value:
-                                //         '${fetchService.totalPrepaidBaggageRevenueperTrip()}'),
-                                SizedBox(height: 5),
-                                arrivalWidget(
-                                    isBottom: false,
-                                    isTop: false,
-                                    label: "TOTAL EXPENSES",
-                                    value:
-                                        '${fetchService.totalTripExpenses().toStringAsFixed(2)}'),
-                                SizedBox(height: 5),
-                                arrivalWidget(
-                                    isBottom: false,
-                                    isTop: false,
-                                    label: "CASH RECEIVED",
-                                    value:
-                                        '${fetchService.totalTripCashReceived().toStringAsFixed(2)}'),
-                                SizedBox(height: 5),
-                                arrivalWidget(
-                                    isBottom: false,
-                                    isTop: false,
-                                    label: "CARD SALES",
-                                    value:
-                                        '${fetchService.totalTripCardSales().toStringAsFixed(2)}'),
-                                SizedBox(height: 5),
-                                arrivalWidget(
-                                    isBottom: false,
-                                    isTop: false,
-                                    label: "TOTAL TOPUP",
-                                    value:
-                                        '${fetchService.getTotalTopUpperTrip().toStringAsFixed(2)}'),
+                                    label: "PASSENGER COUNT",
+                                    value: '${widget.passengerCount}'),
                                 SizedBox(height: 5),
                                 arrivalWidget(
                                     isBottom: true,
                                     isTop: false,
-                                    label: "GRAND TOTAL",
-                                    value:
-                                        '${fetchService.totalTripGrandTotal().toStringAsFixed(2)}'),
+                                    label: "PASSENGER REVENUE",
+                                    value: '${widget.passengerRevenue}'),
                                 SizedBox(height: 10),
                                 arrivalWidget(
                                     isBottom: false,
@@ -291,8 +224,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                     isBottom: false,
                                     isTop: false,
                                     label: "TOR NO",
-                                    value:
-                                        '${torTrip[SESSION['currentTripIndex']]['tor_no']}'),
+                                    value: '$torNo'),
                                 SizedBox(height: 5),
                                 arrivalWidget(
                                     isBottom: false,
@@ -317,8 +249,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                     isBottom: true,
                                     isTop: false,
                                     label: "route",
-                                    value:
-                                        '${torTrip[SESSION['currentTripIndex']]['route']}'),
+                                    value: '$route'),
                               ],
                             ),
                           ),
@@ -394,7 +325,10 @@ class _ArrivalPageState extends State<ArrivalPage> {
 
                                   // bool isUpdateTripIndex = true;
                                   bool isUpdateTripIndex = await hiveService
-                                      .updateCurrentTripIndex(dispatcherData);
+                                      .updateSpecialCurrentTripIndex(
+                                          dispatcherData,
+                                          widget.passengerCount,
+                                          widget.passengerRevenue);
 
                                   if (isUpdateTripIndex) {
                                     int totalBaggageCount = torTicket
@@ -403,43 +337,27 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                                 item['baggage'] > 0) &&
                                             item['control_no'] == control_no)
                                         .length;
-                                    torTicket.sort((a, b) {
-                                      // Extract last 4 digits of ticket_number
-                                      int last4DigitsA = int.parse(
-                                          a["ticket_no"].split("-")[2]);
-                                      int last4DigitsB = int.parse(
-                                          b["ticket_no"].split("-")[2]);
 
-                                      // Compare last 4 digits
-                                      return last4DigitsA
-                                          .compareTo(last4DigitsB);
-                                    });
-                                    bool isprint =
-                                        await printService.printArrival(
-                                            torTicket.isNotEmpty
-                                                ? '${torTicket[0]['ticket_no']}'
-                                                : 'NO TICKET',
-                                            torTicket.isNotEmpty
-                                                ? '${torTicket[torTicket.length - 1]['ticket_no']}'
-                                                : 'NO TICKET',
-                                            totalpassengerCount,
-                                            totalBaggageCount,
-                                            // +
-                                            //     int.parse(fetchService
-                                            //         .totalPrepaidBaggageCountperTrip()
-                                            //         .toStringAsFixed(0)
-                                            //         ),
-                                            totalPassengerAmount,
-                                            totalBaggageAmount,
-                                            torTrip.length,
-                                            vehicleNo,
-                                            conductorName,
-                                            driverName,
-                                            '${dispatcherData['firstName']} ${dispatcherData['middleName'] != '' ? dispatcherData['middleName'][0] : ''}. ${dispatcherData['lastName']} ${dispatcherData['nameSuffix']}',
-                                            route ?? '',
-                                            "${SESSION['torNo']}",
-                                            "${SESSION['tripType']}",
-                                            fetchService.totalTripExpenses());
+                                    bool isprint = await printService.printArrival(
+                                        torTicket.isNotEmpty
+                                            ? '${torTicket[0]['ticket_no']}'
+                                            : 'NO TICKET',
+                                        torTicket.isNotEmpty
+                                            ? '${torTicket[torTicket.length - 1]['ticket_no']}'
+                                            : 'NO TICKET',
+                                        widget.passengerCount,
+                                        totalBaggageCount,
+                                        widget.passengerRevenue,
+                                        totalBaggageAmount,
+                                        torTrip.length,
+                                        vehicleNo,
+                                        conductorName,
+                                        driverName,
+                                        '${dispatcherData['firstName']} ${dispatcherData['middleName'] != '' ? dispatcherData['middleName'][0] : ''}. ${dispatcherData['lastName']} ${dispatcherData['nameSuffix']}',
+                                        route ?? '',
+                                        "${SESSION['torNo']}",
+                                        "${SESSION['tripType']}",
+                                        fetchService.totalTripExpenses());
                                     if (isprint) {
                                       Navigator.of(context).pop();
                                       Navigator.pushReplacement(

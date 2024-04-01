@@ -41,6 +41,11 @@ class _ClosingMenuPageState extends State<ClosingMenuPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     print('cashierData: ${widget.cashierData}');
     final datenow = basicservices.formatDateNow();
@@ -83,163 +88,97 @@ class _ClosingMenuPageState extends State<ClosingMenuPage> {
                           SizedBox(
                             height: 20,
                           ),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.5,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              isNfcScanOn = true;
-                                            });
-                                            _startNFCReader("mastercard");
-                                            _checkBalanceDialog(
-                                                'mastercard', context);
-                                          },
-                                          child: closingMenuButton(
-                                            title: 'CHECK BALANCE\nMASTER CARD',
-                                            image: 'master-card.png',
-                                            isAvailable: true,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              isNfcScanOn = true;
-                                            });
-                                            _startNFCReader('filipay');
-                                            _checkBalanceDialog(
-                                                'filipay', context);
-                                          },
-                                          child: closingMenuButton(
-                                            title:
-                                                'CHECK BALANCE\nFILIPAY CARD',
-                                            image:
-                                                'FILIPAY Cards - Regular.png',
-                                            isAvailable: true,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        TopUpMasterCardPage(
-                                                            cashierData: widget
-                                                                .cashierData)));
-                                          },
-                                          child: closingMenuButton(
-                                            title: 'TOP-UP\n MASTERCARD',
-                                            image: 'master-card.png',
-                                            isAvailable: true,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            if (torTrip.isNotEmpty) {
-                                              Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          FinalCashPage(
-                                                            cashierData: widget
-                                                                .cashierData,
-                                                          )));
-                                            } else {
-                                              ArtSweetAlert.show(
-                                                  context: context,
-                                                  artDialogArgs: ArtDialogArgs(
-                                                      type: ArtSweetAlertType
-                                                          .danger,
-                                                      title: "NO TRIP YET",
-                                                      text:
-                                                          "THERE IS NO TRIP FOUND"));
-                                            }
-                                          },
-                                          child: closingMenuButton(
-                                            title: 'FINAL CASH\n(CLOSE TRIP)',
-                                            image: 'finalcash.png',
-                                            isAvailable: true,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                          SizedBox(
+                            width: double.infinity,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isNfcScanOn = true;
+                                });
+                                _startNFCReader("mastercard");
+                                _checkBalanceDialog('mastercard', context);
+                              },
+                              child: closingMenuButton(
+                                title: 'CHECK BALANCE CASH CARD',
+                                image: 'master-card.png',
+                                isAvailable: true,
                               ),
                             ),
                           ),
-
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.center,
-                          //   children: [
-                          //     SizedBox(
-                          //       width: MediaQuery.of(context).size.width * 0.5,
-                          //       child: closingMenuButton(
-                          //         title: 'VIEW ALL',
-                          //         image: 'viewall.png',
-                          //         isAvailable: false,
-                          //       ),
-                          //     ),
-                          //     // Container(
-                          //     //   height: MediaQuery.of(context).size.height * 0.1,
-                          //     //   width: MediaQuery.of(context).size.width * 0.47,
-                          //     //   decoration: BoxDecoration(
-                          //     //       color: Color(0xff46aef2),
-                          //     //       borderRadius: BorderRadius.circular(10),
-                          //     //       border: Border.all(
-                          //     //           width: 4, color: Color(0xffd9d9d9))),
-                          //     //   child: Padding(
-                          //     //     padding: const EdgeInsets.all(8.0),
-                          //     //     child: Row(
-                          //     //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          //     //       children: [
-                          //     //         FittedBox(
-                          //     //           fit: BoxFit.scaleDown,
-                          //     //           child: Text(
-                          //     //             'VIEW ALL',
-                          //     //             textAlign: TextAlign.center,
-                          //     //             style:
-                          //     //                 TextStyle(fontWeight: FontWeight.bold),
-                          //     //           ),
-                          //     //         ),
-                          //     //         Image.asset(
-                          //     //           'assets/viewall.png',
-                          //     //           width:
-                          //     //               MediaQuery.of(context).size.width * 0.14,
-                          //     //         )
-                          //     //       ],
-                          //     //     ),
-                          //     //   ),
-                          //     // ),
-                          //   ],
-                          // ),
                           SizedBox(
-                            height: 20,
+                            width: 10,
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isNfcScanOn = true;
+                                });
+                                _startNFCReader('filipay');
+                                _checkBalanceDialog('filipay', context);
+                              },
+                              child: closingMenuButton(
+                                title: 'CHECK BALANCE FILIPAY CARD',
+                                image: 'FILIPAY Cards - Regular.png',
+                                isAvailable: true,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            TopUpMasterCardPage(
+                                                cashierData:
+                                                    widget.cashierData)));
+                              },
+                              child: closingMenuButton(
+                                title: 'TOP-UP\n CASH CARD',
+                                image: 'master-card.png',
+                                isAvailable: true,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: GestureDetector(
+                              onTap: () {
+                                if (torTrip.isNotEmpty) {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => FinalCashPage(
+                                                cashierData: widget.cashierData,
+                                              )));
+                                } else {
+                                  ArtSweetAlert.show(
+                                      context: context,
+                                      artDialogArgs: ArtDialogArgs(
+                                          type: ArtSweetAlertType.danger,
+                                          title: "NO TRIP YET",
+                                          text: "THERE IS NO TRIP FOUND"));
+                                }
+                              },
+                              child: closingMenuButton(
+                                title: 'END DAY TRIP\n(Total Collection)',
+                                image: 'finalcash.png',
+                                isAvailable: true,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 50,
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
@@ -296,6 +235,7 @@ class _ClosingMenuPageState extends State<ClosingMenuPage> {
       cardImg = 'FILIPAY Cards - Regular.png';
     }
     if (cardType == 'mastercard') {
+      cardType = "cash card";
       cardImg = 'master-card.png';
     }
     showDialog(

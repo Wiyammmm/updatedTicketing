@@ -23,6 +23,8 @@ class HiveService {
       print('torTrip: $storedListOfMaps');
       String uuid = generatorService.generateUuid();
       final torMain = _myBox.get('torMain');
+      final SESSION = _myBox.get('SESSION');
+      final torDispatch = _myBox.get('torDispatch');
 
       int indexToUpdate = torMain.isEmpty
           ? -1
@@ -32,11 +34,12 @@ class HiveService {
         "coopId": "${items['coopId']}",
         "UUID": "$uuid",
         "device_id": "${items['device_id']}",
-        "control_no": "${items['control_no']}",
+        "control_no": "${torDispatch['control_no']}",
         "tor_no": "${items['tor_no']}",
         "date_of_trip": "${items['date_of_trip']}",
         "bus_no": "${items['bus_no']}",
         "route": "${items['route']}",
+        "bound": "${items['bound']}",
         "route_code": "${items['route_code']}",
         "emp_no_driver_1": "${items['driver_id']}",
         "emp_no_driver_2": "",
@@ -67,8 +70,12 @@ class HiveService {
         "ticket_count_waybill": 0,
         "ticket_amount_cancelled": 0.0,
         "ticket_count_cancelled": 0.0,
+        "ticket_revenue_reserved": 0.0,
+        "ticket_count_reserved": 0,
         "ticket_amount_passes": "",
         "ticket_count_passes": "",
+        "ticket_revenue_card": 0.0,
+        "ticket_count_card": 0,
         "passenger_revenue": 0.0,
         "baggage_revenue": 0.0,
         "gross_revenue": 0.0,
@@ -114,6 +121,7 @@ class HiveService {
         "materials": 0.0,
         "representation": 0.0,
         "total_expenses": 0.0,
+        "temp_net_collections": 0.0,
         "net_collections": 0.0,
         "total_cash_remitted": 0.0,
         "final_remittance": 0.0,
@@ -126,7 +134,8 @@ class HiveService {
         "cashReceived": 0,
         "remarks": "live",
         "cashReceived": 0,
-        "cardSales": 0
+        "cardSales": 0,
+        "total_top_up": 0
       };
 
       if (indexToUpdate != -1) {
@@ -136,6 +145,7 @@ class HiveService {
             await httpRequestServices.updateTorMain(torMain[indexToUpdate]);
         if (isUpdateTorMain['messages']['code'].toString() == '0') {
           storedListOfMaps.add(items);
+
           _myBox.put('torTrip', storedListOfMaps);
           torMain.add(torMain[indexToUpdate]);
           _myBox.put('torMain', torMain);
@@ -145,6 +155,9 @@ class HiveService {
           }
           return true;
         } else {
+          SESSION['isAlreadyInsertTrip'] = true;
+          print('isAlreadyInsertTrip: ${SESSION['isAlreadyInsertTrip']}');
+          _myBox.put('SESSION', SESSION);
           return false;
         }
       } else {
@@ -155,13 +168,15 @@ class HiveService {
           _myBox.put('torTrip', storedListOfMaps);
           torMain.add(bodyTorMain);
           _myBox.put('torMain', torMain);
-
           final newtormain = _myBox.get('torMain');
           for (var element in newtormain) {
             print('newtormain: $element');
           }
           return true;
         } else {
+          SESSION['isAlreadyInsertTrip'] = true;
+          print('isAlreadyInsertTrip: ${SESSION['isAlreadyInsertTrip']}');
+          _myBox.put('SESSION', SESSION);
           return false;
         }
       }
@@ -361,9 +376,12 @@ class HiveService {
       final torTrip = _myBox.get('torTrip');
       final torTicket = _myBox.get('torTicket');
       final stations = getFilteredStations(fetchService.fetchStationList());
-
+      final routes = _myBox.get('routeList');
+      final selectedRoute =
+          getRouteById(routes, storedData['routeID'].toString());
       String control_no =
           torTrip[storedData['currentTripIndex']]['control_no'].toString();
+
       torTrip[storedData['currentTripIndex']]['arrived_dispatcher_id'] =
           dispatcherData['empNo'];
 
@@ -373,7 +391,7 @@ class HiveService {
       String latitude = '${myLocation?['latitude'] ?? "0.00"}';
       String longitude = '${myLocation?['longitude'] ?? "0.00"}';
       torTrip[storedData['currentTripIndex']]['arrived_place'] =
-          "${stations[stations.length - 1]['stationName']}";
+          "${stations[stations.length - 1]['code']}";
       torTrip[storedData['currentTripIndex']]['arrival_lat'] = latitude;
       torTrip[storedData['currentTripIndex']]['arrival_long'] = longitude;
       torTrip[storedData['currentTripIndex']]['arrived_time'] = arrivedTime;
@@ -384,60 +402,77 @@ class HiveService {
 
       final expenses = _myBox.get('expenses');
       double totalExpenses = expenses
+          .where((item) => item['control_no'] == control_no)
           .map((item) => (item['amount'] ?? 0.0) as num)
           .fold(0.0, (prev, amount) => prev + amount)
           .toDouble();
 
       double totalDiesel = expenses
-          .where((item) => item['particular'] == "DIESEL")
+          .where((item) =>
+              item['particular'] == "Fuel" && item['control_no'] == control_no)
           .map((item) => (item['amount'] ?? 0.0) as num)
           .fold(0.0, (prev, amount) => prev + amount)
           .toDouble();
 
       double totalToll = expenses
-          .where((item) => item['particular'] == "TOLL")
+          .where((item) =>
+              item['particular'] == "TOLL" && item['control_no'] == control_no)
           .map((item) => (item['amount'] ?? 0.0) as num)
           .fold(0.0, (prev, amount) => prev + amount)
           .toDouble();
 
       double totalParking = expenses
-          .where((item) => item['particular'] == "PARKING")
+          .where((item) =>
+              item['particular'] == "PARKING" &&
+              item['control_no'] == control_no)
           .map((item) => (item['amount'] ?? 0.0) as num)
           .fold(0.0, (prev, amount) => prev + amount)
           .toDouble();
 
       double totalServices = expenses
-          .where((item) => item['particular'] == "SERVICES")
+          .where((item) =>
+              item['particular'] == "SERVICES" &&
+              item['control_no'] == control_no)
           .map((item) => (item['amount'] ?? 0.0) as num)
           .fold(0.0, (prev, amount) => prev + amount)
           .toDouble();
 
       double totalRepair = expenses
-          .where((item) => item['particular'] == "REPAIR")
+          .where((item) =>
+              item['particular'] == "REPAIR" &&
+              item['control_no'] == control_no)
           .map((item) => (item['amount'] ?? 0.0) as num)
           .fold(0.0, (prev, amount) => prev + amount)
           .toDouble();
 
       double totalCallersFee = expenses
-          .where((item) => item['particular'] == "CALLER'S FEE")
+          .where((item) =>
+              item['particular'] == "CALLER'S FEE" &&
+              item['control_no'] == control_no)
           .map((item) => (item['amount'] ?? 0.0) as num)
           .fold(0.0, (prev, amount) => prev + amount)
           .toDouble();
 
       double totalEmployeeBenefits = expenses
-          .where((item) => item['particular'] == "EMPLOYEE BENEFITS")
+          .where((item) =>
+              item['particular'] == "EMPLOYEE BENEFITS" &&
+              item['control_no'] == control_no)
           .map((item) => (item['amount'] ?? 0.0) as num)
           .fold(0.0, (prev, amount) => prev + amount)
           .toDouble();
 
       double totalMaterials = expenses
-          .where((item) => item['particular'] == "MATERIALS")
+          .where((item) =>
+              item['particular'] == "MATERIALS" &&
+              item['control_no'] == control_no)
           .map((item) => (item['amount'] ?? 0.0) as num)
           .fold(0.0, (prev, amount) => prev + amount)
           .toDouble();
 
       double totalRepresentation = expenses
-          .where((item) => item['particular'] == "REPRESENTATION")
+          .where((item) =>
+              item['particular'] == "REPRESENTATION" &&
+              item['control_no'] == control_no)
           .map((item) => (item['amount'] ?? 0.0) as num)
           .fold(0.0, (prev, amount) => prev + amount)
           .toDouble();
@@ -470,13 +505,30 @@ class HiveService {
         //         0.0, (sum, ticket) => sum + (ticket['fare'] as num).toDouble());
         // double grandTotal = totalAmount + baggageCount;
         torTrip[storedData['currentTripIndex']]['ticket_revenue_atm'] =
-            fetchService.totalTripGrandTotal();
+            fetchService.totalTripTicketRevenue();
 
         int totalTickets = torTicket
             .where((ticket) => ticket['control_no'] == control_no)
             .length;
         torTrip[storedData['currentTripIndex']]['ticket_count_atm'] =
             totalTickets;
+        double getTotalTopUpperTrip() {
+          double total = 0;
+          final topUpList = _myBox.get('topUpList');
+
+          if (topUpList.isNotEmpty) {
+            for (var element in topUpList) {
+              if (element['response']['control_no'].toString() ==
+                  "$control_no") {
+                total += double.parse((element['response']['mastercard']
+                            ['previousBalance'] -
+                        element['response']['mastercard']['newBalance'])
+                    .toString());
+              }
+            }
+          }
+          return total;
+        }
 
         double tickerRevenuePassenger = torTicket
             .where((ticket) =>
@@ -488,28 +540,121 @@ class HiveService {
                 (sum, ticket) =>
                     sum +
                     (((ticket['fare'] ?? 0.0) as num).toDouble() *
-                        ticket['pax']) +
-                    ((ticket['additionalFare'] ?? 0.0) as num).toDouble() +
-                    ((ticket['baggage'] ?? 0.0) as num).toDouble());
+                        ticket['pax']));
 
+        double totalAdditionalFareCash() {
+          double total = 0;
+
+          for (var element in torTicket) {
+            if (element['control_no'] == control_no &&
+                (element['additionalFareCardType'] == "mastercard" ||
+                    element['additionalFareCardType'] == "cash")) {
+              total += element['additionalFare'];
+            }
+          }
+          return total;
+        }
+
+        double totalAdditionalFareCard() {
+          double total = 0;
+
+          for (var element in torTicket) {
+            if (element['control_no'] == control_no &&
+                (element['additionalFareCardType'] != "mastercard" &&
+                    element['additionalFareCardType'] != "cash")) {
+              total += element['additionalFare'];
+            }
+          }
+          return total;
+        }
+
+        double totalPrepaidPassengerRevenue() {
+          double total = 0;
+          final prePaidList = _myBox.get('prepaidTicket');
+          for (var element in prePaidList) {
+            if (element['control_no'] == control_no) {
+              total += element['totalAmount'];
+            }
+          }
+
+          return total;
+        }
+
+        double totalPrepaidBaggageRevenue() {
+          double total = 0;
+          final prePaidList = _myBox.get('prepaidBaggage');
+          for (var element in prePaidList) {
+            if (element['control_no'] == control_no) {
+              total += element['totalAmount'];
+            }
+          }
+
+          return total;
+        }
+
+        double totalPrepaidPassengerCount() {
+          double total = 0;
+          final prePaidList = _myBox.get('prepaidTicket');
+          for (var element in prePaidList) {
+            if (element['control_no'] == control_no) {
+              total++;
+            }
+          }
+
+          return total;
+        }
+
+        double totalPrepaidBaggageCount() {
+          double total = 0;
+          final prePaidList = _myBox.get('prepaidBaggage');
+          for (var element in prePaidList) {
+            if (element['control_no'] == control_no) {
+              total++;
+            }
+          }
+
+          return total;
+        }
+
+        double totalPrepaidCount() {
+          double total = 0;
+          final prePaidList = _myBox.get('prepaidTicket');
+          for (var element in prePaidList) {
+            if (element['control_no'] == control_no) {
+              total++;
+            }
+          }
+          return total;
+        }
+
+        tickerRevenuePassenger += totalAdditionalFareCash();
         double ticketRevenueCardPassenger = torTicket
             .where((ticket) =>
                 ticket['control_no'] == control_no &&
                 (ticket['cardType'] != 'mastercard' &&
                     ticket['cardType'] != 'cash'))
             .fold(
-              0.0,
-              (sum, ticket) =>
-                  sum +
-                  (((ticket['fare'] ?? 0.0) as num).toDouble() *
-                      ticket['pax']) +
-                  ((ticket['additionalFare'] ?? 0.0) as num).toDouble() +
-                  ((ticket['baggage'] ?? 0.0) as num).toDouble(),
-            );
+                0.0,
+                (sum, ticket) =>
+                    sum +
+                    (((ticket['fare'] ?? 0.0) as num).toDouble() *
+                        ticket['pax']));
+
+        double ticketRevenueCardBaggage = torTicket
+            .where((ticket) =>
+                ticket['control_no'] == control_no &&
+                (ticket['cardType'] != 'mastercard' &&
+                    ticket['cardType'] != 'cash'))
+            .fold(
+                0.0,
+                (sum, ticket) =>
+                    sum + ((ticket['baggage'] ?? 0.0) as num).toDouble());
+
+        ticketRevenueCardPassenger += totalAdditionalFareCard();
         torTrip[storedData['currentTripIndex']]
-            ['ticket_revenue_atm_passenger'] = tickerRevenuePassenger;
+            ['ticket_revenue_atm_passenger'] = fetchService.totalTripFare();
         torTrip[storedData['currentTripIndex']]['ticket_revenue_card'] =
-            ticketRevenueCardPassenger.toString();
+            ticketRevenueCardPassenger + ticketRevenueCardBaggage;
         torTrip[storedData['currentTripIndex']]['ticket_revenue_atm_baggage'] =
             fetchService.totalBaggageperTrip();
         // int ticket_count_atm_passenger = torTicket
@@ -517,10 +662,10 @@ class HiveService {
         //         ticket['control_no'] == control_no && ticket['fare'] > 0)
         //     .length;
         torTrip[storedData['currentTripIndex']]['ticket_count_atm_passenger'] =
-            fetchService.fetchAllPassengerCount();
+            fetchService.fetchPassengerCountATM();
 
         torTrip[storedData['currentTripIndex']]['ticket_count_card'] =
-            fetchService.cardSalesCount().toString();
+            fetchService.cardSalesCount();
         // int ticket_count_atm_baggage = torTicket
         //     .where((ticket) =>
         //         ticket['control_no'] == control_no && ticket['baggage'] > 0)
@@ -529,21 +674,62 @@ class HiveService {
             fetchService.baggageCount();
 
         torTrip[storedData['currentTripIndex']]['cashReceived'] =
-            tickerRevenuePassenger;
+            tickerRevenuePassenger +
+                fetchService.totalCashReceivedBaggageperTrip() +
+                getTotalTopUpperTrip();
         torTrip[storedData['currentTripIndex']]['cardSales'] =
-            ticketRevenueCardPassenger;
+            ticketRevenueCardPassenger +
+                fetchService.totalCardSalesBaggageperTrip();
 
-        net_collection = (tickerRevenuePassenger + ticketRevenueCardPassenger) -
+        torTrip[storedData['currentTripIndex']]['total_top_up'] =
+            getTotalTopUpperTrip();
+        torTrip[storedData['currentTripIndex']]['passenger_revenue'] =
+            tickerRevenuePassenger +
+                ticketRevenueCardPassenger +
+                totalPrepaidPassengerRevenue();
+        torTrip[storedData['currentTripIndex']]['baggage_revenue'] =
+            fetchService.totalBaggageperTrip() + totalPrepaidBaggageRevenue();
+
+        torTrip[storedData['currentTripIndex']]['passenger_count'] =
+            fetchService.fetchAllPassengerCount();
+        torTrip[storedData['currentTripIndex']]['baggage_count'] =
+            fetchService.baggageCount() + totalPrepaidBaggageCount();
+
+        torTrip[storedData['currentTripIndex']]['ticket_revenue_reserved'] =
+            totalPrepaidPassengerRevenue() + totalPrepaidBaggageRevenue();
+
+        torTrip[storedData['currentTripIndex']]['ticket_count_reserved'] =
+            totalPrepaidCount();
+
+        net_collection = (tickerRevenuePassenger +
+                ticketRevenueCardPassenger +
+                fetchService.totalBaggageperTrip() +
+                totalPrepaidPassengerRevenue() +
+                totalPrepaidBaggageRevenue()) -
             totalExpenses;
+
+        torTrip[storedData['currentTripIndex']]['gross_revenue'] =
+            tickerRevenuePassenger +
+                ticketRevenueCardPassenger +
+                fetchService.totalBaggageperTrip() +
+                getTotalTopUpperTrip() +
+                totalPrepaidPassengerRevenue() +
+                totalPrepaidBaggageRevenue();
+
         // update tormain hive
 
+        torMain[indexToUpdate]['ticket_revenue_reserved'] +=
+            totalPrepaidPassengerRevenue() + totalPrepaidBaggageRevenue();
+
+        torMain[indexToUpdate]['ticket_count_reserved'] += totalPrepaidCount();
+
         torMain[indexToUpdate]['ticket_revenue_atm_passenger'] +=
-            tickerRevenuePassenger;
+            fetchService.totalTripFare();
 
         torMain[indexToUpdate]['ticket_revenue_atm_baggage'] +=
             fetchService.totalBaggageperTrip();
         torMain[indexToUpdate]['ticket_count_atm_passenger'] +=
-            fetchService.fetchAllPassengerCount();
+            fetchService.fetchPassengerCountATM();
 
         torMain[indexToUpdate]['ticket_count_atm_baggage'] +=
             fetchService.baggageCount();
@@ -551,19 +737,50 @@ class HiveService {
         torMain[indexToUpdate]['passenger_count'] +=
             fetchService.fetchAllPassengerCount();
 
+        torMain[indexToUpdate]['baggage_count'] +=
+            fetchService.baggageCount() + totalPrepaidBaggageCount();
+
+        torMain[indexToUpdate]['passenger_revenue'] += tickerRevenuePassenger +
+            ticketRevenueCardPassenger +
+            totalPrepaidPassengerRevenue();
+        torMain[indexToUpdate]['baggage_revenue'] +=
+            fetchService.totalBaggageperTrip() + totalPrepaidBaggageRevenue();
         torMain[indexToUpdate]['ticket_revenue_atm'] +=
-            fetchService.totalTripGrandTotal();
+            fetchService.totalTripTicketRevenue();
         torMain[indexToUpdate]['ticket_count_atm'] += totalTickets;
+        torMain[indexToUpdate]['ticket_count_card'] +=
+            fetchService.cardSalesCount();
+        torMain[indexToUpdate]['ticket_revenue_card'] +=
+            ticketRevenueCardPassenger + ticketRevenueCardBaggage;
         torMain[indexToUpdate]['toll_fees'] += totalToll;
+        torMain[indexToUpdate]['diesel'] += totalDiesel;
+        torMain[indexToUpdate]['diesel_no_of_liters'] +=
+            fetchService.getFuelLitersPerTrip();
+        torMain[indexToUpdate]['callers_fee'] += totalCallersFee;
+        torMain[indexToUpdate]['employee_benefits'] += totalEmployeeBenefits;
+        torMain[indexToUpdate]['materials'] += totalMaterials;
+        torMain[indexToUpdate]['representation'] += totalRepresentation;
         torMain[indexToUpdate]['parking_fee'] += totalParking;
         torMain[indexToUpdate]['others'] += totalOthers;
         torMain[indexToUpdate]['services'] += totalServices;
         torMain[indexToUpdate]['repair_maintenance'] += totalRepair;
         torMain[indexToUpdate]['total_expenses'] += totalExpenses;
-
         torMain[indexToUpdate]['net_collections'] += net_collection;
-        torMain[indexToUpdate]['cashReceived'] += tickerRevenuePassenger;
-        torMain[indexToUpdate]['cardSales'] += ticketRevenueCardPassenger;
+        torMain[indexToUpdate]['temp_net_collections'] +=
+            net_collection + totalExpenses;
+        torMain[indexToUpdate]['gross_revenue'] +=
+            torTrip[storedData['currentTripIndex']]['gross_revenue'];
+        torMain[indexToUpdate]['cashReceived'] += tickerRevenuePassenger +
+            fetchService.totalCashReceivedBaggageperTrip() +
+            getTotalTopUpperTrip();
+        try {
+          torMain[indexToUpdate]['total_top_up'] += getTotalTopUpperTrip();
+        } catch (e) {
+          torMain[indexToUpdate]['total_top_up'] = getTotalTopUpperTrip();
+        }
+
+        torMain[indexToUpdate]['cardSales'] += ticketRevenueCardPassenger +
+            fetchService.totalCardSalesBaggageperTrip();
       }
 
       print('torTrip current: ${torTrip[storedData['currentTripIndex']]}');
@@ -726,6 +943,293 @@ class HiveService {
     }
   }
 
+  List<Map<String, dynamic>> getRouteById(
+      List<Map<String, dynamic>> routeList, String id) {
+    return routeList.where((route) => route['_id'].toString() == id).toList();
+  }
+
+  Future<bool> updateSpecialCurrentTripIndex(
+      Map<String, dynamic> dispatcherData,
+      int passengerCount,
+      double passengerRevenue) async {
+    try {
+      String arrivedTime = await dateService.departedTime();
+      String arrivedTimeStamp = await dateService.departureTimestamp();
+
+      final storedData = _myBox.get('SESSION');
+      final torTrip = _myBox.get('torTrip');
+      final torTicket = _myBox.get('torTicket');
+      final routes = _myBox.get('routeList');
+      final stations = getFilteredStations(fetchService.fetchStationList());
+      final selectedRoute =
+          getRouteById(routes, storedData['routeID'].toString());
+      String control_no =
+          torTrip[storedData['currentTripIndex']]['control_no'].toString();
+      String tripType =
+          torTrip[storedData['currentTripIndex']]['control_no'].toString();
+      torTrip[storedData['currentTripIndex']]['arrived_dispatcher_id'] =
+          dispatcherData['empNo'];
+
+      torTrip[storedData['currentTripIndex']]['arrived_dispatcher'] =
+          '${dispatcherData['firstName']} ${dispatcherData['lastName']} ${dispatcherData['nameSuffix']}';
+      final myLocation = _myBox.get('myLocation');
+      String latitude = '${myLocation?['latitude'] ?? "0.00"}';
+      String longitude = '${myLocation?['longitude'] ?? "0.00"}';
+      torTrip[storedData['currentTripIndex']]['arrived_place'] =
+          "${stations[stations.length - 1]['stationName']}";
+      torTrip[storedData['currentTripIndex']]['arrival_lat'] = latitude;
+      torTrip[storedData['currentTripIndex']]['arrival_long'] = longitude;
+      torTrip[storedData['currentTripIndex']]['arrived_time'] = arrivedTime;
+      torTrip[storedData['currentTripIndex']]['arrival_timestamp'] =
+          arrivedTimeStamp;
+
+      double net_collection = 0;
+
+      final expenses = _myBox.get('expenses');
+      double totalExpenses = expenses
+          .where((item) => item['control_no'] == control_no)
+          .map((item) => (item['amount'] ?? 0.0) as num)
+          .fold(0.0, (prev, amount) => prev + amount)
+          .toDouble();
+
+      double totalDiesel = expenses
+          .where((item) =>
+              item['particular'] == "Fuel" && item['control_no'] == control_no)
+          .map((item) => (item['amount'] ?? 0.0) as num)
+          .fold(0.0, (prev, amount) => prev + amount)
+          .toDouble();
+
+      double totalToll = expenses
+          .where((item) =>
+              item['particular'] == "TOLL" && item['control_no'] == control_no)
+          .map((item) => (item['amount'] ?? 0.0) as num)
+          .fold(0.0, (prev, amount) => prev + amount)
+          .toDouble();
+
+      double totalParking = expenses
+          .where((item) =>
+              item['particular'] == "PARKING" &&
+              item['control_no'] == control_no)
+          .map((item) => (item['amount'] ?? 0.0) as num)
+          .fold(0.0, (prev, amount) => prev + amount)
+          .toDouble();
+
+      double totalServices = expenses
+          .where((item) =>
+              item['particular'] == "SERVICES" &&
+              item['control_no'] == control_no)
+          .map((item) => (item['amount'] ?? 0.0) as num)
+          .fold(0.0, (prev, amount) => prev + amount)
+          .toDouble();
+
+      double totalRepair = expenses
+          .where((item) =>
+              item['particular'] == "REPAIR" &&
+              item['control_no'] == control_no)
+          .map((item) => (item['amount'] ?? 0.0) as num)
+          .fold(0.0, (prev, amount) => prev + amount)
+          .toDouble();
+
+      double totalCallersFee = expenses
+          .where((item) =>
+              item['particular'] == "CALLER'S FEE" &&
+              item['control_no'] == control_no)
+          .map((item) => (item['amount'] ?? 0.0) as num)
+          .fold(0.0, (prev, amount) => prev + amount)
+          .toDouble();
+
+      double totalEmployeeBenefits = expenses
+          .where((item) =>
+              item['particular'] == "EMPLOYEE BENEFITS" &&
+              item['control_no'] == control_no)
+          .map((item) => (item['amount'] ?? 0.0) as num)
+          .fold(0.0, (prev, amount) => prev + amount)
+          .toDouble();
+
+      double totalMaterials = expenses
+          .where((item) =>
+              item['particular'] == "MATERIALS" &&
+              item['control_no'] == control_no)
+          .map((item) => (item['amount'] ?? 0.0) as num)
+          .fold(0.0, (prev, amount) => prev + amount)
+          .toDouble();
+
+      double totalRepresentation = expenses
+          .where((item) =>
+              item['particular'] == "REPRESENTATION" &&
+              item['control_no'] == control_no)
+          .map((item) => (item['amount'] ?? 0.0) as num)
+          .fold(0.0, (prev, amount) => prev + amount)
+          .toDouble();
+      double totalOthers = totalServices +
+          totalCallersFee +
+          totalEmployeeBenefits +
+          totalRepair +
+          totalMaterials +
+          totalRepresentation;
+
+      final torMain = _myBox.get('torMain');
+      int indexToUpdate = torMain.indexWhere((map) =>
+          map['tor_no'] == torTrip[storedData['currentTripIndex']]['tor_no']);
+
+      // if (torTicket.isNotEmpty) {
+      torTrip[storedData['currentTripIndex']]['from_km'] = stations[0]['km'];
+
+      torTrip[storedData['currentTripIndex']]['to_km'] =
+          stations[stations.length - 1]['km'];
+      torTrip[storedData['currentTripIndex']]['km_run'] =
+          ((stations[0]['km'] ?? 0) -
+                  (stations[stations.length - 1]['km'] ?? 0))
+              .abs();
+      // double baggageCount = torTicket
+      //     .where((ticket) => ticket['control_no'] == control_no)
+      //     .fold(0.0,
+      //         (sum, ticket) => sum + (ticket['baggage'] as num).toDouble());
+      // double totalAmount = torTicket
+      //     .where((ticket) => ticket['control_no'] == control_no)
+      //     .fold(
+      //         0.0, (sum, ticket) => sum + (ticket['fare'] as num).toDouble());
+      // double grandTotal = totalAmount + baggageCount;
+      torTrip[storedData['currentTripIndex']]['ticket_revenue_atm'] = 0;
+
+      int totalTickets = torTicket
+          .where((ticket) => ticket['control_no'] == control_no)
+          .length;
+      // torTrip[storedData['currentTripIndex']]['ticket_count_atm'] =
+      //     passengerCount;
+
+      double ticketRevenueCardPassenger = torTicket
+          .where((ticket) =>
+              ticket['control_no'] == control_no &&
+              (ticket['cardType'] != 'mastercard' &&
+                  ticket['cardType'] != 'cash'))
+          .fold(
+            0.0,
+            (sum, ticket) =>
+                sum +
+                (((ticket['fare'] ?? 0.0) as num).toDouble() * ticket['pax']) +
+                ((ticket['additionalFare'] ?? 0.0) as num).toDouble() +
+                ((ticket['baggage'] ?? 0.0) as num).toDouble(),
+          );
+
+      torTrip[storedData['currentTripIndex']]['ticket_revenue_atm_passenger'] =
+          0;
+
+      torTrip[storedData['currentTripIndex']]['ticket_revenue_charter'] =
+          passengerRevenue;
+      torTrip[storedData['currentTripIndex']]['ticket_count_charter'] =
+          passengerCount;
+      torTrip[storedData['currentTripIndex']]['ticket_revenue_card'] =
+          ticketRevenueCardPassenger;
+      torTrip[storedData['currentTripIndex']]['ticket_revenue_atm_baggage'] =
+          fetchService.totalBaggageperTrip();
+      // int ticket_count_atm_passenger = torTicket
+      //     .where((ticket) =>
+      //         ticket['control_no'] == control_no && ticket['fare'] > 0)
+      //     .length;
+      torTrip[storedData['currentTripIndex']]['ticket_count_atm_passenger'] = 0;
+
+      torTrip[storedData['currentTripIndex']]['ticket_count_card'] =
+          fetchService.cardSalesCount();
+
+      torTrip[storedData['currentTripIndex']]['passenger_revenue'] =
+          passengerRevenue;
+      torTrip[storedData['currentTripIndex']]['passenger_count'] =
+          passengerCount;
+
+      torTrip[storedData['currentTripIndex']]['gross_revenue'] =
+          passengerRevenue;
+      // int ticket_count_atm_baggage = torTicket
+      //     .where((ticket) =>
+      //         ticket['control_no'] == control_no && ticket['baggage'] > 0)
+      //     .length;
+      torTrip[storedData['currentTripIndex']]['ticket_count_atm_baggage'] =
+          fetchService.baggageCount();
+
+      torTrip[storedData['currentTripIndex']]['cashReceived'] = 0;
+      torTrip[storedData['currentTripIndex']]['cardSales'] =
+          ticketRevenueCardPassenger;
+
+      net_collection =
+          (passengerRevenue + ticketRevenueCardPassenger) - totalExpenses;
+      // update tormain hive
+
+      // torMain[indexToUpdate]['ticket_revenue_atm_passenger'] +=
+      //     passengerRevenue;
+
+      torMain[indexToUpdate]['ticket_revenue_charter'] += passengerRevenue;
+
+      torMain[indexToUpdate]['ticket_count_charter'] += passengerCount;
+
+      torMain[indexToUpdate]['ticket_revenue_atm_baggage'] +=
+          fetchService.totalBaggageperTrip();
+
+      // torMain[indexToUpdate]['ticket_count_atm_passenger'] += passengerCount;
+
+      torMain[indexToUpdate]['ticket_count_atm_baggage'] +=
+          fetchService.baggageCount();
+
+      torMain[indexToUpdate]['passenger_count'] += passengerCount;
+      torMain[indexToUpdate]['passenger_revenue'] += passengerRevenue;
+
+      // torMain[indexToUpdate]['ticket_revenue_atm'] += passengerRevenue;
+      // torMain[indexToUpdate]['ticket_count_atm'] += passengerCount;
+      torMain[indexToUpdate]['toll_fees'] += totalToll;
+      torMain[indexToUpdate]['parking_fee'] += totalParking;
+      torMain[indexToUpdate]['others'] += totalOthers;
+      torMain[indexToUpdate]['services'] += totalServices;
+      torMain[indexToUpdate]['repair_maintenance'] += totalRepair;
+      torMain[indexToUpdate]['total_expenses'] += totalExpenses;
+      torMain[indexToUpdate]['gross_revenue'] += passengerRevenue;
+      torMain[indexToUpdate]['net_collections'] += net_collection;
+      torMain[indexToUpdate]['temp_net_collections'] +=
+          net_collection + totalExpenses;
+      // torMain[indexToUpdate]['cashReceived'] += passengerRevenue;
+      torMain[indexToUpdate]['cardSales'] += ticketRevenueCardPassenger;
+
+      // end if torticket is empty
+      // }
+
+      print('torTrip current: ${torTrip[storedData['currentTripIndex']]}');
+
+      Map<String, dynamic> isupdateTorTrip = await httpRequestServices
+          .updateTorTrip(torTrip[storedData['currentTripIndex']]);
+
+      Map<String, dynamic> isupdateTorMain =
+          await httpRequestServices.updateTorMain(torMain[indexToUpdate]);
+
+      if (isupdateTorTrip['messages'][0]['code'].toString() == "0") {
+        print('isupdateTorTrip: success: $isupdateTorTrip');
+
+        _myBox.put('torTrip', torTrip);
+        final newtorTrip = _myBox.get('torTrip');
+        print('newtorTrip: $newtorTrip');
+        int trip = storedData['currentTripIndex'] + 1;
+        storedData['selectedDestination'] = {};
+        storedData['currentTripIndex'] = trip;
+        storedData['currentStationIndex'] = 0;
+        storedData['isViceVersa'] = false;
+        storedData['lastInspectorEmpNo'] = "";
+        storedData['reverseNum'] = 0;
+        _myBox.put('torMain', torMain);
+        _myBox.put('SESSION', storedData);
+        final newstoredData = _myBox.get('SESSION');
+        // _myBox.put('torTicket', <Map<String, dynamic>>[]);
+        // _myBox.put('expenses', <Map<String, dynamic>>[]);
+
+        print('newstoredData: $newstoredData');
+        return true;
+      } else {
+        print(
+            'error isupdateTorTrip: ${isupdateTorTrip['messages'][0]['message']}');
+        return false;
+      }
+    } catch (e) {
+      print('error updateCurrentTripIndex: $e');
+      return false;
+    }
+  }
+
   Future<bool> resetTrip() async {
     try {
       final storedData = _myBox.get('SESSION');
@@ -733,6 +1237,7 @@ class HiveService {
       storedData['selectedDestination'] = {};
       storedData['isClosed'] = false;
       storedData['lastInspectorEmpNo'] = "";
+      storedData['torNo'] = "";
 
       _myBox.put('SESSION', storedData);
       final newstoredData = _myBox.get('SESSION');
@@ -771,7 +1276,27 @@ class HiveService {
     }
   }
 
+  Future<bool> addFuel(Map<String, dynamic> item) async {
+    try {
+      final storedData = _myBox.get('fuel');
+      storedData.add(item);
+      _myBox.put('fuel', storedData);
+      final newstoredData = _myBox.get('fuel');
+      print('addFuel newstoredData: $newstoredData');
+      return true;
+    } catch (e) {
+      print('addFuel fuel: $e');
+      return false;
+    }
+  }
+
   Future<String> getSerialNumber() async {
+    final storedData = _myBox.get('SESSION');
+    String serialNumber = storedData['serialNumber'];
+    return serialNumber;
+  }
+
+  String getSerialNumber2() {
     final storedData = _myBox.get('SESSION');
     String serialNumber = storedData['serialNumber'];
     return serialNumber;
@@ -823,6 +1348,20 @@ class HiveService {
                 sum + (ticket['additionalFare'] as num).toDouble());
     print('cashRecieved: $cashRecieved');
     return cashRecieved + totalAddFarecashRecieved;
+  }
+
+  double getAllCashRecevied() {
+    final torTrip = _myBox.get('torTrip');
+    double cashreceived = 0;
+    if (torTrip.isNotEmpty) {
+      for (var element in torTrip) {
+        cashreceived += double.parse(element['cashReceived'].toString());
+      }
+
+      return cashreceived;
+    } else {
+      return cashreceived;
+    }
   }
 
   Future<bool> addOfflineTicket(Map<String, dynamic> item) async {
@@ -908,11 +1447,11 @@ class HiveService {
   Future<bool> addInspection(Map<String, dynamic> item) async {
     try {
       final storedListOfMaps = _myBox.get('torInspection');
-      final session = _myBox.get('SESSION');
+      // final session = _myBox.get('SESSION');
       storedListOfMaps.add(item);
       _myBox.put('torInspection', storedListOfMaps);
-      session['lastInspectorEmpNo'] = "${item['inspector_emp_no']}";
-      _myBox.put('SESSION', session);
+      // session['lastInspectorEmpNo'] = "${item['inspector_emp_no']}";
+      // _myBox.put('SESSION', session);
       print('addInspection : $storedListOfMaps');
       final newsession = _myBox.get('SESSION');
       print('addInspection new session: $newsession');
@@ -926,11 +1465,11 @@ class HiveService {
   Future<bool> addOfflineInspection(Map<String, dynamic> item) async {
     try {
       final storedListOfMaps = _myBox.get('offlinetorInspection');
-      final session = _myBox.get('SESSION');
+      // final session = _myBox.get('SESSION');
       storedListOfMaps.add(item);
       _myBox.put('offlinetorInspection', storedListOfMaps);
-      session['lastInspectorEmpNo'] = "${item['inspector_emp_no']}";
-      _myBox.put('SESSION', session);
+      // session['lastInspectorEmpNo'] = "${item['inspector_emp_no']}";
+      // _myBox.put('SESSION', session);
       print('offlinetorInspection : $storedListOfMaps');
       return true;
     } catch (e) {

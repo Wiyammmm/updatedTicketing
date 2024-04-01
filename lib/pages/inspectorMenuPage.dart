@@ -5,6 +5,7 @@ import 'package:dltb/components/color.dart';
 import 'package:dltb/pages/closingMenuPage.dart';
 import 'package:dltb/pages/dashboard.dart';
 import 'package:dltb/pages/inspectorMenu/inspectionSummaryPage.dart';
+import 'package:dltb/pages/inspectorMenu/troublePage.dart';
 import 'package:dltb/pages/inspectorMenu/violationPage.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,11 @@ class _InspectorMenuPageState extends State<InspectorMenuPage> {
     inspectorData = widget.inspectorData;
     coopData = fetchservice.fetchCoopData();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -69,51 +75,112 @@ class _InspectorMenuPageState extends State<InspectorMenuPage> {
                             SizedBox(
                               height: 20,
                             ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  InspectionSummaryPage(
-                                                    inspectorData:
-                                                        inspectorData,
-                                                  )));
-                                    },
-                                    child: closingMenuButton(
-                                      title: 'Inspection\nSummary',
-                                      image: 'inspectionSummary.png',
-                                      isAvailable: true,
-                                    ),
-                                  ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              InspectionSummaryPage(
+                                                inspectorData: inspectorData,
+                                              )));
+                                },
+                                child: closingMenuButton(
+                                  title: 'Inspection Report',
+                                  image: 'inspectionSummary.png',
+                                  isAvailable: true,
                                 ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ViolationPage(
-                                                    inspectorData:
-                                                        inspectorData,
-                                                  )));
-                                    },
-                                    child: closingMenuButton(
-                                      title: 'Violation',
-                                      image: 'violation.png',
-                                      isAvailable: true,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ViolationPage(
+                                                inspectorData: inspectorData,
+                                              )));
+                                },
+                                child: closingMenuButton(
+                                  title: 'Violation Report',
+                                  image: 'violation.png',
+                                  isAvailable: true,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => TroublePage(
+                                                inspectorData: inspectorData,
+                                              )));
+                                },
+                                child: closingMenuButton(
+                                  title: 'Trouble Report',
+                                  image: 'trouble.png',
+                                  isAvailable: true,
+                                ),
+                              ),
+                            ),
+                            // Row(
+                            //   children: [
+                            //     Expanded(
+                            //       child: GestureDetector(
+                            //         onTap: () {
+                            //           Navigator.pushReplacement(
+                            //               context,
+                            //               MaterialPageRoute(
+                            //                   builder: (context) =>
+                            //                       InspectionSummaryPage(
+                            //                         inspectorData:
+                            //                             inspectorData,
+                            //                       )));
+                            //         },
+                            //         child: closingMenuButton(
+                            //           title: 'Inspection\nReport',
+                            //           image: 'inspectionSummary.png',
+                            //           isAvailable: true,
+                            //         ),
+                            //       ),
+                            //     ),
+                            //     SizedBox(
+                            //       width: 10,
+                            //     ),
+                            //     Expanded(
+                            //       child: GestureDetector(
+                            //         onTap: () {
+                            //           Navigator.pushReplacement(
+                            //               context,
+                            //               MaterialPageRoute(
+                            //                   builder: (context) =>
+                            //                       ViolationPage(
+                            //                         inspectorData:
+                            //                             inspectorData,
+                            //                       )));
+                            //         },
+                            //         child: closingMenuButton(
+                            //           title: 'Violation Report',
+                            //           image: 'violation.png',
+                            //           isAvailable: true,
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
                             // Row(
                             //   children: [
                             //     Expanded(

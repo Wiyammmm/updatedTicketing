@@ -90,6 +90,11 @@ class _EndofDayPageState extends State<EndofDayPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final datenow = basicservices.formatDateNow();
     return WillPopScope(
@@ -244,7 +249,13 @@ class _EndofDayPageState extends State<EndofDayPage> {
                             widget.puncherTR,
                             widget.puncherTC,
                             widget.puncherBR,
-                            widget.puncherBC);
+                            widget.puncherBC,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0);
                         // } else {
                         //   isPrintDone = printService.printTripSummary();
                         // }

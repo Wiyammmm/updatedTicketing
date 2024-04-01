@@ -31,6 +31,11 @@ class _PrePaidListingPageState extends State<PrePaidListingPage> {
     selectedList = prePaidTicketList;
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   String formatDateNow() {
     final now = DateTime.now();
     final formattedDate = DateFormat("d MMM y, HH:mm").format(now);
@@ -82,14 +87,14 @@ class _PrePaidListingPageState extends State<PrePaidListingPage> {
                                 SizedBox(
                                   child: GestureDetector(
                                     onTap: () {
-                                      setState(() {
-                                        isPrepaidBaggage = !isPrepaidBaggage;
-                                        if (isPrepaidBaggage) {
-                                          selectedList = prePaidBaggageList;
-                                        } else {
-                                          selectedList = prePaidTicketList;
-                                        }
-                                      });
+                                      // setState(() {
+                                      //   isPrepaidBaggage = !isPrepaidBaggage;
+                                      //   if (isPrepaidBaggage) {
+                                      //     selectedList = prePaidBaggageList;
+                                      //   } else {
+                                      //     selectedList = prePaidTicketList;
+                                      //   }
+                                      // });
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -106,9 +111,7 @@ class _PrePaidListingPageState extends State<PrePaidListingPage> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Text(
-                                          isPrepaidBaggage
-                                              ? 'TICKET'
-                                              : 'BAGGAGE',
+                                          'TICKET',
                                           style: TextStyle(
                                               color: isPrepaidBaggage
                                                   ? AppColors.primaryColor
@@ -124,7 +127,7 @@ class _PrePaidListingPageState extends State<PrePaidListingPage> {
                                   child: FittedBox(
                                     fit: BoxFit.scaleDown,
                                     child: Text(
-                                      isPrepaidBaggage ? 'BAGGAGE' : 'TICKET',
+                                      'TICKET',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
@@ -155,7 +158,7 @@ class _PrePaidListingPageState extends State<PrePaidListingPage> {
                                         FittedBox(
                                           fit: BoxFit.scaleDown,
                                           child: Text(
-                                            '$total',
+                                            ' $total ',
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
@@ -208,7 +211,7 @@ class _PrePaidListingPageState extends State<PrePaidListingPage> {
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              '₱${selectedList[index]['ticketNo']}',
+                                              '${selectedList[index]['ticketNo']}',
                                               style: TextStyle(
                                                 color: lightbg
                                                     ? Colors.white

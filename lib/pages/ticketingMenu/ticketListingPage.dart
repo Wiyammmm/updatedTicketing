@@ -56,6 +56,12 @@ class _ticketListingPageState extends State<TicketListingPage> {
     ticketListCopy = ticketListCopy.reversed.toList();
   }
 
+  @override
+  void dispose() {
+    additionalFareController.dispose();
+    super.dispose();
+  }
+
   String formatDateNow() {
     final now = DateTime.now();
     final formattedDate = DateFormat("d MMM y, HH:mm").format(now);
@@ -245,7 +251,15 @@ class _ticketListingPageState extends State<TicketListingPage> {
                   '${cardData.isNotEmpty ? cardData[0]['cardType'] ?? "cash" : "cash"}';
             }
           });
-          _myBox.put('torTicket', ticketListCopy);
+
+          final torTicket = _myBox.get('torTicket');
+          for (var element in ticketListCopy) {
+            torTicket.removeWhere(
+                (ticket) => ticket['UUID'] == "${element['UUID']}");
+            torTicket.add(element);
+          }
+
+          _myBox.put('torTicket', torTicket);
 
           bool isprintdone = await printService.printAdditionalFare(
               item, additionalFare.toDouble());
@@ -382,6 +396,17 @@ class _ticketListingPageState extends State<TicketListingPage> {
                                     // });
                                   },
                                   onLongPress: () {
+                                    if (ticket['additionalFare'] > 0) {
+                                      ArtSweetAlert.show(
+                                          context: context,
+                                          artDialogArgs: ArtDialogArgs(
+                                            type: ArtSweetAlertType.warning,
+                                            title: "INVALID",
+                                            text:
+                                                "You can only use an additional fare once",
+                                          ));
+                                      return;
+                                    }
                                     ArtSweetAlert.show(
                                         context: context,
                                         artDialogArgs: ArtDialogArgs(
@@ -1033,14 +1058,13 @@ class _ticketListingPageState extends State<TicketListingPage> {
                                         isNfcScanOn = true;
                                       });
                                       _startNFCReader('mastercard', item);
-                                      _showDialognfcScan(context, 'MASTER CARD',
+                                      _showDialognfcScan(context, 'CASH CARD',
                                           'master-card.png');
                                     }
                                   },
                                   child: typeofCardsWidget(
-                                      title: isNoMasterCard
-                                          ? 'CASH'
-                                          : 'MASTER CARD',
+                                      title:
+                                          isNoMasterCard ? 'CASH' : 'CASH CARD',
                                       image: isNoMasterCard
                                           ? 'cash.png'
                                           : 'master-card.png'),

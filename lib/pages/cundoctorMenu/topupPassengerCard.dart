@@ -45,6 +45,12 @@ class _TopUpPassengerCardPageState extends State<TopUpPassengerCardPage> {
     vehicleNo = fetchService.getCurrentVehicleNo();
   }
 
+  @override
+  void dispose() {
+    amountController.dispose();
+    super.dispose();
+  }
+
   String formatDateNow() {
     final now = DateTime.now();
     final formattedDate = DateFormat("d MMM y, HH:mm").format(now);
@@ -114,6 +120,7 @@ class _TopUpPassengerCardPageState extends State<TopUpPassengerCardPage> {
                   }
                 ],
                 'response': {
+                  'control_no': fetchService.getCurrentControlNumber(),
                   'referenceNumber': referenceNumber,
                   'mastercard': {
                     'previousBalance': isTopupPassenger['response']
@@ -323,8 +330,8 @@ class _TopUpPassengerCardPageState extends State<TopUpPassengerCardPage> {
 
                                       if (masterCardId == '') {
                                         cardType = 'mastercard';
-                                        _showDialognfcScan(context,
-                                            'MASTER CARD', 'master-card.png');
+                                        _showDialognfcScan(context, 'CASH CARD',
+                                            'master-card.png');
                                       } else {
                                         cardType = 'passenger';
                                         _showDialognfcScan(
@@ -367,7 +374,7 @@ class _TopUpPassengerCardPageState extends State<TopUpPassengerCardPage> {
                                   fit: BoxFit.scaleDown,
                                   child: Text(
                                     masterCardId == ''
-                                        ? 'TAP MASTER CARD'
+                                        ? 'TAP CASH CARD'
                                         : 'TAP PASSENGER CARD',
                                     style: TextStyle(
                                         fontSize: 25,

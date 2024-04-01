@@ -1,5 +1,6 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:dltb/backend/printer/printReceipt.dart';
+import 'package:dltb/components/color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +23,11 @@ class _PrinterPageState extends State<PrinterPage> {
   void initState() {
     super.initState();
     initPlatformState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Future<void> initPlatformState() async {
@@ -157,7 +163,7 @@ class _PrinterPageState extends State<PrinterPage> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          color: Color(0xFF00558d),
+          color: AppColors.secondaryColor,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -168,7 +174,7 @@ class _PrinterPageState extends State<PrinterPage> {
                     Center(
                         child: Container(
                       decoration: BoxDecoration(
-                          color: Color(0xFF00adee),
+                          color: AppColors.primaryColor,
                           borderRadius: BorderRadius.circular(10)),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -194,16 +200,22 @@ class _PrinterPageState extends State<PrinterPage> {
                           'Device:',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: Colors.black,
                           ),
                         ),
                         const SizedBox(width: 30),
                         Expanded(
-                          child: DropdownButton(
-                            items: _getDeviceItems(),
-                            onChanged: (BluetoothDevice? value) =>
-                                setState(() => _device = value),
-                            value: _device,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: AppColors.primaryColor),
+                                borderRadius: BorderRadius.circular(20)),
+                            child: DropdownButton(
+                              items: _getDeviceItems(),
+                              onChanged: (BluetoothDevice? value) =>
+                                  setState(() => _device = value),
+                              value: _device,
+                            ),
                           ),
                         ),
                       ],
@@ -264,8 +276,8 @@ class _PrinterPageState extends State<PrinterPage> {
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Color(0xFF00adee), // Background color of the button
+                      backgroundColor: AppColors
+                          .primaryColor, // Background color of the button
                       padding: EdgeInsets.symmetric(horizontal: 24.0),
                       shape: RoundedRectangleBorder(
                         side: BorderSide(width: 1, color: Colors.black),

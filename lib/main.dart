@@ -248,10 +248,12 @@ Future<void> checkAndInitializeBoxes() async {
     _myBox.put('torInspection', <Map<String, dynamic>>[]);
     _myBox.put('offlinetorInspection', <Map<String, dynamic>>[]);
     _myBox.put('offlinetorViolation', <Map<String, dynamic>>[]);
+    _myBox.put('offlinetorTrouble', <Map<String, dynamic>>[]);
     _myBox.put('offlineFuel', <Map<String, dynamic>>[]);
     _myBox.put('torMain', <Map<String, dynamic>>[]);
     _myBox.put('vehicleList', <Map<String, dynamic>>[]);
     _myBox.put('vehicleListDB', <Map<String, dynamic>>[]);
+    _myBox.put('fuel', <Map<String, dynamic>>[]);
 
     _myBox.put('SESSION', {
       "currentStationIndex": 0,
@@ -269,11 +271,14 @@ Future<void> checkAndInitializeBoxes() async {
       'isAlreadyFetched': false,
       'reverseNum': 0,
       'inspectorKmPost': 0,
-      'inspectorOnBoardPlace': ""
+      'inspectorOnBoardPlace': "",
+      'isAlreadyInsertTrip': false
     });
   } else {
     dynamic offlinetorViolationDynamic = _myBox.get('offlinetorViolation');
+    dynamic offlinetorTroubleDynamic = _myBox.get('offlinetorTrouble');
     dynamic offlinetorFuelDynamic = _myBox.get('offlineFuel');
+    dynamic fuelDynamic = _myBox.get('fuel');
     dynamic offlineUpdateAdditionalFareDynamic =
         _myBox.get('offlineUpdateAdditionalFare');
     dynamic torInspectionDynamic = _myBox.get('torInspection');
@@ -301,9 +306,16 @@ Future<void> checkAndInitializeBoxes() async {
         List<Map<dynamic, dynamic>>.from(
       offlinetorViolationDynamic ?? [],
     );
+    List<Map<dynamic, dynamic>> offlinetorTrouble =
+        List<Map<dynamic, dynamic>>.from(
+      offlinetorTroubleDynamic ?? [],
+    );
     List<Map<dynamic, dynamic>> offlinetorFuel =
         List<Map<dynamic, dynamic>>.from(
       offlinetorFuelDynamic ?? [],
+    );
+    List<Map<dynamic, dynamic>> fuel = List<Map<dynamic, dynamic>>.from(
+      fuelDynamic ?? [],
     );
     List<Map<dynamic, dynamic>> offlineUpdateAdditionalFare =
         List<Map<dynamic, dynamic>>.from(
@@ -380,7 +392,9 @@ Future<void> checkAndInitializeBoxes() async {
     Map<String, dynamic> coopData = convertMap(coopDataDynamic);
     Map<String, dynamic> torDispatch = convertMap(torDispatchsDynamic);
     offlinetorViolation = convertList(offlinetorViolation);
+    offlinetorTrouble = convertList(offlinetorTrouble);
     offlinetorFuel = convertList(offlinetorFuel);
+    fuel = convertList(fuel);
     offlineUpdateAdditionalFare = convertList(offlineUpdateAdditionalFare);
     offlinetorInspection = convertList(offlinetorInspection);
     torInspection = convertList(torInspection);
@@ -406,7 +420,9 @@ Future<void> checkAndInitializeBoxes() async {
     // print('cardList: $cardList');
     // print('stationList: $stationList');
     _myBox.put('offlinetorViolation', offlinetorViolation);
-    _myBox.put('offlinetorFuel', offlinetorViolation);
+    _myBox.put('offlinetorTrouble', offlinetorTrouble);
+    _myBox.put('offlineFuel', offlinetorFuel);
+    _myBox.put('fuel', fuel);
     _myBox.put('offlineUpdateAdditionalFare', offlineUpdateAdditionalFare);
     _myBox.put('torInspection', torInspection);
     _myBox.put('offlinetorInspection', offlinetorInspection);

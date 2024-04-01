@@ -98,6 +98,15 @@ class _EditExpensesPageState extends State<EditExpensesPage> {
   }
 
   @override
+  void dispose() {
+    fuelStationController.dispose();
+    fuelLitersController.dispose();
+    fuelPricePerLiterController.dispose();
+    fuelAmountController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final formattedDate = formatDateNow();
     return Scaffold(
@@ -781,6 +790,9 @@ class _EditExpensesPageState extends State<EditExpensesPage> {
                                                       AppColors.primaryColor),
                                               borderRadius:
                                                   BorderRadius.circular(10))),
+                                      onTap: () {
+                                        expensesAmountController.text = "";
+                                      },
                                       validator: (value) {
                                         if (value!.isEmpty) {
                                           return 'Required';
@@ -997,16 +1009,16 @@ class _EditExpensesPageState extends State<EditExpensesPage> {
                                               type: ArtSweetAlertType.success,
                                               title: "SUCCESS",
                                               text: "Added Successfully!"));
+                                      _updatepage();
+                                      // setState(() {
+                                      //   expenses = _myBox.get('expenses');
 
-                                      setState(() {
-                                        expenses = _myBox.get('expenses');
-
-                                        expensesList = expenses
-                                            .where((item) =>
-                                                item['control_no'] ==
-                                                control_no)
-                                            .toList();
-                                      });
+                                      //   expensesList = expenses
+                                      //       .where((item) =>
+                                      //           item['control_no'] ==
+                                      //           control_no)
+                                      //       .toList();
+                                      // });
                                       return;
                                     } else {
                                       Navigator.of(context).pop();
@@ -1070,5 +1082,14 @@ class _EditExpensesPageState extends State<EditExpensesPage> {
         });
       },
     );
+  }
+
+  void _updatepage() {
+    setState(() {
+      expensesList = _myBox.get('expenses');
+      expensesList = expensesList
+          .where((item) => item['control_no'] == control_no)
+          .toList();
+    });
   }
 }

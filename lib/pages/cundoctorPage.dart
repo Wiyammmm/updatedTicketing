@@ -33,6 +33,11 @@ class _CundoctorPageState extends State<CundoctorPage> {
     coopData = fetchservice.fetchCoopData();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   String formatDateNow() {
     final now = DateTime.now();
     final formattedDate = DateFormat("d MMM y, HH:mm").format(now);
@@ -726,7 +731,7 @@ class _CundoctorPageState extends State<CundoctorPage> {
                                         ),
                                       ),
                                       Text(
-                                        'CHECK BALANCE\nMASTER CARD',
+                                        'CHECK BALANCE\nCASH CARD',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             color: Colors.white,

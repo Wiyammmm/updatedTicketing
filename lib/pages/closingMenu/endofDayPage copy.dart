@@ -248,7 +248,13 @@ class _EndofDayPageState extends State<EndofDayPage> {
                                     widget.puncherTR,
                                     widget.puncherTC,
                                     widget.puncherBR,
-                                    widget.puncherBC);
+                                    widget.puncherBC,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0);
                                 // } else {
                                 //   isPrintDone = printService.printTripSummary();
                                 // }

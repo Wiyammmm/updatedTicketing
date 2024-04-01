@@ -80,6 +80,11 @@ class _FuelPageState extends State<FuelPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final formattedDate = formatDateNow();
     return Scaffold(
@@ -137,6 +142,11 @@ class _FuelPageState extends State<FuelPage> {
                                           color: AppColors.primaryColor),
                                       decoration: InputDecoration(
                                           hintText: 'FUEL STATION',
+                                          labelText: "FUEL STATION",
+                                          labelStyle: TextStyle(
+                                              backgroundColor: Colors.white,
+                                              color: AppColors.primaryColor,
+                                              fontWeight: FontWeight.bold),
                                           border: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   width: 1,
@@ -166,15 +176,29 @@ class _FuelPageState extends State<FuelPage> {
                                                   .find(search),
                                           builder:
                                               (context, controller, focusNode) {
-                                            return TextField(
-                                                textAlign: TextAlign.center,
-                                                controller:
-                                                    fuelStationController,
-                                                focusNode: focusNode,
-                                                decoration: InputDecoration(
-                                                    border:
-                                                        OutlineInputBorder(),
-                                                    hintText: "FUEL STATION"));
+                                            return TextFormField(
+                                              textAlign: TextAlign.center,
+                                              controller: fuelStationController,
+                                              focusNode: focusNode,
+                                              decoration: InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                hintText: "FUEL STATION",
+                                                labelText: "FUEL STATION",
+                                                labelStyle: TextStyle(
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    color:
+                                                        AppColors.primaryColor,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return 'Required';
+                                                }
+                                                return null;
+                                              },
+                                            );
                                           },
                                           itemBuilder: (context, city) {
                                             return ListTile(
@@ -258,7 +282,7 @@ class _FuelPageState extends State<FuelPage> {
                                 //         })),
 
                                 SizedBox(
-                                  height: 5,
+                                  height: 10,
                                 ),
                                 SizedBox(
                                   width: double.infinity,
@@ -270,6 +294,11 @@ class _FuelPageState extends State<FuelPage> {
                                         color: AppColors.primaryColor),
                                     decoration: InputDecoration(
                                         hintText: 'FUEL LITERS',
+                                        labelText: "FUEL LITERS",
+                                        labelStyle: TextStyle(
+                                            backgroundColor: Colors.white,
+                                            color: AppColors.primaryColor,
+                                            fontWeight: FontWeight.bold),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 width: 1,
@@ -288,7 +317,7 @@ class _FuelPageState extends State<FuelPage> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 5,
+                                  height: 10,
                                 ),
                                 SizedBox(
                                   width: double.infinity,
@@ -300,6 +329,11 @@ class _FuelPageState extends State<FuelPage> {
                                         color: AppColors.primaryColor),
                                     decoration: InputDecoration(
                                         hintText: 'FUEL PRICE PER LITER',
+                                        labelText: "FUEL PRICE PER LITER",
+                                        labelStyle: TextStyle(
+                                            backgroundColor: Colors.white,
+                                            color: AppColors.primaryColor,
+                                            fontWeight: FontWeight.bold),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 width: 1,
@@ -313,8 +347,36 @@ class _FuelPageState extends State<FuelPage> {
                                         } else if (double.parse(value) == 0) {
                                           return 'Required';
                                         }
+
                                         return null;
                                       }
+                                    },
+                                    onTap: () {
+                                      try {
+                                        double thisvalue = double.parse(
+                                            fuelPricePerLiterController.text);
+                                        if (thisvalue <= 0) {
+                                          setState(() {
+                                            fuelPricePerLiterController.text =
+                                                "";
+                                          });
+                                        }
+                                      } catch (e) {}
+                                    },
+                                    onChanged: (value) {
+                                      double thisAmount = 0;
+                                      double fuelLiters = 0;
+
+                                      try {
+                                        thisAmount = double.parse(value);
+                                      } catch (e) {}
+                                      try {
+                                        fuelLiters = double.parse(
+                                            fuelLitersController.text);
+                                      } catch (e) {}
+
+                                      fuelAmountController.text =
+                                          "${(thisAmount * fuelLiters).toStringAsFixed(2)}";
                                     },
                                     onSaved: (value) {
                                       updateAmount();
@@ -322,7 +384,7 @@ class _FuelPageState extends State<FuelPage> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 5,
+                                  height: 10,
                                 ),
                                 SizedBox(
                                   width: double.infinity,
@@ -334,6 +396,11 @@ class _FuelPageState extends State<FuelPage> {
                                         color: AppColors.primaryColor),
                                     decoration: InputDecoration(
                                         hintText: 'Enter Amount',
+                                        labelText: "Amount",
+                                        labelStyle: TextStyle(
+                                            backgroundColor: Colors.white,
+                                            color: AppColors.primaryColor,
+                                            fontWeight: FontWeight.bold),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 width: 1,
@@ -350,10 +417,21 @@ class _FuelPageState extends State<FuelPage> {
                                         return null;
                                       }
                                     },
+                                    onTap: () {
+                                      try {
+                                        double thisvalue = double.parse(
+                                            fuelAmountController.text);
+                                        if (thisvalue <= 0) {
+                                          setState(() {
+                                            fuelAmountController.text = "";
+                                          });
+                                        }
+                                      } catch (e) {}
+                                    },
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 5,
+                                  height: 10,
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -530,7 +608,7 @@ class _FuelPageState extends State<FuelPage> {
                                   double fuelpriceperliter = 0.0;
 
                                   if (!_formKey.currentState!.validate()) {
-                                    Navigator.of(context).pop();
+                                    // Navigator.of(context).pop();
                                     ArtSweetAlert.show(
                                         context: context,
                                         barrierDismissible: false,
@@ -715,6 +793,8 @@ class _FuelPageState extends State<FuelPage> {
                   'tor_no': torNo,
                   "control_no": control_no
                 });
+                bool isAddFuel =
+                    await hiveService.addFuel(requestBodyItemTorTrip);
               }
 
               bool isprintDone =
@@ -787,6 +867,8 @@ class _FuelPageState extends State<FuelPage> {
                     'tor_no': torNo,
                     "control_no": control_no
                   });
+                  bool isAddFuel =
+                      await hiveService.addFuel(requestBodyItemTorTrip);
                 }
                 ArtSweetAlert.show(
                         context: context,

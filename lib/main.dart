@@ -254,7 +254,7 @@ Future<void> checkAndInitializeBoxes() async {
     _myBox.put('vehicleList', <Map<String, dynamic>>[]);
     _myBox.put('vehicleListDB', <Map<String, dynamic>>[]);
     _myBox.put('fuel', <Map<String, dynamic>>[]);
-
+    _myBox.put('filipayCardList', <Map<String, dynamic>>[]);
     _myBox.put('SESSION', {
       "currentStationIndex": 0,
       "selectedDestination": <String, dynamic>{},

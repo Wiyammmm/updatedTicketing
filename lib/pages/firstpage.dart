@@ -11,6 +11,7 @@ import 'package:dltb/main.dart';
 import 'package:dltb/pages/dashboard.dart';
 import 'package:dltb/pages/login.dart';
 import 'package:dltb/pages/specialtrip.dart';
+import 'package:dltb/pages/ticketingMenu/ticketingPage.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,16 +41,33 @@ class _FirstPageState extends State<FirstPage> {
 
   double progressbar = 0.5;
   String progressText = 'fetching data...';
+
+  bool isFetch = true;
   @override
   void initState() {
     super.initState();
 
-    _fetchingdata();
+    _checkData();
+    // _fetchingdata();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _checkData() async {
+    await Future.delayed(Duration(seconds: 2));
+    final filipaycardlist = _myBox.get('filipayCardList');
+    if (filipaycardlist.isNotEmpty && filipaycardlist != null) {
+      if (mounted) {
+        setState(() {
+          isFetch = false;
+        });
+      }
+    } else {
+      _fetchingdata();
+    }
   }
 
   void _fetchingdata() async {
@@ -117,7 +135,6 @@ class _FirstPageState extends State<FirstPage> {
         final offlineUpdateAdditionalFare =
             _myBox.get('offlineUpdateAdditionalFare');
         final offlineInspection = _myBox.get('offlinetorInspection');
-
         final offlinetorViolation = _myBox.get('offlinetorViolation');
         final offlinetorFuel = _myBox.get('offlineFuel');
         print('offlineInspection: $offlineInspection');
@@ -337,20 +354,25 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   void getSerialNumber() async {
+    _connectToPrinter();
     final torTrip = _myBox.get('torTrip');
     final SESSION = _myBox.get('SESSION');
+    final coopData = fetchservice.fetchCoopData();
     const duration = Duration(
         seconds:
             2); // Adjust the duration as needed (3 seconds in this example).
     await Future.delayed(duration);
-    setState(() {
-      progressText = 'Preparing NFC Reader...';
-    });
+    if (mounted) {
+      setState(() {
+        progressText = 'Preparing NFC Reader...';
+      });
 
-    // final resultNFC = await backend.startNFCReader();
-    setState(() {
-      progressText = 'Checking GPS...';
-    });
+      // final resultNFC = await backend.startNFCReader();
+      setState(() {
+        progressText = 'Checking GPS...';
+      });
+    }
+
     // try {
     //   Position position = await Geolocator.getCurrentPosition(
     //           desiredAccuracy: LocationAccuracy.high)
@@ -366,20 +388,35 @@ class _FirstPageState extends State<FirstPage> {
     // await Future.delayed(
     //     const Duration(seconds: 1)); // Adjust the duration if needed
     if (torTrip.isEmpty) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+      if (mounted) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      }
     } else {
       if ((SESSION['currentTripIndex'] + 1) == torTrip.length) {
         if (SESSION['tripType'] == "special") {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => SpecialTripPage()));
+          if (mounted) {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => SpecialTripPage()));
+          }
         } else {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => DashboardPage()));
+          if (coopData['coopType'].toString() == "Bus") {
+            if (mounted) {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => DashboardPage()));
+            }
+          } else {
+            if (mounted) {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => TicketingPage()));
+            }
+          }
         }
       } else {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+        if (mounted) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => LoginPage()));
+        }
       }
     }
 
@@ -414,40 +451,176 @@ class _FirstPageState extends State<FirstPage> {
         controller: _refreshController,
         header: MaterialHeader(),
         child: Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      '$progressText',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )),
-                SimpleAnimationProgressBar(
-                  height: 30,
-                  width: 300,
-                  backgroundColor: AppColors.secondaryColor,
-                  foregrondColor: AppColors.primaryColor,
-                  ratio: progressbar,
-                  direction: Axis.horizontal,
-                  curve: Curves.fastLinearToSlowEaseIn,
-                  duration: const Duration(seconds: 5),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.secondaryColor,
-                      offset: const Offset(
-                        5.0,
-                        5.0,
-                      ),
-                      blurRadius: 10.0,
-                      spreadRadius: 2.0,
-                    ),
+          body: Stack(
+            children: [
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '$progressText',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
+                    SimpleAnimationProgressBar(
+                      height: 30,
+                      width: 300,
+                      backgroundColor: AppColors.secondaryColor,
+                      foregrondColor: AppColors.primaryColor,
+                      ratio: progressbar,
+                      direction: Axis.horizontal,
+                      curve: Curves.fastLinearToSlowEaseIn,
+                      duration: const Duration(seconds: 5),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.secondaryColor,
+                          offset: const Offset(
+                            5.0,
+                            5.0,
+                          ),
+                          blurRadius: 10.0,
+                          spreadRadius: 2.0,
+                        ),
+                      ],
+                    )
                   ],
+                ),
+              ),
+              if (!isFetch)
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.black, width: 1)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Do you want to\nre-fetch the data?',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              'Note: if YES, it required an internet connection',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      progressbar = 1;
+                                      isFetch = true;
+                                    });
+                                    getSerialNumber();
+                                    // final torTrip = _myBox.get('torTrip');
+                                    // final SESSION = _myBox.get('SESSION');
+
+                                    // if (torTrip.isEmpty) {
+                                    //   Navigator.pushReplacement(
+                                    //       context,
+                                    //       MaterialPageRoute(
+                                    //           builder: (context) => LoginPage()));
+                                    // } else {
+                                    //   if ((SESSION['currentTripIndex'] + 1) ==
+                                    //       torTrip.length) {
+                                    //     if (SESSION['tripType'] == "special") {
+                                    //       Navigator.pushReplacement(
+                                    //           context,
+                                    //           MaterialPageRoute(
+                                    //               builder: (context) =>
+                                    //                   SpecialTripPage()));
+                                    //     } else {
+                                    //       Navigator.pushReplacement(
+                                    //           context,
+                                    //           MaterialPageRoute(
+                                    //               builder: (context) =>
+                                    //                   DashboardPage()));
+                                    //     }
+                                    //   } else {
+                                    //     Navigator.pushReplacement(
+                                    //         context,
+                                    //         MaterialPageRoute(
+                                    //             builder: (context) => LoginPage()));
+                                    //   }
+                                    // }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors
+                                        .secondaryColor, // Background color of the button
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 24.0),
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          width: 1, color: Colors.black),
+                                      borderRadius: BorderRadius.circular(
+                                          10.0), // Border radius
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'NO',
+                                    style: TextStyle(
+                                        color: AppColors.primaryColor),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isFetch = true;
+                                    });
+                                    _fetchingdata();
+                                  },
+                                  child: Text(
+                                    'YES',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors
+                                        .primaryColor, // Background color of the button
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 24.0),
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          width: 1, color: Colors.black),
+                                      borderRadius: BorderRadius.circular(
+                                          10.0), // Border radius
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 )
-              ],
-            ),
+            ],
           ),
         ),
       ),

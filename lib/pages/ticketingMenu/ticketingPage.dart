@@ -55,7 +55,7 @@ class _TicketingPageState extends State<TicketingPage> {
   String route = '';
   String passengerType = '';
   String typeofCards = '';
-  bool isFix = true;
+  bool isFix = false;
   String selectedStationID = '';
 
   bool ismissingPassengerType = false;
@@ -118,8 +118,11 @@ class _TicketingPageState extends State<TicketingPage> {
     super.initState();
 
     storedData = _myBox.get('SESSION');
+    if (coopData['coopType'] == "Bus") {
+      isFix = storedData['isFix'] ?? false;
+    }
+    print("isFix: $isFix");
 
-    isFix = storedData['isFix'] ?? false;
     if (isFix) {
       passengerType = storedData['selectedPassengerType'];
     }
@@ -3706,9 +3709,10 @@ class _TicketingPageState extends State<TicketingPage> {
                                               onTap: () {
                                                 // if (coopData['coopType'] !=
                                                 //     "Bus") {
-                                                _showDialogJeepneyTicketing(
-                                                    context);
+                                                // _showDialogJeepneyTicketing(
+                                                //     context);
                                                 // }
+                                                return;
                                               },
                                               child: Container(
                                                 height: 60,
@@ -5854,6 +5858,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                                 .width,
                                             child: TextField(
                                               controller: editAmountController,
+                                              enabled:
+                                                  fetchService.getIsNumeric(),
                                               keyboardType:
                                                   TextInputType.number,
                                               textAlign: TextAlign.center,

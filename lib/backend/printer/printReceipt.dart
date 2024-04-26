@@ -268,7 +268,9 @@ class TestPrinttt {
       double discountPercent,
       int pax,
       double newBalance,
-      String sNo) async {
+      String sNo,
+      String idNo,
+      String mop) async {
     bool isDltb = false;
     bool isJeepney = false;
     final coopData = fetchservice.fetchCoopData();
@@ -333,10 +335,13 @@ class TestPrinttt {
         bluetooth.printCustom("Ticket#:   $ticketNo", 1, 1);
         // bluetooth.printCustom("Route: $route", 1, 1);
         // bluetooth.printLeftRight("Ticket#:", "$ticketNo", 1);
-        bluetooth.printLeftRight("MOP:", "$cardType", 1);
+        bluetooth.printLeftRight("MOP:", "$mop", 1);
 
         bluetooth.printLeftRight(
             "PASS TYPE:", "${passengerType.toUpperCase()}", 1);
+        if (passengerType != "regular" && passengerType != "baggage") {
+          bluetooth.printLeftRight("ID NO:", "$idNo", 1);
+        }
         // if (isrouteLong) {
         //   bluetooth.printCustom('Route: $route', 1, 0);
         // } else {

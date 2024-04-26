@@ -315,26 +315,31 @@ class _FinalCashPageState extends State<FinalCashPage> {
                             isBottom: false,
                             label: "FINAL REMITTANCE",
                             value: '${final_remittance.toStringAsFixed(2)}'),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        DLTBContainer(
-                            isTop: false,
-                            isBottom: false,
-                            label: "CHARTER REVENUE",
-                            value: '${charterRevenue}'),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        DLTBContainer(
-                            isTop: false,
-                            isBottom: false,
-                            label: "PREPAID PASS REVENUE",
-                            value:
-                                '${fetchService.totalPrepaidPassengerRevenue()}'),
-                        SizedBox(
-                          height: 5,
-                        ),
+                        if (coopData['coopType'] == "Bus")
+                          SizedBox(
+                            height: 5,
+                          ),
+                        if (coopData['coopType'] == "Bus")
+                          DLTBContainer(
+                              isTop: false,
+                              isBottom: false,
+                              label: "CHARTER REVENUE",
+                              value: '${charterRevenue}'),
+                        if (coopData['coopType'] == "Bus")
+                          SizedBox(
+                            height: 5,
+                          ),
+                        if (coopData['coopType'] == "Bus")
+                          DLTBContainer(
+                              isTop: false,
+                              isBottom: false,
+                              label: "PREPAID PASS REVENUE",
+                              value:
+                                  '${fetchService.totalPrepaidPassengerRevenue()}'),
+                        if (coopData['coopType'] == "Bus")
+                          SizedBox(
+                            height: 5,
+                          ),
                         // DLTBContainer(
                         //     isTop: false,
                         //     isBottom: false,
@@ -344,11 +349,12 @@ class _FinalCashPageState extends State<FinalCashPage> {
                         // SizedBox(
                         //   height: 5,
                         // ),
-                        DLTBContainer(
-                            isTop: false,
-                            isBottom: true,
-                            label: "Top Up Revenue",
-                            value: '${fetchService.getTotalTopUpper()}'),
+                        if (coopData['coopType'] == "Bus")
+                          DLTBContainer(
+                              isTop: false,
+                              isBottom: true,
+                              label: "Top Up Revenue",
+                              value: '${fetchService.getTotalTopUpper()}'),
                         SizedBox(
                           height: 5,
                         ),
@@ -924,524 +930,541 @@ class _FinalCashPageState extends State<FinalCashPage> {
                               ],
                             ),
                           ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              // Set border
-                              color: AppColors.secondaryColor,
-                              border: Border.all(
-                                  width: 2, color: AppColors.primaryColor),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: ExpansionTile(
-                            title: Text(
-                              'Puncher Passenger',
-                              style: TextStyle(
-                                  color: AppColors.primaryColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            iconColor: AppColors.primaryColor,
-                            collapsedIconColor: AppColors.primaryColor,
-                            children: <Widget>[
-                              for (int i = 0; i < torTrip.length; i++)
-                                ExpansionTile(
-                                  title: Text('TRIP ${i + 1}'),
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 2),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: AppColors.primaryColor,
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(20),
-                                                topRight: Radius.circular(20))),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  'Ticket Revenue',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.35,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    20))),
-                                                child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child:
-                                                        //  Text(
-                                                        //   '0.00',
-                                                        //   textAlign: TextAlign.center,
-                                                        //   style: TextStyle(fontWeight: FontWeight.bold),
-                                                        // ),
-                                                        SizedBox(
-                                                      height: 20,
-                                                      child: TextFormField(
-                                                        controller:
-                                                            puncherPassengerTicketRevenueController[
-                                                                i],
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        decoration: InputDecoration(
-                                                            contentPadding:
-                                                                EdgeInsets.only(
-                                                                    bottom: 10),
-                                                            border: InputBorder
-                                                                .none,
-                                                            hintText: '****',
-                                                            hintStyle: TextStyle(
-                                                                color:
-                                                                    Colors.grey[
-                                                                        600])),
-                                                        onChanged: (value) {
-                                                          double
-                                                              puncherPassengerRev =
-                                                              0;
-                                                          double
-                                                              puncherBaggageRev =
-                                                              0;
-
-                                                          double
-                                                              waybillrevenue =
-                                                              0;
-
-                                                          for (int i = 0;
-                                                              i <
-                                                                  torTrip
-                                                                      .length;
-                                                              i++) {
-                                                            try {
-                                                              waybillrevenue +=
-                                                                  double.parse(
-                                                                      waybillTicketRevenueController[
-                                                                              i]
-                                                                          .text);
-                                                            } catch (e) {
-                                                              print(e);
-                                                            }
-                                                            try {
-                                                              puncherPassengerRev +=
-                                                                  double.parse(
-                                                                      puncherPassengerTicketRevenueController[
-                                                                              i]
-                                                                          .text);
-                                                            } catch (e) {
-                                                              print(e);
-                                                            }
-
-                                                            try {
-                                                              puncherBaggageRev +=
-                                                                  double.parse(
-                                                                      puncherBaggageTicketRevenueController[
-                                                                              i]
-                                                                          .text);
-                                                            } catch (e) {
-                                                              print(e);
-                                                            }
-                                                          }
-
-                                                          setState(() {
-                                                            cashRecieved =
-                                                                copyCashReceived +
-                                                                    puncherPassengerRev +
-                                                                    puncherBaggageRev;
-
-                                                            waybillRevenue =
-                                                                copywaybillRevenue +
-                                                                    waybillrevenue;
-
-                                                            grossRevenue = copyGrossRevenue +
-                                                                puncherPassengerRev +
-                                                                puncherBaggageRev +
-                                                                waybillRevenue;
-
-                                                            netCollection =
-                                                                grossRevenue -
-                                                                    totalExpenses;
-
-                                                            final_remittance = netCollection -
-                                                                (charterRevenue +
-                                                                    waybillRevenue +
-                                                                    fetchService
-                                                                        .totalPrepaidPassengerRevenue());
-                                                          });
-                                                        },
-                                                      ),
-                                                    )),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: AppColors.primaryColor,
-                                            borderRadius: BorderRadius.only(
-                                                bottomLeft: Radius.circular(20),
-                                                bottomRight:
-                                                    Radius.circular(20))),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  'Ticket Count',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.35,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    20))),
-                                                child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child:
-                                                        //  Text(
-                                                        //   '0.00',
-                                                        //   textAlign: TextAlign.center,
-                                                        //   style: TextStyle(fontWeight: FontWeight.bold),
-                                                        // ),
-                                                        SizedBox(
-                                                      height: 20,
-                                                      child: TextFormField(
-                                                        controller:
-                                                            puncherPassengerTicketCountController[
-                                                                i],
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        decoration: InputDecoration(
-                                                            contentPadding:
-                                                                EdgeInsets.only(
-                                                                    bottom: 10),
-                                                            border: InputBorder
-                                                                .none,
-                                                            hintText: '****',
-                                                            hintStyle: TextStyle(
-                                                                color:
-                                                                    Colors.grey[
-                                                                        600])),
-                                                      ),
-                                                    )),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                            ],
+                        if (coopData['coopType'] == "Bus")
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: AppColors.secondaryColor,
-                              border: Border.all(
-                                  width: 2,
-                                  color: AppColors.primaryColor), // Set border
-                              borderRadius: BorderRadius.circular(10)),
-                          child: ExpansionTile(
-                            title: Text(
-                              'Puncher Baggage',
-                              style: TextStyle(
-                                  color: AppColors.primaryColor,
-                                  fontWeight: FontWeight.bold),
+                        if (coopData['coopType'] == "Bus")
+                          Container(
+                            decoration: BoxDecoration(
+                                // Set border
+                                color: AppColors.secondaryColor,
+                                border: Border.all(
+                                    width: 2, color: AppColors.primaryColor),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: ExpansionTile(
+                              title: Text(
+                                'Puncher Passenger',
+                                style: TextStyle(
+                                    color: AppColors.primaryColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              iconColor: AppColors.primaryColor,
+                              collapsedIconColor: AppColors.primaryColor,
+                              children: <Widget>[
+                                for (int i = 0; i < torTrip.length; i++)
+                                  ExpansionTile(
+                                    title: Text('TRIP ${i + 1}'),
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 2),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: AppColors.primaryColor,
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(20),
+                                                  topRight:
+                                                      Radius.circular(20))),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    'Ticket Revenue',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.35,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                              topRight: Radius
+                                                                  .circular(
+                                                                      20))),
+                                                  child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child:
+                                                          //  Text(
+                                                          //   '0.00',
+                                                          //   textAlign: TextAlign.center,
+                                                          //   style: TextStyle(fontWeight: FontWeight.bold),
+                                                          // ),
+                                                          SizedBox(
+                                                        height: 20,
+                                                        child: TextFormField(
+                                                          controller:
+                                                              puncherPassengerTicketRevenueController[
+                                                                  i],
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .number,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          decoration: InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets.only(
+                                                                      bottom:
+                                                                          10),
+                                                              border:
+                                                                  InputBorder
+                                                                      .none,
+                                                              hintText: '****',
+                                                              hintStyle: TextStyle(
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      600])),
+                                                          onChanged: (value) {
+                                                            double
+                                                                puncherPassengerRev =
+                                                                0;
+                                                            double
+                                                                puncherBaggageRev =
+                                                                0;
+
+                                                            double
+                                                                waybillrevenue =
+                                                                0;
+
+                                                            for (int i = 0;
+                                                                i <
+                                                                    torTrip
+                                                                        .length;
+                                                                i++) {
+                                                              try {
+                                                                waybillrevenue +=
+                                                                    double.parse(
+                                                                        waybillTicketRevenueController[i]
+                                                                            .text);
+                                                              } catch (e) {
+                                                                print(e);
+                                                              }
+                                                              try {
+                                                                puncherPassengerRev +=
+                                                                    double.parse(
+                                                                        puncherPassengerTicketRevenueController[i]
+                                                                            .text);
+                                                              } catch (e) {
+                                                                print(e);
+                                                              }
+
+                                                              try {
+                                                                puncherBaggageRev +=
+                                                                    double.parse(
+                                                                        puncherBaggageTicketRevenueController[i]
+                                                                            .text);
+                                                              } catch (e) {
+                                                                print(e);
+                                                              }
+                                                            }
+
+                                                            setState(() {
+                                                              cashRecieved =
+                                                                  copyCashReceived +
+                                                                      puncherPassengerRev +
+                                                                      puncherBaggageRev;
+
+                                                              waybillRevenue =
+                                                                  copywaybillRevenue +
+                                                                      waybillrevenue;
+
+                                                              grossRevenue = copyGrossRevenue +
+                                                                  puncherPassengerRev +
+                                                                  puncherBaggageRev +
+                                                                  waybillRevenue;
+
+                                                              netCollection =
+                                                                  grossRevenue -
+                                                                      totalExpenses;
+
+                                                              final_remittance = netCollection -
+                                                                  (charterRevenue +
+                                                                      waybillRevenue +
+                                                                      fetchService
+                                                                          .totalPrepaidPassengerRevenue());
+                                                            });
+                                                          },
+                                                        ),
+                                                      )),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: AppColors.primaryColor,
+                                              borderRadius: BorderRadius.only(
+                                                  bottomLeft:
+                                                      Radius.circular(20),
+                                                  bottomRight:
+                                                      Radius.circular(20))),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    'Ticket Count',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.35,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          20))),
+                                                  child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child:
+                                                          //  Text(
+                                                          //   '0.00',
+                                                          //   textAlign: TextAlign.center,
+                                                          //   style: TextStyle(fontWeight: FontWeight.bold),
+                                                          // ),
+                                                          SizedBox(
+                                                        height: 20,
+                                                        child: TextFormField(
+                                                          controller:
+                                                              puncherPassengerTicketCountController[
+                                                                  i],
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .number,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          decoration: InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets.only(
+                                                                      bottom:
+                                                                          10),
+                                                              border:
+                                                                  InputBorder
+                                                                      .none,
+                                                              hintText: '****',
+                                                              hintStyle: TextStyle(
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      600])),
+                                                        ),
+                                                      )),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                              ],
                             ),
-                            iconColor: AppColors.primaryColor,
-                            collapsedIconColor: AppColors.primaryColor,
-                            children: <Widget>[
-                              for (int i = 0; i < torTrip.length; i++)
-                                ExpansionTile(
-                                  title: Text("TRIP ${i + 1}"),
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 2),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: AppColors.primaryColor,
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(20),
-                                                topRight: Radius.circular(20))),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  'Ticket Revenue',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.35,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    20))),
-                                                child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child:
-                                                        //  Text(
-                                                        //   '0.00',
-                                                        //   textAlign: TextAlign.center,
-                                                        //   style: TextStyle(fontWeight: FontWeight.bold),
-                                                        // ),
-                                                        SizedBox(
-                                                      height: 20,
-                                                      child: TextFormField(
-                                                        controller:
-                                                            puncherBaggageTicketRevenueController[
-                                                                i],
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        decoration: InputDecoration(
-                                                            contentPadding:
-                                                                EdgeInsets.only(
-                                                                    bottom: 10),
-                                                            border: InputBorder
-                                                                .none,
-                                                            hintText: '****',
-                                                            hintStyle: TextStyle(
-                                                                color:
-                                                                    Colors.grey[
-                                                                        600])),
-                                                        onChanged: (value) {
-                                                          double
-                                                              puncherPassengerRev =
-                                                              0;
-                                                          double
-                                                              puncherBaggageRev =
-                                                              0;
-
-                                                          double
-                                                              waybillrevenue =
-                                                              0;
-
-                                                          for (int i = 0;
-                                                              i <
-                                                                  torTrip
-                                                                      .length;
-                                                              i++) {
-                                                            try {
-                                                              waybillrevenue +=
-                                                                  double.parse(
-                                                                      waybillTicketRevenueController[
-                                                                              i]
-                                                                          .text);
-                                                            } catch (e) {
-                                                              print(e);
-                                                            }
-                                                            try {
-                                                              puncherPassengerRev +=
-                                                                  double.parse(
-                                                                      puncherPassengerTicketRevenueController[
-                                                                              i]
-                                                                          .text);
-                                                            } catch (e) {
-                                                              print(e);
-                                                            }
-
-                                                            try {
-                                                              puncherBaggageRev +=
-                                                                  double.parse(
-                                                                      puncherBaggageTicketRevenueController[
-                                                                              i]
-                                                                          .text);
-                                                            } catch (e) {
-                                                              print(e);
-                                                            }
-                                                          }
-
-                                                          setState(() {
-                                                            cashRecieved =
-                                                                copyCashReceived +
-                                                                    puncherPassengerRev +
-                                                                    puncherBaggageRev;
-
-                                                            waybillRevenue =
-                                                                copywaybillRevenue +
-                                                                    waybillrevenue;
-
-                                                            grossRevenue = copyGrossRevenue +
-                                                                puncherPassengerRev +
-                                                                puncherBaggageRev +
-                                                                waybillRevenue;
-
-                                                            netCollection =
-                                                                grossRevenue -
-                                                                    totalExpenses;
-
-                                                            final_remittance = netCollection -
-                                                                (charterRevenue +
-                                                                    waybillRevenue +
-                                                                    fetchService
-                                                                        .totalPrepaidPassengerRevenue());
-                                                          });
-                                                        },
-                                                      ),
-                                                    )),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(2),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: AppColors.primaryColor,
-                                            border: Border.all(
-                                                width: 2, color: Colors.white),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  'Ticket Count',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.35,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    20))),
-                                                child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child:
-                                                        //  Text(
-                                                        //   '0.00',
-                                                        //   textAlign: TextAlign.center,
-                                                        //   style: TextStyle(fontWeight: FontWeight.bold),
-                                                        // ),
-                                                        SizedBox(
-                                                      height: 20,
-                                                      child: TextFormField(
-                                                        controller:
-                                                            puncherBaggageTicketCountController[
-                                                                i],
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        decoration: InputDecoration(
-                                                            contentPadding:
-                                                                EdgeInsets.only(
-                                                                    bottom: 10),
-                                                            border: InputBorder
-                                                                .none,
-                                                            hintText: '****',
-                                                            hintStyle: TextStyle(
-                                                                color:
-                                                                    Colors.grey[
-                                                                        600])),
-                                                      ),
-                                                    )),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                            ],
                           ),
-                        ),
+                        if (coopData['coopType'] == "Bus")
+                          SizedBox(
+                            height: 10,
+                          ),
+                        if (coopData['coopType'] == "Bus")
+                          Container(
+                            decoration: BoxDecoration(
+                                color: AppColors.secondaryColor,
+                                border: Border.all(
+                                    width: 2,
+                                    color:
+                                        AppColors.primaryColor), // Set border
+                                borderRadius: BorderRadius.circular(10)),
+                            child: ExpansionTile(
+                              title: Text(
+                                'Puncher Baggage',
+                                style: TextStyle(
+                                    color: AppColors.primaryColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              iconColor: AppColors.primaryColor,
+                              collapsedIconColor: AppColors.primaryColor,
+                              children: <Widget>[
+                                for (int i = 0; i < torTrip.length; i++)
+                                  ExpansionTile(
+                                    title: Text("TRIP ${i + 1}"),
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 2),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: AppColors.primaryColor,
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(20),
+                                                  topRight:
+                                                      Radius.circular(20))),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    'Ticket Revenue',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.35,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                              topRight: Radius
+                                                                  .circular(
+                                                                      20))),
+                                                  child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child:
+                                                          //  Text(
+                                                          //   '0.00',
+                                                          //   textAlign: TextAlign.center,
+                                                          //   style: TextStyle(fontWeight: FontWeight.bold),
+                                                          // ),
+                                                          SizedBox(
+                                                        height: 20,
+                                                        child: TextFormField(
+                                                          controller:
+                                                              puncherBaggageTicketRevenueController[
+                                                                  i],
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .number,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          decoration: InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets.only(
+                                                                      bottom:
+                                                                          10),
+                                                              border:
+                                                                  InputBorder
+                                                                      .none,
+                                                              hintText: '****',
+                                                              hintStyle: TextStyle(
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      600])),
+                                                          onChanged: (value) {
+                                                            double
+                                                                puncherPassengerRev =
+                                                                0;
+                                                            double
+                                                                puncherBaggageRev =
+                                                                0;
+
+                                                            double
+                                                                waybillrevenue =
+                                                                0;
+
+                                                            for (int i = 0;
+                                                                i <
+                                                                    torTrip
+                                                                        .length;
+                                                                i++) {
+                                                              try {
+                                                                waybillrevenue +=
+                                                                    double.parse(
+                                                                        waybillTicketRevenueController[i]
+                                                                            .text);
+                                                              } catch (e) {
+                                                                print(e);
+                                                              }
+                                                              try {
+                                                                puncherPassengerRev +=
+                                                                    double.parse(
+                                                                        puncherPassengerTicketRevenueController[i]
+                                                                            .text);
+                                                              } catch (e) {
+                                                                print(e);
+                                                              }
+
+                                                              try {
+                                                                puncherBaggageRev +=
+                                                                    double.parse(
+                                                                        puncherBaggageTicketRevenueController[i]
+                                                                            .text);
+                                                              } catch (e) {
+                                                                print(e);
+                                                              }
+                                                            }
+
+                                                            setState(() {
+                                                              cashRecieved =
+                                                                  copyCashReceived +
+                                                                      puncherPassengerRev +
+                                                                      puncherBaggageRev;
+
+                                                              waybillRevenue =
+                                                                  copywaybillRevenue +
+                                                                      waybillrevenue;
+
+                                                              grossRevenue = copyGrossRevenue +
+                                                                  puncherPassengerRev +
+                                                                  puncherBaggageRev +
+                                                                  waybillRevenue;
+
+                                                              netCollection =
+                                                                  grossRevenue -
+                                                                      totalExpenses;
+
+                                                              final_remittance = netCollection -
+                                                                  (charterRevenue +
+                                                                      waybillRevenue +
+                                                                      fetchService
+                                                                          .totalPrepaidPassengerRevenue());
+                                                            });
+                                                          },
+                                                        ),
+                                                      )),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(2),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: AppColors.primaryColor,
+                                              border: Border.all(
+                                                  width: 2,
+                                                  color: Colors.white),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    'Ticket Count',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.35,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          20))),
+                                                  child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child:
+                                                          //  Text(
+                                                          //   '0.00',
+                                                          //   textAlign: TextAlign.center,
+                                                          //   style: TextStyle(fontWeight: FontWeight.bold),
+                                                          // ),
+                                                          SizedBox(
+                                                        height: 20,
+                                                        child: TextFormField(
+                                                          controller:
+                                                              puncherBaggageTicketCountController[
+                                                                  i],
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .number,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          decoration: InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets.only(
+                                                                      bottom:
+                                                                          10),
+                                                              border:
+                                                                  InputBorder
+                                                                      .none,
+                                                              hintText: '****',
+                                                              hintStyle: TextStyle(
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      600])),
+                                                        ),
+                                                      )),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                              ],
+                            ),
+                          ),
                         SizedBox(
                           height: 10,
                         ),

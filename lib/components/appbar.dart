@@ -197,11 +197,19 @@ class appbar extends StatelessWidget {
                       ),
                       Text(
                           '${coopData['cooperativeCodeName'].toString().toUpperCase()}',
-                          style: GoogleFonts.blackHanSans(
+                          style: TextStyle(
+                              fontFamily: 'CustomFont',
                               color: Colors.white,
                               fontWeight: FontWeight.w900,
                               fontSize: 30,
-                              letterSpacing: 5))
+                              letterSpacing: 5)
+
+                          // GoogleFonts.blackHanSans(
+                          //     color: Colors.white,
+                          //     fontWeight: FontWeight.w900,
+                          //     fontSize: 30,
+                          //     letterSpacing: 5)
+                          )
                     ],
                   ),
                 ),

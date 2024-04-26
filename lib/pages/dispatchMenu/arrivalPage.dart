@@ -224,13 +224,15 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                     label: "TOTAL BAGGAGE",
                                     value:
                                         '${fetchService.totalBaggageperTrip()}'),
-                                SizedBox(height: 5),
-                                arrivalWidget(
-                                    isBottom: false,
-                                    isTop: false,
-                                    label: "PREPAID PASS REVENUE",
-                                    value:
-                                        '${fetchService.totalPrepaidPassengerRevenueperTrip()}'),
+                                if (coopData['coopType'] == "Bus")
+                                  SizedBox(height: 5),
+                                if (coopData['coopType'] == "Bus")
+                                  arrivalWidget(
+                                      isBottom: false,
+                                      isTop: false,
+                                      label: "PREPAID PASS REVENUE",
+                                      value:
+                                          '${fetchService.totalPrepaidPassengerRevenueperTrip()}'),
                                 // SizedBox(height: 5),
                                 // arrivalWidget(
                                 //     isBottom: false,
@@ -259,13 +261,15 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                     label: "CARD SALES",
                                     value:
                                         '${fetchService.totalTripCardSales().toStringAsFixed(2)}'),
-                                SizedBox(height: 5),
-                                arrivalWidget(
-                                    isBottom: false,
-                                    isTop: false,
-                                    label: "TOTAL TOPUP",
-                                    value:
-                                        '${fetchService.getTotalTopUpperTrip().toStringAsFixed(2)}'),
+                                if (coopData['coopType'] == "Bus")
+                                  SizedBox(height: 5),
+                                if (coopData['coopType'] == "Bus")
+                                  arrivalWidget(
+                                      isBottom: false,
+                                      isTop: false,
+                                      label: "TOTAL TOPUP",
+                                      value:
+                                          '${fetchService.getTotalTopUpperTrip().toStringAsFixed(2)}'),
                                 SizedBox(height: 5),
                                 arrivalWidget(
                                     isBottom: true,

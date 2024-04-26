@@ -46,7 +46,7 @@ class _FirstPageState extends State<FirstPage> {
   @override
   void initState() {
     super.initState();
-
+    startLocationTracking();
     _checkData();
     // _fetchingdata();
   }
@@ -58,7 +58,9 @@ class _FirstPageState extends State<FirstPage> {
 
   void _checkData() async {
     await Future.delayed(Duration(seconds: 2));
+
     final filipaycardlist = _myBox.get('filipayCardList');
+    print("filipaycardlist: $filipaycardlist");
     if (filipaycardlist.isNotEmpty && filipaycardlist != null) {
       if (mounted) {
         setState(() {
@@ -66,6 +68,7 @@ class _FirstPageState extends State<FirstPage> {
         });
       }
     } else {
+      print('proceed to fetching');
       _fetchingdata();
     }
   }
@@ -75,7 +78,7 @@ class _FirstPageState extends State<FirstPage> {
     // if (torTrip.isEmpty) {
     bool isfetchdata = await fetchservice.fetchdata();
     if (isfetchdata) {
-      startLocationTracking();
+      // startLocationTracking();
       _connectToPrinter();
     } else {
       ArtSweetAlert.show(
@@ -104,6 +107,12 @@ class _FirstPageState extends State<FirstPage> {
     bool isTicketProceed = false;
     bool isupdateAdditionalFare = false;
     bool isInspectionProceed = false;
+
+    bool isofflineDispatchProceed = false;
+    bool isofflineUpdateTorTripProceed = false;
+    bool isofflineUpdateTorMainProceed = false;
+    bool isofflineAddTorMainProceed = false;
+
     httprequestService httpRequestServices = httprequestService();
     Location location = Location();
     bool serviceEnabled;
@@ -137,6 +146,13 @@ class _FirstPageState extends State<FirstPage> {
         final offlineInspection = _myBox.get('offlinetorInspection');
         final offlinetorViolation = _myBox.get('offlinetorViolation');
         final offlinetorFuel = _myBox.get('offlineFuel');
+
+        // new offline
+        final offlineDispatch = _myBox.get('offlineDispatch');
+        final offlineUpdateTorTrip = _myBox.get('offlineUpdateTorTrip');
+        final offlineUpdateTorMain = _myBox.get('offlineUpdateTorMain');
+        final offlineAddTorMain = _myBox.get('offlineAddTorMain');
+
         print('offlineInspection: $offlineInspection');
         print('offlinetorViolation: $offlinetorViolation');
         print('offlineUpdateAdditionalFare: $offlineUpdateAdditionalFare');
@@ -146,6 +162,123 @@ class _FirstPageState extends State<FirstPage> {
         //   print('connection offlineDataList: $offlineDataList');
         // }
 
+// offline dispatching
+        if (offlineDispatch.isNotEmpty) {
+          print('not empty offlineDispatch: $offlineDispatch');
+          if (!isofflineDispatchProceed) {
+            for (var item in List.from(offlineDispatch)) {
+              print('connection offlineDispatch item: $item');
+              isofflineDispatchProceed = true;
+              Map<String, dynamic> resultofflineDispatch =
+                  await httprequestservice.torTrip(item);
+              try {
+                if (resultofflineDispatch['messages'][0]['code'].toString() ==
+                    "0") {
+                  isofflineDispatchProceed = false;
+                  print("connection offlineDispatch success");
+                  offlineDispatch.remove(item);
+                } else {
+                  isofflineDispatchProceed = false;
+                  print(
+                      "connection offlineDispatch failed ${resultofflineDispatch['messages']['message']}");
+                }
+              } catch (e) {
+                isofflineDispatchProceed = false;
+                print('connection offlineDispatch $e');
+              }
+              _myBox.put('offlineDispatch', offlineDispatch);
+            }
+          }
+        } else {
+          print('empty offlineDispatch: $offlineDispatch');
+        }
+
+        // offline update tortrip
+        if (offlineUpdateTorTrip.isNotEmpty) {
+          print('not empty offlineUpdateTorTrip: $offlineUpdateTorTrip');
+          if (!isofflineUpdateTorTripProceed) {
+            for (var item in List.from(offlineUpdateTorTrip)) {
+              print('connection offlineUpdateTorTrip item: $item');
+              isofflineUpdateTorTripProceed = true;
+              Map<String, dynamic> resultofflineUpdateTorTrip =
+                  await httprequestservice.torTrip(item);
+              try {
+                if (resultofflineUpdateTorTrip['messages'][0]['code']
+                        .toString() ==
+                    "0") {
+                  isofflineUpdateTorTripProceed = false;
+                  print("connection offlineUpdateTorTrip success");
+                  offlineUpdateTorTrip.remove(item);
+                } else {
+                  isofflineUpdateTorTripProceed = false;
+                  print(
+                      "connection offlineUpdateTorTrip failed ${resultofflineUpdateTorTrip['messages']['message']}");
+                }
+              } catch (e) {
+                isofflineUpdateTorTripProceed = false;
+                print('connection offlineUpdateTorTrip $e');
+              }
+              _myBox.put('offlineUpdateTorTrip', offlineUpdateTorTrip);
+            }
+          }
+        } else {
+          print('empty offlineUpdateTorTrip: $offlineUpdateTorTrip');
+        }
+// offline update tormain
+        if (offlineUpdateTorMain.isNotEmpty) {
+          if (!isofflineUpdateTorMainProceed) {
+            for (var item in List.from(offlineUpdateTorMain)) {
+              print('connection offlineUpdateTorMain item: $item');
+              isofflineUpdateTorMainProceed = true;
+              Map<String, dynamic> resultofflineUpdateTorMain =
+                  await httprequestservice.updateTorMain(item);
+              try {
+                if (resultofflineUpdateTorMain['messages']['code'].toString() ==
+                    "0") {
+                  isofflineUpdateTorMainProceed = false;
+                  print("connection offlineUpdateTorMain success");
+                  offlineUpdateTorMain.remove(item);
+                } else {
+                  isofflineUpdateTorMainProceed = false;
+                  print(
+                      "connection offlineUpdateTorMain failed ${resultofflineUpdateTorMain['messages']['message']}");
+                }
+              } catch (e) {
+                isofflineUpdateTorMainProceed = false;
+                print('connection offlineUpdateTorMain $e');
+              }
+              _myBox.put('offlineUpdateTorMain', offlineUpdateTorMain);
+            }
+          }
+        }
+
+// offline add tormain
+        if (offlineAddTorMain.isNotEmpty) {
+          if (!isofflineAddTorMainProceed) {
+            for (var item in List.from(offlineAddTorMain)) {
+              print('connection offlineUpdateTorMain item: $item');
+              isofflineAddTorMainProceed = true;
+              Map<String, dynamic> resultofflineAddTorMain =
+                  await httprequestservice.addTorMain(item);
+              try {
+                if (resultofflineAddTorMain['messages'][0]['code'].toString() ==
+                    "0") {
+                  isofflineAddTorMainProceed = false;
+                  print("connection offlineUpdateTorMain success");
+                  offlineAddTorMain.remove(item);
+                } else {
+                  isofflineAddTorMainProceed = false;
+                  print(
+                      "connection offlineUpdateTorMain failed ${resultofflineAddTorMain['messages']['message']}");
+                }
+              } catch (e) {
+                isofflineAddTorMainProceed = false;
+                print('connection offlineUpdateTorMain $e');
+              }
+              _myBox.put('offlineAddTorMain', offlineAddTorMain);
+            }
+          }
+        }
         if (offlineTicket.isNotEmpty) {
           if (!isTicketProceed) {
             for (var item in List.from(offlineTicket)) {
@@ -304,6 +437,7 @@ class _FirstPageState extends State<FirstPage> {
       });
     } catch (e) {
       print('getting location error: $e');
+      startLocationTracking();
     }
   }
 
@@ -313,9 +447,10 @@ class _FirstPageState extends State<FirstPage> {
           seconds:
               2); // Adjust the duration as needed (3 seconds in this example).
       await Future.delayed(duration);
-      setState(() {
-        progressText = 'Checking & Preparing Printer...';
-      });
+      if (mounted)
+        setState(() {
+          progressText = 'Checking & Preparing Printer...';
+        });
       final resultprinter = await connectToPrinter.connectToPrinter();
 
       if (resultprinter != null) {
@@ -368,6 +503,7 @@ class _FirstPageState extends State<FirstPage> {
       });
 
       // final resultNFC = await backend.startNFCReader();
+
       setState(() {
         progressText = 'Checking GPS...';
       });
@@ -530,10 +666,11 @@ class _FirstPageState extends State<FirstPage> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    setState(() {
-                                      progressbar = 1;
-                                      isFetch = true;
-                                    });
+                                    if (mounted)
+                                      setState(() {
+                                        progressbar = 1;
+                                        isFetch = true;
+                                      });
                                     getSerialNumber();
                                     // final torTrip = _myBox.get('torTrip');
                                     // final SESSION = _myBox.get('SESSION');
@@ -590,9 +727,10 @@ class _FirstPageState extends State<FirstPage> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    setState(() {
-                                      isFetch = true;
-                                    });
+                                    if (mounted)
+                                      setState(() {
+                                        isFetch = true;
+                                      });
                                     _fetchingdata();
                                   },
                                   child: Text(

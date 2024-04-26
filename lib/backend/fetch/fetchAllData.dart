@@ -1310,7 +1310,8 @@ class fetchServices {
 
       List<Map<String, dynamic>> vehicleList = [];
       final vehicleListDB = _myBox.get('vehicleListDB');
-      for (int i = 0; i < 10000; i++) {
+      // for (int i = 0; i < 10000; i++) {
+      for (int i = 0; i < 10; i++) {
         String plate_number = "";
         if (vehicleListDB.isNotEmpty) {
           // print('vehicleListDB: $vehicleListDB');

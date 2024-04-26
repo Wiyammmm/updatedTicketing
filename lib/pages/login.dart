@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
     torTrip = _myBox.get('torTrip');
     stationList = fetchservice.fetchStationList();
     coopData = fetchservice.fetchCoopData();
-    // print('torTrip: $torTrip');
+    print('torTrip: $torTrip');
     // print('SESSION: $SESSION');
     routeList = fetchservice.fetchRouteList();
     vehicleList = fetchservice.fetchVehicleList();
@@ -127,6 +127,30 @@ class _LoginPageState extends State<LoginPage> {
     torNoController.dispose();
     isExit = true;
     super.dispose();
+  }
+
+  void _saveofflineDispatch(Map<String, dynamic> requestBodyItemTorTrip) {
+    final offlineDispatch = _myBox.get('offlineDispatch');
+
+    bool isExisting = false;
+
+    for (var map in offlineDispatch) {
+      if (map.toString() == requestBodyItemTorTrip.toString()) {
+        isExisting = true;
+        break;
+      }
+    }
+    if (isExisting) {
+      print('offlineDispatch: $offlineDispatch');
+      print('exisitng dipatching');
+      return;
+    } else {
+      offlineDispatch.add(requestBodyItemTorTrip);
+      _myBox.put('offlineDispatch', offlineDispatch);
+      final newofflineDispatch = _myBox.get('offlineDispatch');
+
+      print('newofflineDispatch: $newofflineDispatch');
+    }
   }
 
   void _checkRepeatDriverTor(String employeeID) {
@@ -1312,6 +1336,7 @@ class _LoginPageState extends State<LoginPage> {
                               height: 50,
                               child: ElevatedButton(
                                 onPressed: () async {
+                                  bool shouldProceed = false;
                                   if (torNoController.text == '') {
                                     ArtSweetAlert.show(
                                         context: context,
@@ -1494,7 +1519,7 @@ class _LoginPageState extends State<LoginPage> {
                                       "inspection_made": 0,
                                       "cashReceived": 0,
                                       "cardSales": 0,
-                                      "total_topup":0,
+                                      "total_topup": 0,
                                       "coopId": "${coopData['_id']}"
                                     };
                                     if (!SESSION['isAlreadyInsertTrip']) {
@@ -1505,16 +1530,54 @@ class _LoginPageState extends State<LoginPage> {
                                       if (addTorTrip['messages'][0]['code']
                                               .toString() !=
                                           '0') {
-                                        Navigator.of(context).pop();
-                                        ArtSweetAlert.show(
-                                            context: context,
-                                            artDialogArgs: ArtDialogArgs(
-                                                type: ArtSweetAlertType.danger,
-                                                title: "ERROR",
-                                                text:
-                                                    "${addTorTrip['messages'][0]['message'].toString().toUpperCase()}"));
-                                        return;
+                                        if (addTorTrip['messages'][0]['code']
+                                                .toString() ==
+                                            '500') {
+                                          Navigator.of(context).pop();
+                                          await ArtSweetAlert.show(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              artDialogArgs: ArtDialogArgs(
+                                                  type:
+                                                      ArtSweetAlertType.danger,
+                                                  title: "OFFLINE",
+                                                  confirmButtonText: "YES",
+                                                  denyButtonText: "NO",
+                                                  onConfirm: () {
+                                                    shouldProceed = true;
+                                                    Navigator.of(context).pop();
+                                                    print('confirm offline');
+                                                    _saveofflineDispatch(
+                                                        requestBodyItemTorTrip);
+                                                  },
+                                                  onDeny: () {
+                                                    print('deny offline');
+                                                    Navigator.of(context).pop();
+
+                                                    return;
+                                                  },
+                                                  text:
+                                                      "This data is not saving to the dashboard until you reconnect to the internet\nWould you like to continue?"));
+                                        } else {
+                                          Navigator.of(context).pop();
+                                          ArtSweetAlert.show(
+                                              context: context,
+                                              artDialogArgs: ArtDialogArgs(
+                                                  type:
+                                                      ArtSweetAlertType.danger,
+                                                  title: "ERROR",
+                                                  text:
+                                                      "${addTorTrip['messages'][0]['message'].toString().toUpperCase()}"));
+                                          return;
+                                        }
+                                      } else {
+                                        shouldProceed = true;
                                       }
+                                    } else {
+                                      shouldProceed = true;
+                                    }
+                                    if (!shouldProceed) {
+                                      return;
                                     }
                                     if (!isAlreadyInsertTrip) {
                                       SESSION['isAlreadyInsertTrip'] = true;
@@ -1530,7 +1593,7 @@ class _LoginPageState extends State<LoginPage> {
                                     // final isReadyNFC =
                                     //     await backend.startNFCReader();
                                     // _startNFCReader();
-                                    Navigator.of(context).pop();
+                                    // Navigator.of(context).pop();
                                     if (isAddedTrip && isaddDispatch) {
                                       SESSION['isAlreadyInsertTrip'] = false;
                                       _myBox.put('SESSION', SESSION);
@@ -1581,6 +1644,7 @@ class _LoginPageState extends State<LoginPage> {
                                               type: ArtSweetAlertType.danger,
                                               title: "SOMETHING WENT  WRONG",
                                               text: "Please try again"));
+                                      return;
                                     }
                                   } else {
                                     setState(() {
@@ -1593,6 +1657,7 @@ class _LoginPageState extends State<LoginPage> {
                                             title: "INCOMPLETE",
                                             text: "Please Fill all the data"));
                                     print('invalid po');
+                                    return;
                                     // Invalid dispatch
                                   }
                                 },

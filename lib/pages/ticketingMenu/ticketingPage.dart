@@ -51,6 +51,9 @@ class _TicketingPageState extends State<TicketingPage> {
   double discount = 0.0;
 
   bool isMastercard = true;
+
+  int selectedPaymentMethod = 1;
+
   String bound = '';
   String route = '';
   String passengerType = '';
@@ -93,6 +96,8 @@ class _TicketingPageState extends State<TicketingPage> {
   List<Map<String, dynamic>> torTrip = [];
   Map<dynamic, dynamic> storedData = {};
   TextEditingController baggagePrice = TextEditingController(text: "0");
+
+  TextEditingController idNumController = TextEditingController();
   TextEditingController editAmountController = TextEditingController();
   TextEditingController fromKmPostController = TextEditingController();
   TextEditingController toKmPostController = TextEditingController();
@@ -495,6 +500,30 @@ class _TicketingPageState extends State<TicketingPage> {
       }
 
       if (isCardIDExisting) {
+        if (selectedPaymentMethod == 4 &&
+            !cardData[0]['sNo'].toString().contains("tripko")) {
+          Navigator.of(context).pop();
+          ArtSweetAlert.show(
+              context: context,
+              artDialogArgs: ArtDialogArgs(
+                  type: ArtSweetAlertType.danger,
+                  title: "INVALID",
+                  text: "PLEASE TAP VALID CARD"));
+          return;
+        }
+
+        if (selectedPaymentMethod == 3 &&
+            !cardData[0]['sNo'].toString().contains("beep")) {
+          Navigator.of(context).pop();
+          ArtSweetAlert.show(
+              context: context,
+              artDialogArgs: ArtDialogArgs(
+                  type: ArtSweetAlertType.danger,
+                  title: "INVALID",
+                  text: "PLEASE TAP VALID CARD"));
+          return;
+        }
+
         double previousBalance = 0.0;
         double currentBalance = 0.0;
         bool isOffline = false;
@@ -610,7 +639,9 @@ class _TicketingPageState extends State<TicketingPage> {
             "coopId": "${coopData['_id']}",
             "isOffline": isOffline,
             "pax": quantity,
-            "reverseNum": sessionBox['reverseNum']
+            "reverseNum": sessionBox['reverseNum'],
+            "idNo":
+                "${passengerType != "regular" ? "${idNumController.text}" : ""}"
           }
         });
         print('isSendTorTicket: $isSendTorTicket');
@@ -743,7 +774,8 @@ class _TicketingPageState extends State<TicketingPage> {
           "coopId": "${coopData['_id']}",
           "rowNo": rowNo,
           "pax": quantity,
-          "reverseNum": sessionBox['reverseNum']
+          "reverseNum": sessionBox['reverseNum'],
+          "idNo": "${passengerType != "regular" ? "idno" : ""}"
         };
         if (isSendTorTicket['messages']['code'].toString() == "0") {
           try {
@@ -829,11 +861,27 @@ class _TicketingPageState extends State<TicketingPage> {
                 "coopId": "${coopData['_id']}",
                 "rowNo": rowNo,
                 "pax": quantity,
-                "reverseNum": sessionBox['reverseNum']
+                "reverseNum": sessionBox['reverseNum'],
+                "idNo": "${passengerType != "regular" ? "idno" : ""}",
               }
             });
           }
           if (passengerType != '' && !baggageOnly) {
+            String mop = "";
+
+            if (selectedPaymentMethod == 1) {
+              mop = "CASH";
+            }
+            if (selectedPaymentMethod == 2) {
+              mop = "FILIPAY CARD";
+            }
+            if (selectedPaymentMethod == 3) {
+              mop = "BEEP CARD";
+            }
+            if (selectedPaymentMethod == 4) {
+              mop = "TRIPKO CARD";
+            }
+
             printService.printTicket(
                 ticketNo,
                 typeCard,
@@ -862,7 +910,9 @@ class _TicketingPageState extends State<TicketingPage> {
                 discountPercent,
                 quantity,
                 newBalance,
-                "${cardData?.isNotEmpty ?? false ? cardData![0]['sNo'] : ""}");
+                "${cardData?.isNotEmpty ?? false ? cardData![0]['sNo'] : ""}",
+                "${idNumController.text}",
+                "$mop");
           }
           Navigator.of(context).pop();
           ArtSweetAlert.show(
@@ -1123,6 +1173,27 @@ class _TicketingPageState extends State<TicketingPage> {
       return false;
     }
     print('subtotal: $subtotal');
+    if (passengerType != "regular" && passengerType != "baggage") {
+      if (idNumController.text.replaceAll(RegExp(r"\s+"), "") == "") {
+        ArtSweetAlert.show(
+            context: context,
+            artDialogArgs: ArtDialogArgs(
+                type: ArtSweetAlertType.danger,
+                title: "INCOMPLETE",
+                text: "Please input the ID NUMBER"));
+        return false;
+      }
+
+      if (idNumController.text.replaceAll(RegExp(r"\s+"), "").length < 10) {
+        ArtSweetAlert.show(
+            context: context,
+            artDialogArgs: ArtDialogArgs(
+                type: ArtSweetAlertType.danger,
+                title: "INVALID",
+                text: "Please input VALID ID NUMBER"));
+        return false;
+      }
+    }
     if ((baggageOnly && baggageprice <= 0) ||
         (!baggageOnly && passengerType == "")) {
       // if (coopData['coopType'] != "Bus") {
@@ -2659,6 +2730,104 @@ class _TicketingPageState extends State<TicketingPage> {
                                     ),
                                   ),
                                 ),
+                                if (passengerType != "regular" &&
+                                    passengerType != "baggage" &&
+                                    passengerType != "")
+                                  SizedBox(height: 5),
+                                if (passengerType != "regular" &&
+                                    passengerType != "baggage" &&
+                                    passengerType != "")
+                                  Container(
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.primaryColor,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    '*  ',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 25),
+                                                  ),
+                                                  Text(
+                                                    'ID NUMBER',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 40,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.55,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(4.0),
+                                                child: TextField(
+                                                  controller: idNumController,
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: Colors.black),
+                                                  decoration: InputDecoration(
+                                                      // contentPadding:
+                                                      //     EdgeInsets.only(bottom: 10),
+                                                      hintText: 'Enter ID No.',
+                                                      hintStyle: TextStyle(
+                                                          fontSize: 10,
+                                                          color: Color(
+                                                              0xff5f6062)),
+                                                      filled: true,
+                                                      fillColor: Colors.white,
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderSide:
+                                                            BorderSide.none,
+                                                      )),
+                                                  onChanged: (value) {
+                                                    try {
+                                                      double baggageprice =
+                                                          double.parse(value);
+                                                      if (baggageprice < 0) {
+                                                        baggagePrice.text = "";
+                                                      }
+                                                    } catch (e) {}
+                                                    _updateAmount(isDiscounted);
+                                                  },
+                                                  onTap: () {
+                                                    try {
+                                                      double baggageprice =
+                                                          double.parse(
+                                                              baggagePrice
+                                                                  .text);
+                                                      if (baggageprice <= 0) {
+                                                        baggagePrice.text = "";
+                                                      }
+                                                    } catch (e) {}
+                                                  },
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )),
                                 SizedBox(height: 5),
                                 Container(
                                     height: 40,
@@ -2862,8 +3031,11 @@ class _TicketingPageState extends State<TicketingPage> {
                                             Expanded(
                                                 child: GestureDetector(
                                               onTap: () {
+                                                // setState(() {
+                                                //   isMastercard = true;
+                                                // });
                                                 setState(() {
-                                                  isMastercard = true;
+                                                  selectedPaymentMethod = 1;
                                                 });
                                               },
                                               child: Container(
@@ -2871,7 +3043,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                       color: Colors.white,
                                                       borderRadius:
                                                           BorderRadius.only(
-                                                              bottomLeft: Radius
+                                                              topLeft: Radius
                                                                   .circular(
                                                                       20))),
                                                   child: Padding(
@@ -2888,13 +3060,17 @@ class _TicketingPageState extends State<TicketingPage> {
                                                           child: Radio(
                                                               activeColor: AppColors
                                                                   .primaryColor,
-                                                              value: true,
+                                                              value: 1,
                                                               groupValue:
-                                                                  isMastercard,
+                                                                  selectedPaymentMethod,
                                                               onChanged:
                                                                   (value) {
+                                                                // setState(() {
+                                                                //   isMastercard =
+                                                                //       value!;
+                                                                // });
                                                                 setState(() {
-                                                                  isMastercard =
+                                                                  selectedPaymentMethod =
                                                                       value!;
                                                                 });
                                                               }),
@@ -2923,8 +3099,11 @@ class _TicketingPageState extends State<TicketingPage> {
                                             Expanded(
                                                 child: GestureDetector(
                                               onTap: () {
+                                                // setState(() {
+                                                //   isMastercard = false;
+                                                // });
                                                 setState(() {
-                                                  isMastercard = false;
+                                                  selectedPaymentMethod = 2;
                                                 });
                                               },
                                               child: Container(
@@ -2932,10 +3111,9 @@ class _TicketingPageState extends State<TicketingPage> {
                                                       color: Colors.white,
                                                       borderRadius:
                                                           BorderRadius.only(
-                                                              bottomRight:
-                                                                  Radius
-                                                                      .circular(
-                                                                          20))),
+                                                              topRight: Radius
+                                                                  .circular(
+                                                                      20))),
                                                   child: Padding(
                                                     padding:
                                                         const EdgeInsets.all(
@@ -2950,15 +3128,19 @@ class _TicketingPageState extends State<TicketingPage> {
                                                           child: Radio(
                                                               activeColor: AppColors
                                                                   .primaryColor,
-                                                              value: false,
+                                                              value: 2,
                                                               groupValue:
-                                                                  isMastercard,
+                                                                  selectedPaymentMethod,
                                                               onChanged:
                                                                   (value) {
                                                                 setState(() {
-                                                                  isMastercard =
+                                                                  selectedPaymentMethod =
                                                                       value!;
                                                                 });
+                                                                // setState(() {
+                                                                //   isMastercard =
+                                                                //       value!;
+                                                                // });
                                                               }),
                                                         ),
                                                         Expanded(
@@ -2982,7 +3164,152 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   )),
                                             )),
                                           ],
-                                        )
+                                        ),
+                                        if (coopData['coopType'] == "Bus")
+                                          SizedBox(height: 5),
+                                        if (coopData['coopType'] == "Bus")
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                  child: GestureDetector(
+                                                onTap: () {
+                                                  // setState(() {
+                                                  //   isMastercard = true;
+                                                  // });
+                                                  setState(() {
+                                                    selectedPaymentMethod = 3;
+                                                  });
+                                                },
+                                                child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                bottomLeft: Radius
+                                                                    .circular(
+                                                                        20))),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Transform.scale(
+                                                            scale: 1.6,
+                                                            child: Radio(
+                                                                activeColor:
+                                                                    AppColors
+                                                                        .primaryColor,
+                                                                value: 3,
+                                                                groupValue:
+                                                                    selectedPaymentMethod,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  // setState(() {
+                                                                  //   isMastercard =
+                                                                  //       value!;
+                                                                  // });
+
+                                                                  setState(() {
+                                                                    selectedPaymentMethod =
+                                                                        value!;
+                                                                  });
+                                                                }),
+                                                          ),
+                                                          Expanded(
+                                                            child: FittedBox(
+                                                              fit: BoxFit
+                                                                  .scaleDown,
+                                                              child: Text(
+                                                                'BEEP CARD',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )),
+                                              )),
+                                              SizedBox(width: 3),
+                                              Expanded(
+                                                  child: GestureDetector(
+                                                onTap: () {
+                                                  // setState(() {
+                                                  //   isMastercard = false;
+                                                  // });
+                                                  setState(() {
+                                                    selectedPaymentMethod = 4;
+                                                  });
+                                                },
+                                                child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                bottomRight: Radius
+                                                                    .circular(
+                                                                        20))),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Transform.scale(
+                                                            scale: 1.6,
+                                                            child: Radio(
+                                                                activeColor:
+                                                                    AppColors
+                                                                        .primaryColor,
+                                                                value: 4,
+                                                                groupValue:
+                                                                    selectedPaymentMethod,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  // setState(() {
+                                                                  //   isMastercard =
+                                                                  //       value!;
+                                                                  // });
+                                                                  setState(() {
+                                                                    selectedPaymentMethod =
+                                                                        value!;
+                                                                  });
+                                                                }),
+                                                          ),
+                                                          Expanded(
+                                                            child: FittedBox(
+                                                              fit: BoxFit
+                                                                  .scaleDown,
+                                                              child: Text(
+                                                                ' TRIPKO CARD ',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )),
+                                              )),
+                                            ],
+                                          )
                                       ]),
                                     )),
                                 SizedBox(
@@ -3047,17 +3374,63 @@ class _TicketingPageState extends State<TicketingPage> {
                                                 isNfcScanOn = true;
                                               });
                                               String cardType = "";
-                                              if (isMastercard) {
+                                              // if (isMastercard) {
+                                              //   cardType = "mastercard";
+                                              //   _showDialognfcScan(
+                                              //       context,
+                                              //       'CASH CARD',
+                                              //       'master-card.png');
+                                              // } else {
+                                              //   _showDialognfcScan(
+                                              //       context,
+                                              //       'FILIPAY CARD',
+                                              //       'FILIPAY Cards - Regular.png');
+                                              //   if (passengerType !=
+                                              //       "regular") {
+                                              //     cardType = "discounted";
+                                              //   } else {
+                                              //     cardType = "regular";
+                                              //   }
+                                              // }
+
+                                              if (selectedPaymentMethod == 1) {
                                                 cardType = "mastercard";
                                                 _showDialognfcScan(
                                                     context,
                                                     'CASH CARD',
                                                     'master-card.png');
-                                              } else {
+                                              }
+                                              if (selectedPaymentMethod == 2) {
                                                 _showDialognfcScan(
                                                     context,
                                                     'FILIPAY CARD',
                                                     'FILIPAY Cards - Regular.png');
+                                                if (passengerType !=
+                                                    "regular") {
+                                                  cardType = "discounted";
+                                                } else {
+                                                  cardType = "regular";
+                                                }
+                                              }
+
+                                              if (selectedPaymentMethod == 3) {
+                                                _showDialognfcScan(
+                                                    context,
+                                                    'BEEP CARD',
+                                                    'beepcard.png');
+                                                if (passengerType !=
+                                                    "regular") {
+                                                  cardType = "discounted";
+                                                } else {
+                                                  cardType = "regular";
+                                                }
+                                              }
+
+                                              if (selectedPaymentMethod == 4) {
+                                                _showDialognfcScan(
+                                                    context,
+                                                    'TRIPKO CARD',
+                                                    'tripkocard.jpeg');
                                                 if (passengerType !=
                                                     "regular") {
                                                   cardType = "discounted";
@@ -6634,12 +7007,14 @@ class _TicketingPageState extends State<TicketingPage> {
                                               Expanded(
                                                 child: GestureDetector(
                                                   onTap: () {
+                                                    setState(() {
+                                                      isNfcScanOn = true;
+                                                      selectedPaymentMethod = 2;
+                                                    });
                                                     if (!checkifValid()) {
                                                       return;
                                                     }
-                                                    setState(() {
-                                                      isNfcScanOn = true;
-                                                    });
+
                                                     _startNFCReader('regular');
                                                     _showDialognfcScan(
                                                         context,
@@ -6661,7 +7036,11 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   onTap: () {
                                                     setState(() {
                                                       isNfcScanOn = true;
+                                                      selectedPaymentMethod = 2;
                                                     });
+                                                    if (!checkifValid()) {
+                                                      return;
+                                                    }
                                                     _startNFCReader(
                                                         'discounted');
                                                     _showDialognfcScan(

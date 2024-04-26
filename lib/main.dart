@@ -233,9 +233,10 @@ Future<void> checkAndInitializeBoxes() async {
   String serialnumber = await deviceInfoService.getDeviceSerialNumber();
   final _myBox = await Hive.openBox('myBox');
   final torTrip = _myBox.get('torTrip') ?? [];
+  final filipaycardList = _myBox.get('filipayCardList') ?? [];
 
   // print('torTrip: $torTrip');
-  if (torTrip.isEmpty) {
+  if (filipaycardList.isEmpty) {
     // if (session.isNotEmpty && !session['isAlreadyFetched']) {
     _myBox.put('torTrip', <Map<String, dynamic>>[]);
     _myBox.put('offlineTicket', <Map<String, dynamic>>[]);
@@ -255,6 +256,22 @@ Future<void> checkAndInitializeBoxes() async {
     _myBox.put('vehicleListDB', <Map<String, dynamic>>[]);
     _myBox.put('fuel', <Map<String, dynamic>>[]);
     _myBox.put('filipayCardList', <Map<String, dynamic>>[]);
+
+    _myBox.put('offlineDispatch', <Map<String, dynamic>>[]);
+    _myBox.put('offlineUpdateTorTrip', <Map<String, dynamic>>[]);
+    _myBox.put('offlineUpdateTorMain', <Map<String, dynamic>>[]);
+    _myBox.put('offlineAddTorMain', <Map<String, dynamic>>[]);
+
+    _myBox.put('torDispatch', {
+      'driverEmpNo': "",
+      'conductorEmpNo': "",
+      'dispatcher1': '',
+      'dispatcher2': '',
+      'vehicleNo': '',
+      'plate_number': '',
+      'tor_no': '',
+      'control_no': ''
+    });
     _myBox.put('SESSION', {
       "currentStationIndex": 0,
       "selectedDestination": <String, dynamic>{},
@@ -302,6 +319,12 @@ Future<void> checkAndInitializeBoxes() async {
     dynamic torDispatchsDynamic = _myBox.get('torDispatch');
     dynamic vehicleListDynamic = _myBox.get('vehicleList');
     dynamic vehicleListDBDynamic = _myBox.get('vehicleListDB');
+
+    dynamic offlineDispatchDynamic = _myBox.get('offlineDispatch');
+    dynamic offlineUpdateTorTripDynamic = _myBox.get('offlineDispatch');
+    dynamic offlineUpdateTorMainDynamic = _myBox.get('offlineUpdateTorMain');
+    dynamic offlineAddTorMainDynamic = _myBox.get('offlineAddTorMain');
+
     List<Map<dynamic, dynamic>> offlinetorViolation =
         List<Map<dynamic, dynamic>>.from(
       offlinetorViolationDynamic ?? [],
@@ -346,6 +369,24 @@ Future<void> checkAndInitializeBoxes() async {
     );
     List<Map<dynamic, dynamic>> vehicleList = List<Map<dynamic, dynamic>>.from(
       vehicleListDynamic ?? [],
+    );
+
+    List<Map<dynamic, dynamic>> offlineDispatch =
+        List<Map<dynamic, dynamic>>.from(
+      offlineDispatchDynamic ?? [],
+    );
+
+    List<Map<dynamic, dynamic>> offlineUpdateTorMain =
+        List<Map<dynamic, dynamic>>.from(
+      offlineUpdateTorMainDynamic ?? [],
+    );
+    List<Map<dynamic, dynamic>> offlineAddTorMain =
+        List<Map<dynamic, dynamic>>.from(
+      offlineAddTorMainDynamic ?? [],
+    );
+    List<Map<dynamic, dynamic>> offlineUpdateTorTrip =
+        List<Map<dynamic, dynamic>>.from(
+      offlineUpdateTorTripDynamic ?? [],
     );
     List<Map<dynamic, dynamic>> vehicleListDB = [];
 
@@ -416,6 +457,12 @@ Future<void> checkAndInitializeBoxes() async {
     torTrip = convertList(torTrip);
     torMain = convertList(torMain);
     routeList = convertList(routeList);
+
+    offlineDispatch = convertList(offlineDispatch);
+    offlineUpdateTorTrip = convertList(offlineUpdateTorTrip);
+    offlineUpdateTorMain = convertList(offlineUpdateTorMain);
+    offlineAddTorMain = convertList(offlineAddTorMain);
+
     Map<String, dynamic> newession = convertMap(sessionDynamic);
     // print('cardList: $cardList');
     // print('stationList: $stationList');
@@ -445,6 +492,11 @@ Future<void> checkAndInitializeBoxes() async {
     _myBox.put('employeeList', employeeList);
     _myBox.put('cardList', cardList);
     _myBox.put('SESSION', newession);
+
+    _myBox.put('offlineDispatch', offlineDispatch);
+    _myBox.put('offlineUpdateTorTrip', offlineUpdateTorTrip);
+    _myBox.put('offlineUpdateTorMain', offlineUpdateTorMain);
+    _myBox.put('offlineAddTorMain', offlineAddTorMain);
 
     // print('torDispatch: $torDispatch');
     // print('torTrip is not empty');

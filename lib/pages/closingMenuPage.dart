@@ -88,23 +88,24 @@ class _ClosingMenuPageState extends State<ClosingMenuPage> {
                           SizedBox(
                             height: 20,
                           ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isNfcScanOn = true;
-                                });
-                                _startNFCReader("mastercard");
-                                _checkBalanceDialog('mastercard', context);
-                              },
-                              child: closingMenuButton(
-                                title: 'CHECK BALANCE CASH CARD',
-                                image: 'master-card.png',
-                                isAvailable: true,
+                          if (coopData['modeOfPayment'] == "cashless")
+                            SizedBox(
+                              width: double.infinity,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isNfcScanOn = true;
+                                  });
+                                  _startNFCReader("mastercard");
+                                  _checkBalanceDialog('mastercard', context);
+                                },
+                                child: closingMenuButton(
+                                  title: 'CHECK BALANCE CASH CARD',
+                                  image: 'master-card.png',
+                                  isAvailable: true,
+                                ),
                               ),
                             ),
-                          ),
                           SizedBox(
                             width: 10,
                           ),
@@ -125,28 +126,30 @@ class _ClosingMenuPageState extends State<ClosingMenuPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            TopUpMasterCardPage(
-                                                cashierData:
-                                                    widget.cashierData)));
-                              },
-                              child: closingMenuButton(
-                                title: 'TOP-UP\n CASH CARD',
-                                image: 'master-card.png',
-                                isAvailable: true,
+                          if (coopData['modeOfPayment'] == "cashless")
+                            SizedBox(
+                              width: 10,
+                            ),
+                          if (coopData['modeOfPayment'] == "cashless")
+                            SizedBox(
+                              width: double.infinity,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TopUpMasterCardPage(
+                                                  cashierData:
+                                                      widget.cashierData)));
+                                },
+                                child: closingMenuButton(
+                                  title: 'TOP-UP\n CASH CARD',
+                                  image: 'master-card.png',
+                                  isAvailable: true,
+                                ),
                               ),
                             ),
-                          ),
                           SizedBox(
                             width: 10,
                           ),

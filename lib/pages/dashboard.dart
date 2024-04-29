@@ -1,4 +1,5 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:dltb/backend/checkcards/checkCards.dart';
 import 'package:dltb/backend/fetch/fetchAllData.dart';
@@ -7,6 +8,7 @@ import 'package:dltb/backend/service/services.dart';
 import 'package:dltb/components/appbar.dart';
 import 'package:dltb/components/color.dart';
 import 'package:dltb/components/piechart.dart';
+import 'package:dltb/main.dart';
 import 'package:dltb/pages/Fuel/FuelPage.dart';
 import 'package:dltb/pages/closingMenuPage.dart';
 import 'package:dltb/pages/cundoctorPage.dart';
@@ -61,6 +63,8 @@ class _DashboardPageState extends State<DashboardPage> {
   String driverEmpNo = "";
   List<PieData> data = [];
 
+  bool isEmpMissing = false;
+
   @override
   void initState() {
     super.initState();
@@ -110,25 +114,47 @@ class _DashboardPageState extends State<DashboardPage> {
       isShowClosingMenu = true;
       print('this is null but with double quote');
     }
-    final driverData = employeeList.firstWhere(
-      (employee) =>
-          employee['empNo'].toString() == torDispatch['driverEmpNo'].toString(),
-    );
-    print('driverData: $driverData');
-    driverName = '${driverData['firstName']} ${driverData['lastName']}';
 
-    final conductorData = employeeList.firstWhere(
-      (employee) =>
-          employee['empNo'].toString() ==
-          torDispatch['conductorEmpNo'].toString(),
-    );
-    driverEmpNo = driverData['empNo'].toString();
-    conductorEmpNo = conductorData['empNo'].toString();
-    print('conductorData: $conductorData');
-    conductorName =
-        '${conductorData['firstName']} ${conductorData['lastName']}';
+    print('torDispatch: $torDispatch');
+    print('employeeList: $employeeList');
+    if (torDispatch['driverEmpNo'] != "") {
+      try {
+        final driverData = employeeList.firstWhere(
+          (employee) =>
+              employee['empNo'].toString() ==
+              torDispatch['driverEmpNo'].toString(),
+        );
+        print('driverData: $driverData');
+        driverName = '${driverData['firstName']} ${driverData['lastName']}';
+        final conductorData = employeeList.firstWhere(
+          (employee) =>
+              employee['empNo'].toString() ==
+              torDispatch['conductorEmpNo'].toString(),
+        );
+        driverEmpNo = driverData['empNo'].toString();
+        conductorEmpNo = conductorData['empNo'].toString();
+        print('conductorData: $conductorData');
+        conductorName =
+            '${conductorData['firstName']} ${conductorData['lastName']}';
+        vehicleNo = torDispatch['vehicleNo'];
+      } catch (e) {
+        print(e);
+        isEmpMissing = true;
+        isnfcOn = false;
+        // ArtSweetAlert.show(
+        //         context: context,
+        //         artDialogArgs: ArtDialogArgs(
+        //             type: ArtSweetAlertType.danger,
+        //             title: "ERROR",
+        //             text: "NO EMPLOYEE FOUND, PLEASE REGISTER FIRST"))
+        //     .then((value) {
+        //   Navigator.pushReplacement(
+        //       context, MaterialPageRoute(builder: (context) => MyApp()));
+        // });
+        return;
+      }
+    }
 
-    vehicleNo = torDispatch['vehicleNo'];
     print('torDispatch: $torDispatch');
     print('employeeList: $employeeList');
     routes = fetchService.fetchRouteList();
@@ -1086,6 +1112,72 @@ class _DashboardPageState extends State<DashboardPage> {
                     ],
                   )),
                 ),
+                if (isEmpMissing)
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.black, width: 1)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'The employee number of ${torDispatch['empNo']} is \nmissing in the dashboard\n Please check',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 20),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                'Note: It will restart',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors
+                                        .primaryColor, // Background color of the button
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 24.0),
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          width: 1, color: Colors.black),
+                                      borderRadius: BorderRadius.circular(
+                                          10.0), // Border radius
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => MyApp()));
+                                  },
+                                  child: Text(
+                                    'OK',
+                                    style: TextStyle(color: Colors.white),
+                                  ))
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             )),
           )),

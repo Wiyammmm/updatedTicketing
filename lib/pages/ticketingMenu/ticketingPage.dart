@@ -895,7 +895,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                 discount) *
                             quantity,
                         minimumFare)
-                    : ((price - discount) * quantity).round().toDouble(),
+                    : ((price - discount) * quantity).toDouble(),
                 double.parse(kmRun),
                 '${stations[currentStationIndex]['stationName']}',
                 '$selectedStationName',
@@ -1173,25 +1173,29 @@ class _TicketingPageState extends State<TicketingPage> {
       return false;
     }
     print('subtotal: $subtotal');
-    if (passengerType != "regular" && passengerType != "baggage") {
-      if (idNumController.text.replaceAll(RegExp(r"\s+"), "") == "") {
-        ArtSweetAlert.show(
-            context: context,
-            artDialogArgs: ArtDialogArgs(
-                type: ArtSweetAlertType.danger,
-                title: "INCOMPLETE",
-                text: "Please input the ID NUMBER"));
-        return false;
-      }
+    if (coopData['coopType'] == "Bus") {
+      if (passengerType != "regular" &&
+          passengerType != "" &&
+          passengerType != "baggage") {
+        if (idNumController.text.replaceAll(RegExp(r"\s+"), "") == "") {
+          ArtSweetAlert.show(
+              context: context,
+              artDialogArgs: ArtDialogArgs(
+                  type: ArtSweetAlertType.danger,
+                  title: "INCOMPLETE",
+                  text: "Please input the ID NUMBER"));
+          return false;
+        }
 
-      if (idNumController.text.replaceAll(RegExp(r"\s+"), "").length < 10) {
-        ArtSweetAlert.show(
-            context: context,
-            artDialogArgs: ArtDialogArgs(
-                type: ArtSweetAlertType.danger,
-                title: "INVALID",
-                text: "Please input VALID ID NUMBER"));
-        return false;
+        if (idNumController.text.replaceAll(RegExp(r"\s+"), "").length < 10) {
+          ArtSweetAlert.show(
+              context: context,
+              artDialogArgs: ArtDialogArgs(
+                  type: ArtSweetAlertType.danger,
+                  title: "INVALID",
+                  text: "Please input VALID ID NUMBER"));
+          return false;
+        }
       }
     }
     if ((baggageOnly && baggageprice <= 0) ||
@@ -3043,7 +3047,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                       color: Colors.white,
                                                       borderRadius:
                                                           BorderRadius.only(
-                                                              topLeft: Radius
+                                                              bottomLeft: Radius
                                                                   .circular(
                                                                       20))),
                                                   child: Padding(
@@ -3111,9 +3115,10 @@ class _TicketingPageState extends State<TicketingPage> {
                                                       color: Colors.white,
                                                       borderRadius:
                                                           BorderRadius.only(
-                                                              topRight: Radius
-                                                                  .circular(
-                                                                      20))),
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          20))),
                                                   child: Padding(
                                                     padding:
                                                         const EdgeInsets.all(
@@ -3310,6 +3315,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                               )),
                                             ],
                                           )
+                                     
                                       ]),
                                     )),
                                 SizedBox(

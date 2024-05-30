@@ -1309,22 +1309,31 @@ class fetchServices {
       }
 
       List<Map<String, dynamic>> vehicleList = [];
-      final vehicleListDB = _myBox.get('vehicleListDB');
-      for (int i = 0; i < 10000; i++) {
-      // for (int i = 0; i < 10; i++) {
-        String plate_number = "";
-        if (vehicleListDB.isNotEmpty) {
-          // print('vehicleListDB: $vehicleListDB');
-          if (vehicleListDB.length > i) {
-            if (vehicleListDB[i]['vehicle_no'].toString() == "${i + 1}") {
-              plate_number = "${vehicleListDB[i]['plate_no']}";
-            }
+      final vehicleListDB =
+          _myBox.get('vehicleListDB') as List<Map<String, dynamic>>;
+      vehicleListDB.sort((a, b) => (int.parse(a["vehicle_no"].toString()))
+          .compareTo(int.parse(b["vehicle_no"].toString())));
+      print('vehicleListDB: $vehicleListDB');
+      print('vehicleListDB length: ${vehicleListDB.length}');
+      int vehicleListIndex = 0;
+      for (int i = 0; i < 100; i++) {
+        String plateNumber = "";
+
+        try {
+          if (vehicleListDB[vehicleListIndex]['vehicle_no'].toString() ==
+              "${i + 1}") {
+            plateNumber =
+                vehicleListDB[vehicleListIndex]['plate_no'].toString();
+            vehicleListIndex++;
           }
+        } catch (e) {
+          print('vehicleListDB error: $e');
         }
+
         vehicleList.add({
-          "_id": "$i",
+          "_id": "${i + 1}",
           'vehicle_no': "${i + 1}",
-          'plate_number': "$plate_number"
+          'plate_number': plateNumber
         });
       }
       _myBox.put('vehicleList', vehicleList);

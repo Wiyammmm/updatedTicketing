@@ -194,15 +194,8 @@ class httprequestService {
     try {
       String apiUrl =
           "http://172.232.77.205:3000/api/v1/filipay/vehicle/$coopId";
-      Map<String, dynamic> vehicleList = {
-        "messages": [
-          {
-            "code": 500,
-            "message": "CHECK YOUR INTERNET CONNECTION",
-          }
-        ],
-        "response": {}
-      };
+      List<Map<String, dynamic>> vehicleLists = [];
+
       final response = await http.get(
         Uri.parse(apiUrl),
         headers: {
@@ -215,10 +208,11 @@ class httprequestService {
 
       if (response.statusCode == 200) {
         // Successful response
-        vehicleList = json.decode(response.body);
-
-        print('vehicleList: $vehicleList');
-        _myBox.put('vehicleListDB', vehicleList['response']);
+        Map<String, dynamic> data = json.decode(response.body);
+        vehicleLists =
+            (data['response'] as List<dynamic>).cast<Map<String, dynamic>>();
+        print('vehicleList: $vehicleLists');
+        _myBox.put('vehicleListDB', vehicleLists);
         return true;
       } else {
         // Handle error responses

@@ -397,6 +397,7 @@ class _LoginPageState extends State<LoginPage> {
       child: RefreshIndicator(
         onRefresh: () async {
           _startNFCReader();
+          print('vehicleListDB: $vehicleList');
 
           // Navigator.pushReplacement(
           //     context, MaterialPageRoute(builder: (context) => LoginPage()));

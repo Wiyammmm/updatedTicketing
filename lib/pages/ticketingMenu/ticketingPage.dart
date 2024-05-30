@@ -420,7 +420,7 @@ class _TicketingPageState extends State<TicketingPage> {
     } catch (e) {}
   }
 
-  void _startNFCReader(String typeCard) async {
+  void _startNFCReader(String typeCard, int selectedPaymentMethod) async {
     String? result;
     bool isCardIDExisting = false;
     List<Map<String, dynamic>> cardList = [];
@@ -1040,7 +1040,7 @@ class _TicketingPageState extends State<TicketingPage> {
         print('Card ID $result does not exist in the list.');
       }
     }
-    _startNFCReader(typeCard);
+    _startNFCReader(typeCard, selectedPaymentMethod);
     return;
     // } catch (e) {
     //   print(e);
@@ -1112,6 +1112,12 @@ class _TicketingPageState extends State<TicketingPage> {
     toKmPostController.dispose();
     passengerTypeController.dispose();
     super.dispose();
+  }
+
+  void updateAmount(double newAmount) {
+    setState(() {
+      editAmountController.text = newAmount.toString();
+    });
   }
 
   bool checkifValid() {
@@ -3315,7 +3321,6 @@ class _TicketingPageState extends State<TicketingPage> {
                                               )),
                                             ],
                                           )
-                                     
                                       ]),
                                     )),
                                 SizedBox(
@@ -3445,7 +3450,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                                 }
                                               }
 
-                                              _startNFCReader('$cardType');
+                                              _startNFCReader('$cardType',
+                                                  selectedPaymentMethod);
                                             }
                                           },
                                           style: ElevatedButton.styleFrom(
@@ -5991,11 +5997,13 @@ class _TicketingPageState extends State<TicketingPage> {
                                         setState(() {
                                           isNfcScanOn = true;
                                         });
-                                        _startNFCReader('mastercard');
+                                        _startNFCReader('mastercard',
+                                            selectedPaymentMethod);
                                         _showDialognfcScan(context, 'CASH CARD',
                                             'master-card.png');
                                       } else {
-                                        _startNFCReader('mastercard');
+                                        _startNFCReader('mastercard',
+                                            selectedPaymentMethod);
                                       }
                                     }
                                   },
@@ -6017,7 +6025,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                       setState(() {
                                         isNfcScanOn = true;
                                       });
-                                      _startNFCReader('regular');
+                                      _startNFCReader(
+                                          'regular', selectedPaymentMethod);
                                       _showDialognfcScan(
                                           context,
                                           'FILIPAY CARD',
@@ -6038,7 +6047,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                       setState(() {
                                         isNfcScanOn = true;
                                       });
-                                      _startNFCReader('discounted');
+                                      _startNFCReader(
+                                          'discounted', selectedPaymentMethod);
                                       _showDialognfcScan(
                                           context,
                                           'DISCOUNTED CARD',
@@ -6860,17 +6870,15 @@ class _TicketingPageState extends State<TicketingPage> {
                                                                       .text =
                                                                   "$subtotal";
                                                               quantity = 1;
-                                                              price = 0;
+                                                              // price = 0;
                                                             } else {
                                                               quantity = 1;
                                                               subtotal = ((price -
                                                                           discount) *
                                                                       quantity) +
                                                                   baggageprice;
-                                                              editAmountController
-                                                                      .text =
-                                                                  subtotal
-                                                                      .toString();
+                                                              updateAmount(
+                                                                  subtotal);
                                                             }
                                                           });
                                                         }),
@@ -6987,7 +6995,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                 onTap: () {
                                                   if (checkifValid()) {
                                                     _startNFCReader(
-                                                        'mastercard');
+                                                        'mastercard', 1);
                                                     // if (!isNoMasterCard) {
                                                     //   setState(() {
                                                     //     isNfcScanOn = true;
@@ -7021,7 +7029,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                                       return;
                                                     }
 
-                                                    _startNFCReader('regular');
+                                                    _startNFCReader('regular',
+                                                        selectedPaymentMethod);
                                                     _showDialognfcScan(
                                                         context,
                                                         'FILIPAY CARD',
@@ -7048,7 +7057,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                                       return;
                                                     }
                                                     _startNFCReader(
-                                                        'discounted');
+                                                        'discounted',
+                                                        selectedPaymentMethod);
                                                     _showDialognfcScan(
                                                         context,
                                                         'DISCOUNTED CARD',

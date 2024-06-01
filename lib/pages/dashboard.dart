@@ -302,7 +302,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     isnfcOn = false;
                   });
                   print('go to');
-                  if (coopData['coopType'] == "Jeepney") {
+                  if (coopData['coopType'] != "Bus") {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

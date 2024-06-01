@@ -941,7 +941,7 @@ class fetchServices {
     final torTrip = _myBox.get('torTrip');
     final sessionBox = _myBox.get('SESSION');
     final coopData = _myBox.get('coopData');
-    String vehicleNo = coopData['coopType'] == "Jeepney"
+    String vehicleNo = coopData['coopType'] != "Bus"
         ? "${torTrip[sessionBox['currentTripIndex']]['bus_no']}:${torTrip[sessionBox['currentTripIndex']]['plate_number']} "
         : "${torTrip[sessionBox['currentTripIndex']]['bus_no']}";
     return vehicleNo;

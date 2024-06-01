@@ -46,7 +46,8 @@ class _ExpensesPageState extends State<ExpensesPage> {
     "EMPLOYEE BENEFITS",
     "MATERIALS",
     "REPRESENTATION",
-    'REPAIR'
+    'REPAIR',
+    'FOOD'
   ];
   // fuel controller
   TextEditingController fuelStationController = TextEditingController();

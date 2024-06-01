@@ -278,7 +278,7 @@ class TestPrinttt {
       isDltb = true;
     }
 
-    if (coopData['coopType'] == "Jeepney") {
+    if (coopData['coopType'] != "Bus") {
       isJeepney = true;
     }
 

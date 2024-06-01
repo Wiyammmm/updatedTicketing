@@ -113,7 +113,7 @@ class _InspectionSummaryPageState extends State<InspectionSummaryPage> {
     inspectorData = widget.inspectorData;
     print('inspectorData: $inspectorData');
     torNo = '${torTrip[SESSION['currentTripIndex']]['tor_no']}';
-    vehicleNo = coopData['coopType'] == "Jeepney"
+    vehicleNo = coopData['coopType'] != "Bus"
         ? "${torTrip[SESSION['currentTripIndex']]['bus_no']}:${torTrip[SESSION['currentTripIndex']]['plate_number']} "
         : "${torTrip[SESSION['currentTripIndex']]['bus_no']}";
     conductorName = fetchservice.conductorName();

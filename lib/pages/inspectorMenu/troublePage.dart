@@ -806,7 +806,7 @@ class _TroublePageState extends State<TroublePage> {
         "${torTrip[SESSION['currentTripIndex']]['tor_no']}",
         "${torTrip[SESSION['currentTripIndex']]['route']}",
         "${torTrip[SESSION['currentTripIndex']]['date_of_trip']}",
-        coopData['coopType'] == "Jeepney"
+        coopData['coopType'] != "Bus"
             ? "${torTrip[SESSION['currentTripIndex']]['bus_no']}:${torTrip[SESSION['currentTripIndex']]['plate_number']} "
             : "${torTrip[SESSION['currentTripIndex']]['bus_no']}",
         "${torTrip[SESSION['currentTripIndex']]['bound']}",

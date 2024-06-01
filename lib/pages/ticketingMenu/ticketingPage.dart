@@ -901,7 +901,7 @@ class _TicketingPageState extends State<TicketingPage> {
                 '$selectedStationName',
                 passengerType,
                 isDiscounted,
-                coopData['coopType'] == "Jeepney"
+                coopData['coopType'] != "Bus"
                     ? "${torTrip[sessionBox['currentTripIndex']]['bus_no']}:${torTrip[sessionBox['currentTripIndex']]['plate_number']} "
                     : "${torTrip[sessionBox['currentTripIndex']]['bus_no']}",
                 stations[currentStationIndex][stationkm].toString(),

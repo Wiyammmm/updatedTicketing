@@ -1,3 +1,4 @@
+import 'package:dltb/backend/deviceinfo/getDeviceInfo.dart';
 import 'package:hive/hive.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -32,9 +33,11 @@ class httprequestService {
         Map<String, dynamic> data = json.decode(response.body);
         coopData = data['response'];
         session['coopId'] = coopData['coopId'];
+        session['mobileNumber'] = coopData['mobileNumber'];
 
         print('isDeviceValid: $coopData');
         _myBox.put('SESSION', session);
+
         return true;
       } else {
         // Handle error responses

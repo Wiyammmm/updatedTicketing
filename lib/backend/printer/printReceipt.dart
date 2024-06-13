@@ -175,7 +175,7 @@ class TestPrinttt {
             breakString("${coopData['cooperativeName']}", 24), 1, 1);
         if (coopData['telephoneNumber'] != null) {
           bluetooth.printCustom(
-              "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+              "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
         }
 
         // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
@@ -323,7 +323,7 @@ class TestPrinttt {
             breakString("${coopData['cooperativeName']}", 24), 1, 1);
         if (coopData['telephoneNumber'] != null) {
           bluetooth.printCustom(
-              "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+              "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
         }
         // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
 
@@ -503,7 +503,7 @@ class TestPrinttt {
                   breakString("${coopData['cooperativeName']}", 24), 1, 1);
               if (coopData['telephoneNumber'] != null) {
                 bluetooth.printCustom(
-                    "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                    "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
               }
               // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
               // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -596,7 +596,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -686,7 +686,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -1022,7 +1022,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -1193,7 +1193,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -1363,7 +1363,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -1810,7 +1810,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -1909,7 +1909,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -2764,7 +2764,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -2866,7 +2866,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -2961,7 +2961,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
 
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
@@ -3030,7 +3030,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -3113,7 +3113,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -3187,7 +3187,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -3251,7 +3251,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
@@ -3320,7 +3320,7 @@ class TestPrinttt {
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
             bluetooth.printCustom(
-                "Contact Us: +63${coopData['telephoneNumber']}", 1, 1);
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);

@@ -1,14 +1,12 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dltb/backend/deviceinfo/getDeviceInfo.dart';
-import 'package:dltb/backend/fetch/fetchAllData.dart';
 import 'package:dltb/backend/fetch/httprequest.dart';
+import 'package:dltb/backend/provider/MobileNumberProvider.dart';
 import 'package:dltb/pages/firstpage.dart';
-import 'package:dltb/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:location/location.dart';
-
+import 'package:provider/provider.dart';
 // void backgroundFetchHeadlessTask(HeadlessTask task) async {
 //   String taskId = task.taskId;
 //   bool isTimeout = task.timeout;
@@ -224,13 +222,19 @@ Future<void> main() async {
   // }
 
   // Call the function to create or replace the Hive table
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => MobileNumberProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 Future<void> checkAndInitializeBoxes() async {
   DeviceInfoService deviceInfoService = DeviceInfoService();
 
   String serialnumber = await deviceInfoService.getDeviceSerialNumber();
+
   final _myBox = await Hive.openBox('myBox');
   final torTrip = _myBox.get('torTrip') ?? [];
   final filipaycardList = _myBox.get('filipayCardList') ?? [];

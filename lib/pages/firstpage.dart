@@ -21,6 +21,8 @@ import 'package:location/location.dart';
 
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
 
@@ -30,8 +32,9 @@ class FirstPage extends StatefulWidget {
 
 class _FirstPageState extends State<FirstPage> {
   final _myBox = Hive.box('myBox');
-
+  DeviceInfoService deviceInfoService = DeviceInfoService();
   NFCReaderBackend backend = NFCReaderBackend();
+  httprequestService httprequestServices = httprequestService();
   fetchServices fetchservice = fetchServices();
   EasyRefreshController _refreshController = EasyRefreshController(
     controlFinishRefresh: true,
@@ -43,6 +46,10 @@ class _FirstPageState extends State<FirstPage> {
   String progressText = 'fetching data...';
 
   bool isFetch = true;
+
+  bool isInvalid = false;
+  bool isInvalidSimcard = false;
+  String messagePrompt = "";
   @override
   void initState() {
     super.initState();
@@ -61,15 +68,61 @@ class _FirstPageState extends State<FirstPage> {
 
     final filipaycardlist = _myBox.get('filipayCardList');
     print("filipaycardlist: $filipaycardlist");
-    if (filipaycardlist.isNotEmpty && filipaycardlist != null) {
+
+    String mobileNumber = await deviceInfoService.getMobileNumber();
+    final session = _myBox.get('SESSION');
+    print('session: $session');
+    if (mobileNumber == "") {
       if (mounted) {
         setState(() {
           isFetch = false;
+          messagePrompt = "REQUIRED SIM CARD";
+          isInvalid = true;
         });
+      }
+      return;
+    }
+    if (filipaycardlist.isNotEmpty && filipaycardlist != null) {
+      if ("${session['mobileNumber']}" != mobileNumber) {
+        if (mounted) {
+          setState(() {
+            isFetch = false;
+            messagePrompt = "INVALID SIM CARD\nRe-fetch the data?";
+            isInvalidSimcard = true;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            isFetch = false;
+            messagePrompt = "Do you want to\nre-fetch the data?";
+          });
+        }
       }
     } else {
       print('proceed to fetching');
-      _fetchingdata();
+      bool isDeviceValid = await httprequestServices.isDeviceValid();
+
+      if (!isDeviceValid) {
+        if (mounted) {
+          setState(() {
+            isFetch = false;
+            messagePrompt = "INVALID DEVICE OR NO INTERNET CONNECTION";
+            isInvalid = true;
+          });
+        }
+      } else if (session['mobileNumber'] == null ||
+          session['mobileNumber'] == "") {
+        if (mounted) {
+          setState(() {
+            isFetch = false;
+            messagePrompt = "INVALID SIM CARD NUMBER";
+            isInvalid = true;
+          });
+        }
+      } else {
+        _fetchingdata();
+      }
     }
   }
 
@@ -113,6 +166,7 @@ class _FirstPageState extends State<FirstPage> {
     bool isofflineUpdateTorMainProceed = false;
     bool isofflineAddTorMainProceed = false;
 
+    bool isChangedMobileNumber = false;
     httprequestService httpRequestServices = httprequestService();
     Location location = Location();
     bool serviceEnabled;
@@ -139,6 +193,7 @@ class _FirstPageState extends State<FirstPage> {
       await location.enableBackgroundMode(enable: true);
       location.onLocationChanged.listen((LocationData newLocation) async {
         httprequestService httprequestservice = httprequestService();
+
         // Got a new connectivity status!
         final offlineTicket = _myBox.get('offlineTicket');
         final offlineUpdateAdditionalFare =
@@ -642,7 +697,7 @@ class _FirstPageState extends State<FirstPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Do you want to\nre-fetch the data?',
+                              '$messagePrompt',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20),
@@ -650,108 +705,152 @@ class _FirstPageState extends State<FirstPage> {
                             SizedBox(
                               height: 5,
                             ),
-                            Text(
-                              'Note: if YES, it required an internet connection',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
+                            if (!isInvalid)
+                              Text(
+                                'Note: if YES, it required an internet connection',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
                             SizedBox(
                               height: 20,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    if (mounted)
-                                      setState(() {
-                                        progressbar = 1;
-                                        isFetch = true;
-                                      });
-                                    getSerialNumber();
-                                    // final torTrip = _myBox.get('torTrip');
-                                    // final SESSION = _myBox.get('SESSION');
+                            if (!isInvalid)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      if (mounted)
+                                        setState(() {
+                                          progressbar = 1;
+                                          isFetch = true;
+                                        });
+                                      getSerialNumber();
+                                      // final torTrip = _myBox.get('torTrip');
+                                      // final SESSION = _myBox.get('SESSION');
 
-                                    // if (torTrip.isEmpty) {
-                                    //   Navigator.pushReplacement(
-                                    //       context,
-                                    //       MaterialPageRoute(
-                                    //           builder: (context) => LoginPage()));
-                                    // } else {
-                                    //   if ((SESSION['currentTripIndex'] + 1) ==
-                                    //       torTrip.length) {
-                                    //     if (SESSION['tripType'] == "special") {
-                                    //       Navigator.pushReplacement(
-                                    //           context,
-                                    //           MaterialPageRoute(
-                                    //               builder: (context) =>
-                                    //                   SpecialTripPage()));
-                                    //     } else {
-                                    //       Navigator.pushReplacement(
-                                    //           context,
-                                    //           MaterialPageRoute(
-                                    //               builder: (context) =>
-                                    //                   DashboardPage()));
-                                    //     }
-                                    //   } else {
-                                    //     Navigator.pushReplacement(
-                                    //         context,
-                                    //         MaterialPageRoute(
-                                    //             builder: (context) => LoginPage()));
-                                    //   }
-                                    // }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors
-                                        .secondaryColor, // Background color of the button
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 24.0),
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          width: 1, color: Colors.black),
-                                      borderRadius: BorderRadius.circular(
-                                          10.0), // Border radius
+                                      // if (torTrip.isEmpty) {
+                                      //   Navigator.pushReplacement(
+                                      //       context,
+                                      //       MaterialPageRoute(
+                                      //           builder: (context) => LoginPage()));
+                                      // } else {
+                                      //   if ((SESSION['currentTripIndex'] + 1) ==
+                                      //       torTrip.length) {
+                                      //     if (SESSION['tripType'] == "special") {
+                                      //       Navigator.pushReplacement(
+                                      //           context,
+                                      //           MaterialPageRoute(
+                                      //               builder: (context) =>
+                                      //                   SpecialTripPage()));
+                                      //     } else {
+                                      //       Navigator.pushReplacement(
+                                      //           context,
+                                      //           MaterialPageRoute(
+                                      //               builder: (context) =>
+                                      //                   DashboardPage()));
+                                      //     }
+                                      //   } else {
+                                      //     Navigator.pushReplacement(
+                                      //         context,
+                                      //         MaterialPageRoute(
+                                      //             builder: (context) => LoginPage()));
+                                      //   }
+                                      // }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors
+                                          .secondaryColor, // Background color of the button
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 24.0),
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            width: 1, color: Colors.black),
+                                        borderRadius: BorderRadius.circular(
+                                            10.0), // Border radius
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'NO',
+                                      style: TextStyle(
+                                          color: AppColors.primaryColor),
                                     ),
                                   ),
-                                  child: Text(
-                                    'NO',
-                                    style: TextStyle(
-                                        color: AppColors.primaryColor),
+                                  SizedBox(
+                                    width: 10,
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    if (mounted)
-                                      setState(() {
-                                        isFetch = true;
-                                      });
-                                    _fetchingdata();
-                                  },
-                                  child: Text(
-                                    'YES',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors
-                                        .primaryColor, // Background color of the button
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 24.0),
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          width: 1, color: Colors.black),
-                                      borderRadius: BorderRadius.circular(
-                                          10.0), // Border radius
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      if (isInvalidSimcard) {
+                                        await httprequestServices
+                                            .isDeviceValid();
+                                        if (mounted) {
+                                          setState(() {
+                                            isFetch = true;
+
+                                            _checkData();
+                                          });
+                                        }
+                                      } else {
+                                        if (mounted)
+                                          setState(() {
+                                            isFetch = true;
+                                          });
+                                        _fetchingdata();
+                                      }
+                                    },
+                                    child: Text(
+                                      'YES',
+                                      style: TextStyle(color: Colors.white),
                                     ),
-                                  ),
-                                )
-                              ],
-                            )
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors
+                                          .primaryColor, // Background color of the button
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 24.0),
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            width: 1, color: Colors.black),
+                                        borderRadius: BorderRadius.circular(
+                                            10.0), // Border radius
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            if (isInvalid)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => MyApp()));
+                                    },
+                                    child: Text(
+                                      'OK',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors
+                                          .primaryColor, // Background color of the button
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 24.0),
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            width: 1, color: Colors.black),
+                                        borderRadius: BorderRadius.circular(
+                                            10.0), // Border radius
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
                           ],
                         ),
                       ),

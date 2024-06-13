@@ -1,6 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:simnumber/sim_number.dart';
+
+import 'package:simnumber/siminfo.dart';
 
 class DeviceInfoService {
   static const platform = const MethodChannel("com.flutter.epic/epic");
@@ -29,6 +32,21 @@ class DeviceInfoService {
     }
 
     return value;
+  }
+
+  Future<String> getMobileNumber() async {
+    String mobileNumber = "";
+    try {
+      SimInfo simInfo = await SimNumber.getSimData();
+      for (var s in simInfo.cards) {
+        print('mobile number: ${s.slotIndex} ${s.phoneNumber}');
+        mobileNumber = "${s.phoneNumber}";
+      }
+    } catch (e) {
+      print('error mobile number: $e');
+    }
+
+    return mobileNumber;
   }
 
   Future<Position> determinePosition() async {

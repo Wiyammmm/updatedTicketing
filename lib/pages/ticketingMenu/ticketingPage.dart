@@ -3837,12 +3837,11 @@ class _TicketingPageState extends State<TicketingPage> {
                                                       } catch (e) {}
 
                                                       double stationKM = (thiskm -
-                                                              double.parse(stations[
-                                                                          currentStationIndex]
-                                                                      [
-                                                                      stationkm] ??
-                                                                  '0'))
+                                                              double.parse(
+                                                                  "${stations[currentStationIndex][stationkm]}" ??
+                                                                      '0'))
                                                           .abs();
+
                                                       if (fetchService
                                                           .getIsNumeric()) {
                                                         price = double.parse(

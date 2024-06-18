@@ -290,7 +290,7 @@ class _TicketingPageState extends State<TicketingPage> {
         }
         if (passengerType != '') {
           subtotal = (price - discount + baggageprice) * quantity;
-          if (coopData['coopType'] == "Jeepney") {
+          if (coopData['coopType'] != "Bus") {
             subtotal =
                 fetchService.roundToNearestQuarter(subtotal, minimumFare);
           }
@@ -586,7 +586,7 @@ class _TicketingPageState extends State<TicketingPage> {
         } else if (baggage > 0 && newprice == 0) {
           charPassengerType = 'B';
         }
-        if (coopData['coopType'] == 'Jeepney') {
+        if (coopData['coopType'] != 'Bus') {
           subtotal = fetchService.roundToNearestQuarter(subtotal, minimumFare);
           newprice = fetchService.roundToNearestQuarter(newprice, minimumFare);
         }
@@ -885,10 +885,10 @@ class _TicketingPageState extends State<TicketingPage> {
             printService.printTicket(
                 ticketNo,
                 typeCard,
-                coopData['coopType'] == "Jeepney"
+                coopData['coopType'] != "Bus"
                     ? fetchservice.roundToNearestQuarter(price, minimumFare)
                     : price,
-                coopData['coopType'] == "Jeepney"
+                coopData['coopType'] != "Bus"
                     ? fetchService.roundToNearestQuarter(
                         (fetchservice.roundToNearestQuarter(
                                     price, minimumFare) -
@@ -944,7 +944,7 @@ class _TicketingPageState extends State<TicketingPage> {
                     double.parse(kmRun),
                     '${stations[currentStationIndex]['stationName']}',
                     '$selectedStationName',
-                    coopData['coopType'] == "Jeepney"
+                    coopData['coopType'] != "Bus"
                         ? "${torTrip[sessionBox['currentTripIndex']]['bus_no']}:${torTrip[sessionBox['currentTripIndex']]['plate_number']} "
                         : "${torTrip[sessionBox['currentTripIndex']]['bus_no']}",
                     stations[currentStationIndex][stationkm].toString(),
@@ -3834,7 +3834,10 @@ class _TicketingPageState extends State<TicketingPage> {
                                                         thiskm = double.parse(
                                                             station['km']
                                                                 .toString());
-                                                      } catch (e) {}
+                                                      } catch (e) {
+                                                        print(
+                                                            'error sa gridview: $e');
+                                                      }
 
                                                       double stationKM = (thiskm -
                                                               double.parse(
@@ -4628,8 +4631,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                                       stations.length) {
                                                     if (!fetchservice
                                                             .getIsNumeric() &&
-                                                        coopData['coopType'] ==
-                                                            "Jeepney") {
+                                                        coopData['coopType'] !=
+                                                            "Bus") {
                                                       await ArtSweetAlert.show(
                                                           context: context,
                                                           barrierDismissible:
@@ -5017,8 +5020,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                                             discount +
                                                             baggageprice) *
                                                         quantity;
-                                                    if (coopData['coopType'] ==
-                                                        "Jeepney") {
+                                                    if (coopData['coopType'] !=
+                                                        "Bus") {
                                                       subtotal = fetchService
                                                           .roundToNearestQuarter(
                                                               subtotal,
@@ -5036,8 +5039,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                                         "${fetchService.convertNumToIntegerOrDecimal(stationKM)}";
                                                   });
                                                   print('price: $price');
-                                                  if (coopData['coopType'] ==
-                                                      "Jeepney") {
+                                                  if (coopData['coopType'] !=
+                                                      "Bus") {
                                                     print(
                                                         'show dialog for jeepney');
                                                     _showDialogJeepneyTicketing(
@@ -5243,7 +5246,7 @@ class _TicketingPageState extends State<TicketingPage> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           content: Container(
-            height: coopData['coopType'] == "Jeepney"
+            height: coopData['coopType'] != "Bus"
                 ? MediaQuery.of(context).size.height * 0.4
                 : MediaQuery.of(context).size.height * 0.65,
             decoration: BoxDecoration(
@@ -5511,8 +5514,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                                             subtotal,
                                                             minimumFare)
                                                         .toStringAsFixed(2);
-                                                if (coopData['coopType'] ==
-                                                    "Jeepney") {
+                                                if (coopData['coopType'] !=
+                                                    "Bus") {
                                                   subtotal = fetchService
                                                       .roundToNearestQuarter(
                                                           subtotal,
@@ -5588,8 +5591,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                                               subtotal,
                                                               minimumFare)
                                                           .toStringAsFixed(2);
-                                                  if (coopData['coopType'] ==
-                                                      "Jeepney") {
+                                                  if (coopData['coopType'] !=
+                                                      "Bus") {
                                                     subtotal = fetchService
                                                         .roundToNearestQuarter(
                                                             subtotal,
@@ -5670,8 +5673,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                                               subtotal,
                                                               minimumFare)
                                                           .toStringAsFixed(2);
-                                                  if (coopData['coopType'] ==
-                                                      "Jeepney") {
+                                                  if (coopData['coopType'] !=
+                                                      "Bus") {
                                                     subtotal = fetchService
                                                         .roundToNearestQuarter(
                                                             subtotal,
@@ -5747,8 +5750,8 @@ class _TicketingPageState extends State<TicketingPage> {
                                                               subtotal,
                                                               minimumFare)
                                                           .toStringAsFixed(2);
-                                                  if (coopData['coopType'] ==
-                                                      "Jeepney") {
+                                                  if (coopData['coopType'] !=
+                                                      "Bus") {
                                                     subtotal = fetchService
                                                         .roundToNearestQuarter(
                                                             subtotal,
@@ -5910,7 +5913,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                 } else {
                                   subtotal = baggageprice;
                                 }
-                                if (coopData['coopType'] == "Jeepney") {
+                                if (coopData['coopType'] != "Bus") {
                                   subtotal = fetchService.roundToNearestQuarter(
                                       subtotal, minimumFare);
                                 }
@@ -7096,7 +7099,7 @@ class _TicketingPageState extends State<TicketingPage> {
               .toStringAsFixed(2);
           price = 0;
         } else {
-          if (coopData['coopType'] == "Jeepney") {
+          if (coopData['coopType'] != "Bus") {
             subtotal = (fetchservice.roundToNearestQuarter(price, minimumFare) -
                     discount * quantity) +
                 baggageprice;

@@ -2894,33 +2894,47 @@ class _FinalCashPageState extends State<FinalCashPage> {
                                   bool isPrintDone = false;
                                   _showDialogPrinting(
                                       'PRINTING PLEASE WAIT...', false);
-                                  isPrintDone =
-                                      await printService.printTripReportFinal(
-                                          "${torTrip.length}",
-                                          "${torTrip[0]['tor_no']}",
-                                          "$baggageRevenue",
-                                          "$prepaidPassengerRevenue",
-                                          // "${fetchService.totalPrepaidBaggageRevenue()}",
-                                          "$puncherTicketRevenue",
-                                          "$puncherTicketCount",
-                                          "$puncherBaggageRevenue",
-                                          "$puncherBaggageCount",
-                                          "$passengerRevenue",
-                                          "$passengerCount",
-                                          "$waybillrevenue",
-                                          "$waybillcount",
-                                          "$baggageRevenue",
-                                          "$baggageCount",
-                                          "$charterRevenue",
-                                          "$charterTicketCount",
-                                          "${finalCashRemittedController.text}",
-                                          "${shortController.text}",
-                                          "$cashRecieved",
-                                          "${fetchService.grandTotalCardSales()}",
-                                          "${fetchService.grandTotalAddFare()}",
-                                          "${fetchService.getTotalTopUpper()}",
-                                          "${grossRevenue}",
-                                          "$netCollection");
+
+                                  if (sessionBox['coopId'].toString() ==
+                                      '6597c6953bd1be740d90e7a3') {
+                                    isPrintDone =
+                                        await printService.printTripReportGATC(
+                                            puncherTicketCount +
+                                                puncherBaggageCount +
+                                                passengerCount +
+                                                waybillcount +
+                                                baggageCount +
+                                                charterTicketCount,
+                                            grossRevenue,
+                                            "${torMain[0]['bus_no']}");
+                                  } else {
+                                    isPrintDone = await printService.printTripReportFinal(
+                                        "${torTrip.length}",
+                                        "${torTrip[0]['tor_no']}",
+                                        "$baggageRevenue",
+                                        "$prepaidPassengerRevenue",
+                                        // "${fetchService.totalPrepaidBaggageRevenue()}",
+                                        "$puncherTicketRevenue",
+                                        "$puncherTicketCount",
+                                        "$puncherBaggageRevenue",
+                                        "$puncherBaggageCount",
+                                        "$passengerRevenue",
+                                        "$passengerCount",
+                                        "$waybillrevenue",
+                                        "$waybillcount",
+                                        "$baggageRevenue",
+                                        "$baggageCount",
+                                        "$charterRevenue",
+                                        "$charterTicketCount",
+                                        "${finalCashRemittedController.text}",
+                                        "${shortController.text}",
+                                        "$cashRecieved",
+                                        "${fetchService.grandTotalCardSales()}",
+                                        "${fetchService.grandTotalAddFare()}",
+                                        "${fetchService.getTotalTopUpper()}",
+                                        "${grossRevenue}",
+                                        "$netCollection");
+                                  }
 
                                   // if (isTripReport) {
                                   // isPrintDone = await printService.printTripReport(

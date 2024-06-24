@@ -1138,6 +1138,65 @@ class TestPrinttt {
     }
   }
 
+  Future<bool> printTripReportGATC(
+      double totalTransaction, double totalAmount, String vehicleNo) async {
+    try {
+      final coopData = fetchservice.fetchCoopData();
+      bluetooth.isConnected.then((isConnected) {
+        if (isConnected == true) {
+          String formatDateNow() {
+            final now = DateTime.now();
+            final formattedDate =
+                DateFormat("MMM dd, yyyy HH:mm:ss").format(now);
+            return formattedDate;
+          }
+
+          String dateConverter(String dateString) {
+            DateTime dateTime = DateTime.parse(dateString);
+            String formattedDateTime =
+                DateFormat('MMM dd, yyyy EEE hh:mm:ss a').format(dateTime);
+            return formattedDateTime;
+          }
+
+          final formattedDate = formatDateNow();
+          // bluetooth.printCustom(
+          //     breakString("GOLDEN ARC TRANSPORT COOPERATIVE", 24), 1, 1);
+          bluetooth.printCustom(
+              breakString("${coopData['cooperativeName']}", 24), 1, 1);
+          if (coopData['telephoneNumber'] != null) {
+            bluetooth.printCustom("Contact Us: 2770005853", 1, 1);
+          }
+          // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
+          // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);
+
+          bluetooth.printCustom("POWERED BY: FILIPAY", 1, 1);
+          bluetooth.printCustom("TRIP SUMMARY", 1, 1);
+          bluetooth.printCustom("DATE: $formattedDate", 1, 1);
+          bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+          bluetooth.printCustom('Number of Transaction', 1, 1);
+          bluetooth.printCustom('${totalTransaction.toInt()}', 2, 1);
+          bluetooth.printCustom('Total Amount of Collections', 1, 1);
+          bluetooth.printCustom(
+              '${NumberFormat('#,###').format(totalAmount)}', 2, 1);
+          bluetooth.printNewLine();
+          bluetooth.printCustom(
+              '${coopData['coopType'].toString().toUpperCase()} #$vehicleNo',
+              2,
+              1);
+
+          bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+          bluetooth.printNewLine();
+          bluetooth.printNewLine();
+          // bluetooth.printCustom(message, size, align)
+        }
+      });
+      return true;
+    } catch (e) {
+      print('error printTripReportGATC: $e');
+      return false;
+    }
+  }
+
   Future<bool> printTripReportFinal(
       String totalTrip,
       String torNo,

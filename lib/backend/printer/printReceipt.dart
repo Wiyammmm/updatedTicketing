@@ -1123,7 +1123,7 @@ class TestPrinttt {
           bluetooth.printLeftRight("SN:", "${session['serialNumber']}", 1);
           // bluetooth.printLeftRight("ROUTE:", "DISTRICT - STAR MALL", 1);
           bluetooth.printNewLine();
-          bluetooth.printNewLine();
+          // bluetooth.printNewLine();
           bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
           bluetooth.printCustom("NOT AN OFFICIAL RECEIPT", 1, 1);
           bluetooth.printNewLine();
@@ -1164,7 +1164,8 @@ class TestPrinttt {
           bluetooth.printCustom(
               breakString("${coopData['cooperativeName']}", 24), 1, 1);
           if (coopData['telephoneNumber'] != null) {
-            bluetooth.printCustom("Contact Us: 2770005853", 1, 1);
+            bluetooth.printCustom(
+                "Contact Us: ${coopData['telephoneNumber']}", 1, 1);
           }
           // bluetooth.printCustom("DEL MONTE LAND", 1, 1);
           // bluetooth.printCustom("TRANSPORT BUS COMPANY INC.", 1, 1);

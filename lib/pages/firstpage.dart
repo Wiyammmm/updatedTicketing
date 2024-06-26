@@ -50,9 +50,12 @@ class _FirstPageState extends State<FirstPage> {
   bool isInvalid = false;
   bool isInvalidSimcard = false;
   String messagePrompt = "";
+  var session;
   @override
   void initState() {
     super.initState();
+    session = _myBox.get('SESSION');
+
     startLocationTracking();
     _checkData();
     // _fetchingdata();
@@ -69,27 +72,33 @@ class _FirstPageState extends State<FirstPage> {
     final filipaycardlist = _myBox.get('filipayCardList');
     print("filipaycardlist: $filipaycardlist");
 
-    String mobileNumber = await deviceInfoService.getMobileNumber();
-    final session = _myBox.get('SESSION');
     print('session: $session');
-    if (mobileNumber == "") {
-      if (mounted) {
-        setState(() {
-          isFetch = false;
-          messagePrompt = "REQUIRED SIM CARD";
-          isInvalid = true;
-        });
-      }
-      return;
-    }
+
     if (filipaycardlist.isNotEmpty && filipaycardlist != null) {
-      if ("${session['mobileNumber']}" != mobileNumber) {
-        if (mounted) {
-          setState(() {
-            isFetch = false;
-            messagePrompt = "INVALID SIM CARD\nRe-fetch the data?";
-            isInvalidSimcard = true;
-          });
+      final coopData = fetchservice.fetchCoopData();
+      String mobileNumber = await deviceInfoService.getMobileNumber();
+      print('coopData: $coopData');
+
+      if (coopData['coopType'] == 'Bus') {
+        // if (mobileNumber == "") {
+        //   if (mounted) {
+        //     setState(() {
+        //       isFetch = false;
+        //       messagePrompt = "REQUIRED SIM CARD";
+        //       isInvalid = true;
+        //       isInvalidSimcard = true;
+        //     });
+        //   }
+        //   return;
+        // }
+        if ("${session['mobileNumber']}" != mobileNumber) {
+          if (mounted) {
+            setState(() {
+              isFetch = false;
+              messagePrompt = "INVALID SIM CARD\nRe-fetch the data?";
+              isInvalidSimcard = true;
+            });
+          }
         }
       } else {
         if (mounted) {
@@ -108,15 +117,6 @@ class _FirstPageState extends State<FirstPage> {
           setState(() {
             isFetch = false;
             messagePrompt = "INVALID DEVICE OR NO INTERNET CONNECTION";
-            isInvalid = true;
-          });
-        }
-      } else if (session['mobileNumber'] == null ||
-          session['mobileNumber'] == "") {
-        if (mounted) {
-          setState(() {
-            isFetch = false;
-            messagePrompt = "INVALID SIM CARD NUMBER";
             isInvalid = true;
           });
         }
@@ -576,6 +576,35 @@ class _FirstPageState extends State<FirstPage> {
       });
     }
 
+    print('big session: $SESSION');
+    String mobileNumber = await deviceInfoService.getMobileNumber();
+
+    print('coopData: $coopData');
+
+    // if (mobileNumber == "") {
+    //   if (mounted) {
+    //     setState(() {
+    //       isFetch = false;
+    //       messagePrompt = "REQUIRED SIM CARD";
+    //       isInvalidSimcard = true;
+    //       isInvalid = true;
+    //     });
+    //   }
+    //   return;
+    // }
+    if (coopData['coopType'].toString() == "Bus") {
+      if ("${SESSION['mobileNumber']}" != mobileNumber) {
+        if (mounted) {
+          setState(() {
+            isFetch = false;
+            messagePrompt = "INVALID SIM CARD\nRe-fetch the data?";
+            isInvalidSimcard = true;
+          });
+        }
+        return;
+      }
+    }
+
     // await Future.delayed(
     //     const Duration(seconds: 1)); // Adjust the duration if needed
     if (torTrip.isEmpty) {
@@ -791,7 +820,8 @@ class _FirstPageState extends State<FirstPage> {
                                           setState(() {
                                             isFetch = true;
 
-                                            _checkData();
+                                            // _checkData();
+                                            _fetchingdata();
                                           });
                                         }
                                       } else {

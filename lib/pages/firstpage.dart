@@ -80,17 +80,17 @@ class _FirstPageState extends State<FirstPage> {
       print('coopData: $coopData');
 
       if (coopData['coopType'] == 'Bus') {
-        // if (mobileNumber == "") {
-        //   if (mounted) {
-        //     setState(() {
-        //       isFetch = false;
-        //       messagePrompt = "REQUIRED SIM CARD";
-        //       isInvalid = true;
-        //       isInvalidSimcard = true;
-        //     });
-        //   }
-        //   return;
-        // }
+        if (mobileNumber == "") {
+          if (mounted) {
+            setState(() {
+              isFetch = false;
+              messagePrompt = "REQUIRED SIM CARD";
+              isInvalid = true;
+              isInvalidSimcard = true;
+            });
+          }
+          return;
+        }
         if ("${session['mobileNumber']}" != mobileNumber) {
           if (mounted) {
             setState(() {
@@ -99,7 +99,15 @@ class _FirstPageState extends State<FirstPage> {
               isInvalidSimcard = true;
             });
           }
+          return;
         }
+        if (mounted) {
+          setState(() {
+            isFetch = false;
+            messagePrompt = "Do you want to\nre-fetch the data?";
+          });
+        }
+        return;
       } else {
         if (mounted) {
           setState(() {
@@ -107,6 +115,7 @@ class _FirstPageState extends State<FirstPage> {
             messagePrompt = "Do you want to\nre-fetch the data?";
           });
         }
+        return;
       }
     } else {
       print('proceed to fetching');
@@ -581,17 +590,17 @@ class _FirstPageState extends State<FirstPage> {
 
     print('coopData: $coopData');
 
-    // if (mobileNumber == "") {
-    //   if (mounted) {
-    //     setState(() {
-    //       isFetch = false;
-    //       messagePrompt = "REQUIRED SIM CARD";
-    //       isInvalidSimcard = true;
-    //       isInvalid = true;
-    //     });
-    //   }
-    //   return;
-    // }
+    if (mobileNumber == "") {
+      if (mounted) {
+        setState(() {
+          isFetch = false;
+          messagePrompt = "REQUIRED SIM CARD";
+          isInvalidSimcard = true;
+          isInvalid = true;
+        });
+      }
+      return;
+    }
     if (coopData['coopType'].toString() == "Bus") {
       if ("${SESSION['mobileNumber']}" != mobileNumber) {
         if (mounted) {
@@ -602,6 +611,13 @@ class _FirstPageState extends State<FirstPage> {
           });
         }
         return;
+      }
+
+      if (mounted) {
+        setState(() {
+          isFetch = false;
+          messagePrompt = "Do you want to\nre-fetch the data?";
+        });
       }
     }
 

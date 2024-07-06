@@ -351,18 +351,7 @@ class TestPrinttt {
             "${coopData['coopType'].toString().toUpperCase()} NO:",
             "$vehicleNo",
             1);
-        // bluetooth.printLeftRight("TRAVEL:", "${from}KM - ${to}KM", 1);
-        if (!fetchservice.getIsNumeric()) {
-          bluetooth.printLeftRight("ORIGIN:", "$origin", 1);
-          bluetooth.printLeftRight("DESTINATION:", "$destination", 1);
 
-          bluetooth.printLeftRight("KM Run:", "${kmrun.toInt()}", 1);
-        }
-
-        bluetooth.printCustom("DATE: $formattedDate", 1, 1);
-
-        bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
-        // bluetooth.printLeftRight("Baggage:", "$baggageAmount", 1);
         bluetooth.printLeftRight("Discount:",
             "${isDltb ? discount.round() : discount.toStringAsFixed(2)}", 1);
         bluetooth.printLeftRight("Amount:",
@@ -379,6 +368,20 @@ class TestPrinttt {
         bluetooth.printCustom("TOTAL AMOUNT", 2, 1);
         bluetooth.printCustom(
             "${isDltb ? subtotal.round() : subtotal.toStringAsFixed(2)}", 2, 1);
+        // bluetooth.printLeftRight("TRAVEL:", "${from}KM - ${to}KM", 1);
+
+        bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
+        if (!fetchservice.getIsNumeric()) {
+          bluetooth.printLeftRight("ORIGIN:", "$origin", 1);
+          bluetooth.printLeftRight("DESTINATION:", "$destination", 1);
+
+          bluetooth.printLeftRight("KM Run:", "${kmrun.toInt()}", 1);
+        }
+
+        bluetooth.printCustom("DATE: $formattedDate", 1, 1);
+
+        // bluetooth.printLeftRight("Baggage:", "$baggageAmount", 1);
+
         bluetooth.printNewLine();
         bluetooth.printCustom("PASSENGER'S COPY", 1, 1);
         bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);

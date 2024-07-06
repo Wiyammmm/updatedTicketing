@@ -1,4 +1,4 @@
-package com.example.dltb2
+package com.example.dltb
 
 import android.os.Build
 import android.os.Bundle

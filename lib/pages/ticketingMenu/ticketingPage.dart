@@ -3176,151 +3176,151 @@ class _TicketingPageState extends State<TicketingPage> {
                                             )),
                                           ],
                                         ),
-                                        if (coopData['coopType'] == "Bus")
-                                          SizedBox(height: 5),
-                                        if (coopData['coopType'] == "Bus")
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                  child: GestureDetector(
-                                                onTap: () {
-                                                  // setState(() {
-                                                  //   isMastercard = true;
-                                                  // });
-                                                  setState(() {
-                                                    selectedPaymentMethod = 3;
-                                                  });
-                                                },
-                                                child: Container(
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                                bottomLeft: Radius
-                                                                    .circular(
-                                                                        20))),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Transform.scale(
-                                                            scale: 1.6,
-                                                            child: Radio(
-                                                                activeColor:
-                                                                    AppColors
-                                                                        .primaryColor,
-                                                                value: 3,
-                                                                groupValue:
-                                                                    selectedPaymentMethod,
-                                                                onChanged:
-                                                                    (value) {
-                                                                  // setState(() {
-                                                                  //   isMastercard =
-                                                                  //       value!;
-                                                                  // });
+                                        // if (coopData['coopType'] == "Bus")
+                                        //   SizedBox(height: 5),
+                                        // if (coopData['coopType'] == "Bus")
+                                        //   Row(
+                                        //     children: [
+                                        //       Expanded(
+                                        //           child: GestureDetector(
+                                        //         onTap: () {
+                                        //           // setState(() {
+                                        //           //   isMastercard = true;
+                                        //           // });
+                                        //           setState(() {
+                                        //             selectedPaymentMethod = 3;
+                                        //           });
+                                        //         },
+                                        //         child: Container(
+                                        //             decoration: BoxDecoration(
+                                        //                 color: Colors.white,
+                                        //                 borderRadius:
+                                        //                     BorderRadius.only(
+                                        //                         bottomLeft: Radius
+                                        //                             .circular(
+                                        //                                 20))),
+                                        //             child: Padding(
+                                        //               padding:
+                                        //                   const EdgeInsets.all(
+                                        //                       8.0),
+                                        //               child: Row(
+                                        //                 mainAxisAlignment:
+                                        //                     MainAxisAlignment
+                                        //                         .center,
+                                        //                 children: [
+                                        //                   Transform.scale(
+                                        //                     scale: 1.6,
+                                        //                     child: Radio(
+                                        //                         activeColor:
+                                        //                             AppColors
+                                        //                                 .primaryColor,
+                                        //                         value: 3,
+                                        //                         groupValue:
+                                        //                             selectedPaymentMethod,
+                                        //                         onChanged:
+                                        //                             (value) {
+                                        //                           // setState(() {
+                                        //                           //   isMastercard =
+                                        //                           //       value!;
+                                        //                           // });
 
-                                                                  setState(() {
-                                                                    selectedPaymentMethod =
-                                                                        value!;
-                                                                  });
-                                                                }),
-                                                          ),
-                                                          Expanded(
-                                                            child: FittedBox(
-                                                              fit: BoxFit
-                                                                  .scaleDown,
-                                                              child: Text(
-                                                                'BEEP CARD',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )),
-                                              )),
-                                              SizedBox(width: 3),
-                                              Expanded(
-                                                  child: GestureDetector(
-                                                onTap: () {
-                                                  // setState(() {
-                                                  //   isMastercard = false;
-                                                  // });
-                                                  setState(() {
-                                                    selectedPaymentMethod = 4;
-                                                  });
-                                                },
-                                                child: Container(
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                                bottomRight: Radius
-                                                                    .circular(
-                                                                        20))),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Transform.scale(
-                                                            scale: 1.6,
-                                                            child: Radio(
-                                                                activeColor:
-                                                                    AppColors
-                                                                        .primaryColor,
-                                                                value: 4,
-                                                                groupValue:
-                                                                    selectedPaymentMethod,
-                                                                onChanged:
-                                                                    (value) {
-                                                                  // setState(() {
-                                                                  //   isMastercard =
-                                                                  //       value!;
-                                                                  // });
-                                                                  setState(() {
-                                                                    selectedPaymentMethod =
-                                                                        value!;
-                                                                  });
-                                                                }),
-                                                          ),
-                                                          Expanded(
-                                                            child: FittedBox(
-                                                              fit: BoxFit
-                                                                  .scaleDown,
-                                                              child: Text(
-                                                                ' TRIPKO CARD ',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )),
-                                              )),
-                                            ],
-                                          )
+                                        //                           setState(() {
+                                        //                             selectedPaymentMethod =
+                                        //                                 value!;
+                                        //                           });
+                                        //                         }),
+                                        //                   ),
+                                        //                   Expanded(
+                                        //                     child: FittedBox(
+                                        //                       fit: BoxFit
+                                        //                           .scaleDown,
+                                        //                       child: Text(
+                                        //                         'BEEP CARD',
+                                        //                         textAlign:
+                                        //                             TextAlign
+                                        //                                 .center,
+                                        //                         style: TextStyle(
+                                        //                             fontWeight:
+                                        //                                 FontWeight
+                                        //                                     .bold),
+                                        //                       ),
+                                        //                     ),
+                                        //                   ),
+                                        //                 ],
+                                        //               ),
+                                        //             )),
+                                        //       )),
+                                        //       SizedBox(width: 3),
+                                        //       Expanded(
+                                        //           child: GestureDetector(
+                                        //         onTap: () {
+                                        //           // setState(() {
+                                        //           //   isMastercard = false;
+                                        //           // });
+                                        //           setState(() {
+                                        //             selectedPaymentMethod = 4;
+                                        //           });
+                                        //         },
+                                        //         child: Container(
+                                        //             decoration: BoxDecoration(
+                                        //                 color: Colors.white,
+                                        //                 borderRadius:
+                                        //                     BorderRadius.only(
+                                        //                         bottomRight: Radius
+                                        //                             .circular(
+                                        //                                 20))),
+                                        //             child: Padding(
+                                        //               padding:
+                                        //                   const EdgeInsets.all(
+                                        //                       8.0),
+                                        //               child: Row(
+                                        //                 mainAxisAlignment:
+                                        //                     MainAxisAlignment
+                                        //                         .center,
+                                        //                 children: [
+                                        //                   Transform.scale(
+                                        //                     scale: 1.6,
+                                        //                     child: Radio(
+                                        //                         activeColor:
+                                        //                             AppColors
+                                        //                                 .primaryColor,
+                                        //                         value: 4,
+                                        //                         groupValue:
+                                        //                             selectedPaymentMethod,
+                                        //                         onChanged:
+                                        //                             (value) {
+                                        //                           // setState(() {
+                                        //                           //   isMastercard =
+                                        //                           //       value!;
+                                        //                           // });
+                                        //                           setState(() {
+                                        //                             selectedPaymentMethod =
+                                        //                                 value!;
+                                        //                           });
+                                        //                         }),
+                                        //                   ),
+                                        //                   Expanded(
+                                        //                     child: FittedBox(
+                                        //                       fit: BoxFit
+                                        //                           .scaleDown,
+                                        //                       child: Text(
+                                        //                         ' TRIPKO CARD ',
+                                        //                         textAlign:
+                                        //                             TextAlign
+                                        //                                 .center,
+                                        //                         style: TextStyle(
+                                        //                             fontWeight:
+                                        //                                 FontWeight
+                                        //                                     .bold),
+                                        //                       ),
+                                        //                     ),
+                                        //                   ),
+                                        //                 ],
+                                        //               ),
+                                        //             )),
+                                        //       )),
+                                        //     ],
+                                        //   )
                                       ]),
                                     )),
                                 SizedBox(

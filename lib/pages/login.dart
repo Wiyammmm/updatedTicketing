@@ -21,6 +21,7 @@ import 'package:dltb/pages/specialtrip.dart';
 import 'package:dltb/pages/syncingMenuPage.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:hive/hive.dart';
 
@@ -55,10 +56,17 @@ class _LoginPageState extends State<LoginPage> {
   bool isDriverLogin = false;
   bool isDispatcherLogin = false;
   bool isConductorLogin = false;
+  bool isCashCardLogin = false;
 
   String? driverName;
   String? dispatcherName;
   String? conductorName;
+  String? cashCardName;
+
+  Map<String, dynamic> driverLoginInfo = {};
+  Map<String, dynamic> conductorLoginInfo = {};
+  Map<String, dynamic> dispatcherLoginInfo = {};
+  Map<String, dynamic> cashcardLoginInfo = {};
 
   String? selectedBound;
   // bool isPreparing = true;
@@ -74,6 +82,8 @@ class _LoginPageState extends State<LoginPage> {
   List<Map<String, dynamic>> vehicleList = [];
   List<Map<String, dynamic>> vehicleListDB = [];
   List<Map<String, dynamic>> cardList = [];
+  List<Map<String, dynamic>> mastercardList = [];
+
   Map<String, dynamic> SESSION = {};
   List<Map<String, dynamic>> torTrip = [];
   String? code;
@@ -84,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
   String? dispatcherEmpNo;
   String? driverEmpNo;
   String? conductorEmpNo;
+  String? cashcardEmpNo;
   TextEditingController textEditingController = TextEditingController();
   // Map<String, dynamic> allInfo = {};
   bool isExit = false;
@@ -106,6 +117,7 @@ class _LoginPageState extends State<LoginPage> {
     torTrip = _myBox.get('torTrip');
     stationList = fetchservice.fetchStationList();
     coopData = fetchservice.fetchCoopData();
+    mastercardList = _myBox.get('masterCardList');
     print('torTrip: $torTrip');
     // print('SESSION: $SESSION');
     routeList = fetchservice.fetchRouteList();
@@ -274,6 +286,25 @@ class _LoginPageState extends State<LoginPage> {
               });
             }
 
+            if (coopData['modeOfPayment'] == "cashless") {
+              final isMasterCardExistingResult =
+                  isCardExisting.isMasterCardExisting(result!);
+              print('isMasterCardExistingResult: $isMasterCardExistingResult');
+
+              if (isMasterCardExistingResult != null &&
+                  isMasterCardExistingResult.isNotEmpty) {
+                if (mounted)
+                  setState(() {
+                    cashcardLoginInfo = isMasterCardExistingResult;
+                    cashcardEmpNo =
+                        isMasterCardExistingResult['empNo'].toString();
+                    isCashCardLogin = true;
+                    cashCardName =
+                        "${isMasterCardExistingResult['firstName']} ${isMasterCardExistingResult['lastName']}";
+                  });
+              }
+            }
+
             final isCardExistingResult = isCardExisting.isCardExisting(result!);
             print("isCardExistingResult: $isCardExistingResult");
             if (isCardExistingResult != null &&
@@ -283,10 +314,12 @@ class _LoginPageState extends State<LoginPage> {
                   'name: ${isCardExistingResult['firstName']} ${isCardExistingResult['middleName'].toString()} ${isCardExistingResult['lastName']}');
               String emptype = isCardExistingResult['designation'];
               if (emptype.toLowerCase().contains("driver")) {
+                print('isCardExistingResult driver ito');
                 if (mounted) {
                   _checkRepeatDriverTor(
                       isCardExistingResult['empNo'].toString());
                   setState(() {
+                    driverLoginInfo = isCardExistingResult;
                     driverEmpNo = isCardExistingResult['empNo'].toString();
                     driverName =
                         "${isCardExistingResult['firstName']} ${isCardExistingResult['middleName'].toString()} ${isCardExistingResult['lastName']}";
@@ -296,6 +329,7 @@ class _LoginPageState extends State<LoginPage> {
               } else if (emptype.toLowerCase().contains("dispatcher")) {
                 if (mounted) {
                   setState(() {
+                    dispatcherLoginInfo = isCardExistingResult;
                     dispatcherEmpNo = isCardExistingResult['empNo'].toString();
                     print('dispatcherEmpNo: $dispatcherEmpNo');
                     dispatcherName =
@@ -305,12 +339,14 @@ class _LoginPageState extends State<LoginPage> {
                 }
               } else if (emptype.toLowerCase().contains("conductor")) {
                 conductorEmpNo = isCardExistingResult['empNo'].toString();
+                print('isCardExistingResult conductor ito');
                 if (mounted) {
                   _checkRepeatConductorTor(
                       isCardExistingResult['empNo'].toString());
                   setState(() {
+                    conductorLoginInfo = isCardExistingResult;
                     conductorName =
-                        "${isCardExistingResult['firstName']} ${isCardExistingResult['middleName'].toString()} ${isCardExistingResult['lastName']}";
+                        "${isCardExistingResult['firstName']} ${isCardExistingResult['lastName']}";
                     isConductorLogin = true;
                   });
                 }
@@ -397,7 +433,10 @@ class _LoginPageState extends State<LoginPage> {
       child: RefreshIndicator(
         onRefresh: () async {
           _startNFCReader();
-          print('vehicleListDB: $vehicleList');
+          print('infologin: ${SESSION['loginInfo']}');
+          // print('vehicleListDB: $vehicleList');
+          // var mastercardList = _myBox.get('masterCardList');
+          // print('mastercardList: $mastercardList');
 
           // Navigator.pushReplacement(
           //     context, MaterialPageRoute(builder: (context) => LoginPage()));
@@ -469,7 +508,20 @@ class _LoginPageState extends State<LoginPage> {
                                   label: "dispatcher",
                                   imageName: "dispatcher.png",
                                   empNo: dispatcherEmpNo,
-                                )
+                                ),
+                                if (coopData['modeOfPayment'] == "cashless")
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                if (coopData['modeOfPayment'] == "cashless")
+                                  EmployeeTapCard(
+                                    myRed: AppColors.primaryColor,
+                                    isLogin: isCashCardLogin,
+                                    employeeName: cashCardName,
+                                    label: "cash card",
+                                    imageName: "master-card.png",
+                                    empNo: cashcardEmpNo,
+                                  )
                               ],
                             ),
                             SizedBox(
@@ -1357,13 +1409,17 @@ class _LoginPageState extends State<LoginPage> {
                                   });
                                   Future<bool?> isDispatchValid =
                                       validator.isDispatchValid(
-                                    selectedVehicle ?? '',
-                                    selectedBound ?? '',
-                                    selectedRoute ?? '',
-                                    isDriverLogin,
-                                    isDispatcherLogin,
-                                    isConductorLogin,
-                                  );
+                                          selectedVehicle ?? '',
+                                          selectedBound ?? '',
+                                          selectedRoute ?? '',
+                                          isDriverLogin,
+                                          isDispatcherLogin,
+                                          isConductorLogin,
+                                          isCashCardLogin,
+                                          coopData['modeOfPayment'] ==
+                                                  "cashless"
+                                              ? true
+                                              : false);
                                   bool? isValid = await isDispatchValid;
                                   if (SESSION['torNo'].toString() != "") {
                                     if (SESSION['torNo'].toString() !=
@@ -1620,6 +1676,16 @@ class _LoginPageState extends State<LoginPage> {
                                               : "$selectedVehicle:$plateNumber",
                                           selectedRoute ?? '',
                                           selectedBound ?? '');
+                                      SESSION['loginInfo'] = [
+                                        driverLoginInfo,
+                                        dispatcherLoginInfo,
+                                        conductorLoginInfo
+                                      ];
+                                      SESSION['cashCardInfo'] =
+                                          cashcardLoginInfo;
+                                      print(
+                                          "SESSION['loginInfo']: ${SESSION['loginInfo']}");
+                                      _myBox.put('SESSION', SESSION);
                                       if (isRegularTrip) {
                                         NfcManager.instance.stopSession();
                                         Navigator.pushReplacement(
@@ -1729,9 +1795,14 @@ class EmployeeTapCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            '${label.toString().toUpperCase()}',
-            style: TextStyle(color: Colors.white),
+          FittedBox(
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Text(
+                '${label.toString().toUpperCase()}',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           ),
           Container(
             decoration: BoxDecoration(
@@ -1752,20 +1823,25 @@ class EmployeeTapCard extends StatelessWidget {
             ),
           ),
           isLogin
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                  child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text('$employeeName',
-                          style: TextStyle(color: Colors.white))),
+              ? FittedBox(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                    child: Text('$employeeName',
+                        style: TextStyle(color: Colors.white)),
+                  ),
                 )
-              : Text(
-                  'TAP CARD',
-                  style: TextStyle(color: Colors.white),
+              : FittedBox(
+                  child: Text(
+                    'TAP CARD',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-          Text(
-            '${empNo ?? ""}',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          FittedBox(
+            child: Text(
+              '${empNo ?? " "}',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
           )
         ],
       ),

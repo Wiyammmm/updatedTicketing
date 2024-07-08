@@ -916,6 +916,19 @@ class fetchServices {
     return cardList;
   }
 
+  List<dynamic> fetchLoginInfoList() {
+    final SESSION = _myBox.get('SESSION');
+    final cardList = _myBox.get('cardList');
+    print('fetchLoginInfoList session: ${SESSION['loginInfo']}');
+    if (SESSION.containsKey('loginInfo')) {
+      print('fetchLoginInfoList contains logininfo');
+      return SESSION['loginInfo'];
+    } else {
+      print('fetchLoginInfoList not contain');
+    }
+    return cardList;
+  }
+
   List<Map<String, dynamic>> fetchVehicleList() {
     final vehicleList = _myBox.get('vehicleList');
     return vehicleList;
@@ -967,8 +980,14 @@ class fetchServices {
   }
 
   List<Map<String, dynamic>> fetchMasterCardList() {
+    final SESSION = _myBox.get('SESSION');
     final masterCardList = _myBox.get('masterCardList');
-    return masterCardList;
+    if (SESSION.containsKey('cashCardInfo')) {
+      print("SESSION['cashCardInfo']: ${[SESSION['cashCardInfo']]}");
+      return [SESSION['cashCardInfo']];
+    } else {
+      return masterCardList;
+    }
   }
 
   List<Map<String, dynamic>> fetchRouteList() {

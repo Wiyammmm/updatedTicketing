@@ -352,10 +352,14 @@ class TestPrinttt {
             "$vehicleNo",
             1);
 
-        bluetooth.printLeftRight("Discount:",
-            "${isDltb ? discount.round() : discount.toStringAsFixed(2)}", 1);
-        bluetooth.printLeftRight("Amount:",
-            "${isDltb ? amount.round() : amount.toStringAsFixed(2)}", 1);
+        bluetooth.printLeftRight(
+            "Discount:",
+            "${coopData['coopType'] == "Bus" ? discount.round() : discount.toStringAsFixed(2)}",
+            1);
+        bluetooth.printLeftRight(
+            "Amount:",
+            "${coopData['coopType'] == "Bus" ? amount.round() : amount.toStringAsFixed(2)}",
+            1);
         if (isJeepney) {
           bluetooth.printLeftRight("Pax:", "${pax}", 1);
         }
@@ -367,7 +371,9 @@ class TestPrinttt {
 
         bluetooth.printCustom("TOTAL AMOUNT", 2, 1);
         bluetooth.printCustom(
-            "${isDltb ? subtotal.round() : subtotal.toStringAsFixed(2)}", 2, 1);
+            "${coopData['coopType'] == "Bus" ? subtotal.round() : subtotal.toStringAsFixed(2)}",
+            2,
+            1);
         // bluetooth.printLeftRight("TRAVEL:", "${from}KM - ${to}KM", 1);
 
         bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
@@ -489,9 +495,13 @@ class TestPrinttt {
             bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
             // bluetooth.printLeftRight("Baggage:", "$baggageAmount", 1);
             bluetooth.printLeftRight(
-                "Discount:", "${isDltb ? discount.round() : discount}", 1);
+                "Discount:",
+                "${coopData['coopType'] == "Bus" ? discount.round() : discount}",
+                1);
             bluetooth.printLeftRight(
-                "Amount:", "${isDltb ? amount.round() : amount}", 1);
+                "Amount:",
+                "${coopData['coopType'] == "Bus" ? amount.round() : amount}",
+                1);
             bluetooth.printCustom("TOTAL AMOUNT", 2, 1);
             bluetooth.printCustom("${subtotal.toStringAsFixed(2)}", 2, 1);
 
@@ -527,8 +537,10 @@ class TestPrinttt {
               bluetooth.printCustom("DATE: $formattedDate", 1, 1);
 
               bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
-              bluetooth.printLeftRight("Baggage:",
-                  "${isDltb ? baggageAmount.round() : baggageAmount}", 1);
+              bluetooth.printLeftRight(
+                  "Baggage:",
+                  "${coopData['coopType'] == "Bus" ? baggageAmount.round() : baggageAmount}",
+                  1);
 
               bluetooth.printNewLine();
               bluetooth.printNewLine();
@@ -630,8 +642,10 @@ class TestPrinttt {
           bluetooth.printCustom("DATE: $formattedDate", 1, 1);
 
           bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
-          bluetooth.printLeftRight("Baggage:",
-              "${isDltb ? baggageAmount.round() : baggageAmount}", 1);
+          bluetooth.printLeftRight(
+              "Baggage:",
+              "${coopData['coopType'] == "Bus" ? baggageAmount.round() : baggageAmount}",
+              1);
           bluetooth.printNewLine();
           bluetooth.printCustom("PASSENGER'S COPY", 1, 1);
 
@@ -725,7 +739,7 @@ class TestPrinttt {
             } else {
               bluetooth.printLeftRight(
                   "$expenseDescription",
-                  "${isDltb ? expenseAmount.round() : expenseAmount.toStringAsFixed(2)}",
+                  "${coopData['coopType'] == "Bus" ? expenseAmount.round() : expenseAmount.toStringAsFixed(2)}",
                   1);
             }
           }
@@ -740,7 +754,7 @@ class TestPrinttt {
 
               bluetooth.printLeftRight(
                   " ${expenseDescription}",
-                  "${isDltb ? expenseAmount.round() : expenseAmount.toStringAsFixed(2)}",
+                  "${coopData['coopType'] == "Bus" ? expenseAmount.round() : expenseAmount.toStringAsFixed(2)}",
                   1);
             }
           }
@@ -1287,7 +1301,7 @@ class TestPrinttt {
               } else {
                 bluetooth.printLeftRight(
                     "$expenseDescription",
-                    "${isDltb ? expenseAmount.round() : expenseAmount.toStringAsFixed(2)}",
+                    "${coopData['coopType'] == "Bus" ? expenseAmount.round() : expenseAmount.toStringAsFixed(2)}",
                     1);
               }
             }
@@ -1303,7 +1317,7 @@ class TestPrinttt {
 
                 bluetooth.printLeftRight(
                     " ${expenseDescription}",
-                    "${isDltb ? expenseAmount.round() : expenseAmount.toStringAsFixed(2)}",
+                    "${coopData['coopType'] == "Bus" ? expenseAmount.round() : expenseAmount.toStringAsFixed(2)}",
                     1);
               }
             }
@@ -1995,6 +2009,11 @@ class TestPrinttt {
           bluetooth.printLeftRight("CONDUCTOR:", "$conductorName", 1);
           bluetooth.printLeftRight("DRIVER:", "$driverName", 1);
           bluetooth.printCustom("ROUTE:     $route", 1, 1);
+          bluetooth.printCustom(
+              "OPENING:     ${tickets[0]['ticket_no']}", 1, 1);
+          bluetooth.printCustom(
+              "CLOSING:     ${tickets[tickets.length - 1]['ticket_no']}", 1, 1);
+
           bluetooth.printCustom("- - - - - - - - - - - - - - -", 1, 1);
           bluetooth.printLeftRight("PASSENGER:", "$passenger", 1);
 

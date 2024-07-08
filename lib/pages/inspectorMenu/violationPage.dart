@@ -63,12 +63,16 @@ class _ViolationPageState extends State<ViolationPage> {
     'OVERTAKING ON PROHIBITED ZONES',
     'FOLLOWING CLOSE',
     'OVERTAKING WITHOUT SUFFICIENT CLEARANCE',
-    'OVER SPEEDING'
+    'OVER SPEEDING',
+    'OTHER'
   ];
   List<Map<String, dynamic>> stationNames = [];
   List<Map<String, dynamic>> filteredStations = [];
   String? selectedValue;
   final TextEditingController textEditingController = TextEditingController();
+  final TextEditingController otherViolationController =
+      TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -88,6 +92,7 @@ class _ViolationPageState extends State<ViolationPage> {
   void dispose() {
     employeeNameController.dispose();
     textEditingController.dispose();
+    otherViolationController.dispose();
     super.dispose();
   }
 
@@ -709,6 +714,103 @@ class _ViolationPageState extends State<ViolationPage> {
                             ),
                           ),
                         ),
+                        if (selectedValue == "OTHER")
+                          SizedBox(
+                            height: 5,
+                          ),
+                        if (selectedValue == "OTHER")
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                                color: AppColors.primaryColor,
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '* ',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                        ),
+                                        Text(
+                                          'OTHER VIOLATION',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(20),
+                                            bottomRight: Radius.circular(20))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Center(
+                                        child: TextField(
+                                          controller: otherViolationController,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: Color(0xff5f6062)),
+                                          decoration: InputDecoration(
+                                              // contentPadding:
+                                              //     EdgeInsets.only(bottom: 10),
+                                              hintText:
+                                                  'Enter Specific Violation',
+                                              hintStyle: TextStyle(
+                                                  fontSize: 10,
+                                                  color: Colors.black),
+                                              filled: true,
+                                              fillColor: Colors.white,
+                                              border: OutlineInputBorder(
+                                                  borderSide: BorderSide.none,
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  20)))),
+                                          onChanged: (value) {
+                                            try {
+                                              double thisvalue =
+                                                  double.parse(value);
+
+                                              // selectedOnboardPlace = null;
+                                              findNearestStation(
+                                                  filteredStations, thisvalue);
+                                              print(
+                                                  'selectedOnboardPlace: $selectedOnboardPlace');
+                                            } catch (e) {
+                                              print('km post error: $e');
+
+                                              setState(() {
+                                                stationNames = filteredStations;
+                                                selectedOnboardPlace = null;
+                                              });
+                                              print(
+                                                  'km post error stationNames: $stationNames');
+                                              return;
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         SizedBox(
                           height: 30,
                         ),
@@ -906,7 +1008,8 @@ class _ViolationPageState extends State<ViolationPage> {
       "onboard_place": "${selectedOnboardPlace}",
       "onboard_km_post": onboard_km_post,
       "employee_name": "${employeeNameController.text}",
-      "employee_violation": "$selectedValue",
+      "employee_violation":
+          "${selectedValue == "OTHER" ? otherViolationController.text : selectedValue}",
       "timestamp": "$onboardTime",
       "lat": "14.076688",
       "long": "120.866036"
@@ -986,7 +1089,7 @@ class _ViolationPageState extends State<ViolationPage> {
         "${torTrip[SESSION['currentTripIndex']]['bound']}",
         "${inspectorData['idName']}",
         "${employeeNameController.text}",
-        "$selectedValue",
+        "${selectedValue == "OTHER" ? otherViolationController.text : selectedValue}",
         "${fetchservice.convertNumToIntegerOrDecimal(kmpost)}",
         "${selectedOnboardPlace}");
     if (isprintdone) {

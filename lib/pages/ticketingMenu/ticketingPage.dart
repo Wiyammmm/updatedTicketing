@@ -123,14 +123,30 @@ class _TicketingPageState extends State<TicketingPage> {
     super.initState();
 
     storedData = _myBox.get('SESSION');
+    coopData = fetchService.fetchCoopData();
+    print(
+        'storedData selectedPassengerType: ${storedData['selectedPassengerType']}');
+    print('storedData[isFix]: ${storedData['isFix']}');
     if (coopData['coopType'] == "Bus") {
-      isFix = storedData['isFix'] ?? false;
+      var isFixValue = storedData['isFix'];
+      if (isFixValue is bool) {
+        print('isfix is bool');
+        isFix = isFixValue;
+      } else if (isFixValue is String) {
+        print('isfix is string');
+        isFix = isFixValue.toLowerCase() == 'true';
+      } else {
+        print('isfix is not string and bool');
+        isFix = false;
+      }
     }
     print("isFix: $isFix");
 
     if (isFix) {
-      passengerType = storedData['selectedPassengerType'];
+      passengerType = storedData['selectedPassengerType'].toString();
     }
+    print(' ifisfix passengerType: $passengerType');
+    print(' ifisfix: $isFix');
     sessionBox = _myBox.get('SESSION');
 
     // if (sessionBox['isViceVersa']) {
@@ -147,7 +163,7 @@ class _TicketingPageState extends State<TicketingPage> {
     routes = fetchService.fetchRouteList();
 
     filipayCardList = fetchService.fetchFilipayCardList();
-    coopData = fetchService.fetchCoopData();
+
     if (coopData['modeOfPayment'] == "cash") {
       isNoMasterCard = true;
     }
@@ -309,6 +325,8 @@ class _TicketingPageState extends State<TicketingPage> {
     }
 
     _updateAmount(isDiscounted);
+
+    print('updated passengertype: $passengerType');
   }
 
   String findNearestStation(
@@ -445,9 +463,9 @@ class _TicketingPageState extends State<TicketingPage> {
         //     cardList.where((station) => station['cardType'] == typeCard).toList();
       } else if (typeCard == 'mastercard') {
         cardList = fetchService.fetchMasterCardList();
-        cardList = cardList
-            .where((station) => station['cardType'] == typeCard)
-            .toList();
+        // cardList = cardList
+        //     .where((station) => station['cardType'] == typeCard)
+        //     .toList();
       } else {
         return;
       }
@@ -593,7 +611,9 @@ class _TicketingPageState extends State<TicketingPage> {
         Map<String, dynamic> isSendTorTicket =
             await httprequestServices.torTicket({
           "cardId": result,
-          "amount": isDltb ? subtotal.round().toInt() : subtotal,
+          "amount": coopData['coopType'] == 'Bus'
+              ? subtotal.round().toInt()
+              : subtotal,
           "cardType":
               '${cardData.isNotEmpty ? cardData[0]['cardType'] ?? "cash" : "cash"}',
           "isNegative": false,
@@ -621,9 +641,11 @@ class _TicketingPageState extends State<TicketingPage> {
             "from_km": stations[currentStationIndex][stationkm],
             "to_km": toKM,
             "km_run": kmRun,
-            "fare": isDltb ? newprice.round() : newprice,
-            "subtotal": isDltb ? subtotal.round() : subtotal,
-            "discount": isDltb ? discount.round() : discount,
+            "fare": coopData['coopType'] == 'Bus' ? newprice.round() : newprice,
+            "subtotal":
+                coopData['coopType'] == 'Bus' ? subtotal.round() : subtotal,
+            "discount":
+                coopData['coopType'] == 'Bus' ? discount.round() : discount,
             "additionalFare": 0,
             "additionalFareCardType": "",
             "card_no": "$result",
@@ -632,7 +654,8 @@ class _TicketingPageState extends State<TicketingPage> {
             "long": longitude,
             "created_on": "$timestamp",
             "updated_on": "$timestamp",
-            "baggage": isDltb ? baggage.round() : baggage,
+            "baggage":
+                coopData['coopType'] == 'Bus' ? baggage.round() : baggage,
             "cardType":
                 '${cardData.isNotEmpty ? cardData[0]['cardType'] ?? "cash" : "cash"}',
             "passengerType": "$passengerType",
@@ -756,9 +779,13 @@ class _TicketingPageState extends State<TicketingPage> {
           "from_km": stations[currentStationIndex][stationkm],
           "to_km": toKM,
           "km_run": kmRun,
-          "fare": isDltb ? newprice.round() : newprice,
-          "subtotal": isDltb ? subtotal.round().toInt() : subtotal,
-          "discount": isDltb ? discount.round().toInt() : discount,
+          "fare": coopData['coopType'] == 'Bus' ? newprice.round() : newprice,
+          "subtotal": coopData['coopType'] == 'Bus'
+              ? subtotal.round().toInt()
+              : subtotal,
+          "discount": coopData['coopType'] == 'Bus'
+              ? discount.round().toInt()
+              : discount,
           "additionalFare": 0,
           "additionalFareCardType": "",
           "card_no": "$result",
@@ -767,7 +794,7 @@ class _TicketingPageState extends State<TicketingPage> {
           "long": longitude,
           "created_on": "$timestamp",
           "updated_on": "$timestamp",
-          "baggage": isDltb ? baggage.round() : baggage,
+          "baggage": coopData['coopType'] == 'Bus' ? baggage.round() : baggage,
           "cardType":
               '${cardData.isNotEmpty ? cardData[0]['cardType'] ?? "cash" : "cash"}',
           "passengerType": "$passengerType",
@@ -800,8 +827,10 @@ class _TicketingPageState extends State<TicketingPage> {
           if (isFix) {
             storedData['selectedDestination'] = selectedDestination;
             storedData['selectedPassengerType'] = passengerType;
-            _myBox.put('SESSION', storedData);
 
+            _myBox.put('SESSION', storedData);
+            print('added ticket: isfix: $isFix');
+            print('added ticket: selectedPassengerType: $passengerType');
             print("new selectedDestination: $selectedDestination");
           }
           // int baggagepriceoffline = 0;
@@ -811,7 +840,9 @@ class _TicketingPageState extends State<TicketingPage> {
           if (isOffline) {
             bool isAddOfflineTicket = await hiveService.addOfflineTicket({
               "cardId": result,
-              "amount": isDltb ? subtotal.round().toInt() : subtotal,
+              "amount": coopData['coopType'] == 'Bus'
+                  ? subtotal.round().toInt()
+                  : subtotal,
               "cardType":
                   '${cardData.isNotEmpty ? cardData[0]['cardType'] ?? "cash" : "cash"}',
               "isNegative": false,
@@ -841,9 +872,12 @@ class _TicketingPageState extends State<TicketingPage> {
                 "from_km": stations[currentStationIndex][stationkm],
                 "to_km": toKM,
                 "km_run": kmRun,
-                "fare": isDltb ? newprice.round() : newprice,
-                "subtotal": isDltb ? subtotal.round() : subtotal,
-                "discount": isDltb ? discount.round() : discount,
+                "fare":
+                    coopData['coopType'] == 'Bus' ? newprice.round() : newprice,
+                "subtotal":
+                    coopData['coopType'] == 'Bus' ? subtotal.round() : subtotal,
+                "discount":
+                    coopData['coopType'] == 'Bus' ? discount.round() : discount,
                 "additionalFare": 0,
                 "additionalFareCardType": "",
                 "card_no": "$result",
@@ -854,7 +888,8 @@ class _TicketingPageState extends State<TicketingPage> {
                 "updated_on": "$timestamp",
                 // "previous_balance": previousBalance,
                 // "current_balance": currentBalance,
-                "baggage": isDltb ? baggage.round() : baggage,
+                "baggage":
+                    coopData['coopType'] == 'Bus' ? baggage.round() : baggage,
                 "cardType":
                     '${cardData.isNotEmpty ? cardData[0]['cardType'] ?? "cash" : "cash"}',
                 "passengerType": "$passengerType",
@@ -3943,7 +3978,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                         children: [
                                                           Text(
                                                             // '(${station[stationkm] - stations[currentStationIndex][stationkm]})',
-                                                            '₱${isDltb ? amount.round() : amount.toStringAsFixed(2)}',
+                                                            '₱${coopData['coopType'] == 'Bus' ? amount.round() : amount.toStringAsFixed(2)}',
                                                             style: TextStyle(
                                                                 color: isselectedStationID
                                                                     ? AppColors
@@ -4136,7 +4171,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                                       .bold),
                                                         ),
                                                         Text(
-                                                          '${isDltb ? subtotal.round() : subtotal.toStringAsFixed(2)}',
+                                                          '${coopData['coopType'] == 'Bus' ? subtotal.round() : subtotal.toStringAsFixed(2)}',
                                                           textAlign:
                                                               TextAlign.center,
                                                           style: TextStyle(
@@ -5070,7 +5105,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                       children: [
                                                         Text(
                                                           // '(${station[stationkm] - stations[currentStationIndex][stationkm]})',
-                                                          '₱${isDltb ? price2.round() : fetchservice.roundToNearestQuarter(price2, minimumFare).toStringAsFixed(2)}',
+                                                          '₱${coopData['coopType'] == 'Bus' ? price2.round() : fetchservice.roundToNearestQuarter(price2, minimumFare).toStringAsFixed(2)}',
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.white,

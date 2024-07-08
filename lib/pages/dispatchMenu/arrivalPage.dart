@@ -445,6 +445,9 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                             "${SESSION['tripType']}",
                                             fetchService.totalTripExpenses());
                                     if (isprint) {
+                                      SESSION['cashCardInfo'] = [];
+                                      SESSION['loginInfo'] = [];
+                                      _myBox.put(SESSION, SESSION);
                                       Navigator.of(context).pop();
                                       Navigator.pushReplacement(
                                           context,

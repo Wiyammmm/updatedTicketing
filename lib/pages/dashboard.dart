@@ -51,6 +51,7 @@ class _DashboardPageState extends State<DashboardPage> {
   List<Map<dynamic, dynamic>> torInspection = [];
   List<Map<dynamic, dynamic>> stations = [];
   List<Map<String, dynamic>> selectedRoute = [];
+  List<dynamic> loginInfo = [];
   Map<dynamic, dynamic> SESSION = {};
   bool isShowClosingMenu = false;
   bool isconductorModalshow = false;
@@ -73,6 +74,7 @@ class _DashboardPageState extends State<DashboardPage> {
     torDispatch = _myBox.get('torDispatch');
     torTrip = _myBox.get('torTrip');
     SESSION = _myBox.get('SESSION');
+    loginInfo = SESSION['loginInfo'];
     torTicket = fetchService.fetchAllTorTicketTrip();
     torInspection = fetchService.fetchAllTorInspectionTrip();
     tripType = SESSION['tripType'];
@@ -202,14 +204,17 @@ class _DashboardPageState extends State<DashboardPage> {
           await backend.startNFCReader().timeout(Duration(seconds: 30));
       if (result != null) {
         print('result: $result');
-        final isCardExistingResult = isCardExisting.isCardExisting(result);
+
+        final isCardExistingResult =
+            isCardExisting.isDashboardCardExisting(result);
+        print('isCardExistingResult: $isCardExistingResult');
         if (isCardExistingResult != null) {
           print('isCardExistingResult22: $isCardExistingResult');
           if (isCardExistingResult.isEmpty || isCardExistingResult == null) {
             print('this is null');
             return;
           }
-          String emptype = isCardExistingResult['designation'];
+          String emptype = isCardExistingResult['designation'] ?? "";
           print('emptype: $emptype');
           if (isCardExistingResult['accessPrivileges']
               .toString()

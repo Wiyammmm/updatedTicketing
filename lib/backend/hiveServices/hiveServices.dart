@@ -1373,7 +1373,8 @@ class HiveService {
       storedData['isClosed'] = false;
       storedData['lastInspectorEmpNo'] = "";
       storedData['torNo'] = "";
-
+      storedData['loginInfo'] = [];
+      storedData['cashCardInfo'] = [];
       _myBox.put('SESSION', storedData);
       final newstoredData = _myBox.get('SESSION');
       _myBox.put('torTrip', <Map<String, dynamic>>[]);

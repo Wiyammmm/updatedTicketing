@@ -3441,16 +3441,22 @@ class _TicketingPageState extends State<TicketingPage> {
 
                                               if (selectedPaymentMethod == 1) {
                                                 cardType = "mastercard";
-                                                _showDialognfcScan(
-                                                    context,
-                                                    'CASH CARD',
-                                                    'master-card.png');
+                                                if (coopData['modeOfPayment'] ==
+                                                    'cashless') {
+                                                  _showDialognfcScan(
+                                                      context,
+                                                      'CASH CARD',
+                                                      'master-card.png');
+                                                }
                                               }
                                               if (selectedPaymentMethod == 2) {
-                                                _showDialognfcScan(
-                                                    context,
-                                                    'FILIPAY CARD',
-                                                    'FILIPAY Cards - Regular.png');
+                                                if (coopData['modeOfPayment'] ==
+                                                    'cashless') {
+                                                  _showDialognfcScan(
+                                                      context,
+                                                      'FILIPAY CARD',
+                                                      'FILIPAY Cards - Regular.png');
+                                                }
                                                 if (passengerType !=
                                                     "regular") {
                                                   cardType = "discounted";
@@ -3460,10 +3466,13 @@ class _TicketingPageState extends State<TicketingPage> {
                                               }
 
                                               if (selectedPaymentMethod == 3) {
-                                                _showDialognfcScan(
-                                                    context,
-                                                    'BEEP CARD',
-                                                    'beepcard.png');
+                                                if (coopData['modeOfPayment'] ==
+                                                    'cashless') {
+                                                  _showDialognfcScan(
+                                                      context,
+                                                      'BEEP CARD',
+                                                      'beepcard.png');
+                                                }
                                                 if (passengerType !=
                                                     "regular") {
                                                   cardType = "discounted";
@@ -3473,10 +3482,13 @@ class _TicketingPageState extends State<TicketingPage> {
                                               }
 
                                               if (selectedPaymentMethod == 4) {
-                                                _showDialognfcScan(
-                                                    context,
-                                                    'TRIPKO CARD',
-                                                    'tripkocard.jpeg');
+                                                if (coopData['modeOfPayment'] ==
+                                                    'cashless') {
+                                                  _showDialognfcScan(
+                                                      context,
+                                                      'TRIPKO CARD',
+                                                      'tripkocard.jpeg');
+                                                }
                                                 if (passengerType !=
                                                     "regular") {
                                                   cardType = "discounted";
@@ -3506,7 +3518,10 @@ class _TicketingPageState extends State<TicketingPage> {
                                           child: FittedBox(
                                             fit: BoxFit.scaleDown,
                                             child: Text(
-                                              'TAP CARD',
+                                              coopData['modeOfPayment'] ==
+                                                      'cashless'
+                                                  ? 'TAP CARD'
+                                                  : 'PROCEED',
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize:

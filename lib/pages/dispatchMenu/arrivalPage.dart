@@ -447,7 +447,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                     if (isprint) {
                                       SESSION['cashCardInfo'] = [];
                                       SESSION['loginInfo'] = [];
-                                      _myBox.put(SESSION, SESSION);
+                                      _myBox.put('SESSION', SESSION);
                                       Navigator.of(context).pop();
                                       Navigator.pushReplacement(
                                           context,

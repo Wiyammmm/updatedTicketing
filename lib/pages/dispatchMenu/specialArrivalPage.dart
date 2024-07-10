@@ -359,6 +359,9 @@ class _SpecialArrivalPageState extends State<SpecialArrivalPage> {
                                         "${SESSION['tripType']}",
                                         fetchService.totalTripExpenses());
                                     if (isprint) {
+                                      SESSION['cashCardInfo'] = [];
+                                      SESSION['loginInfo'] = [];
+                                      _myBox.put('SESSION', SESSION);
                                       Navigator.of(context).pop();
                                       Navigator.pushReplacement(
                                           context,

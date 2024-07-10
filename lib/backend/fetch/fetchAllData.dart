@@ -1335,7 +1335,7 @@ class fetchServices {
       print('vehicleListDB: $vehicleListDB');
       print('vehicleListDB length: ${vehicleListDB.length}');
       int vehicleListIndex = 0;
-      for (int i = 0; i < 10000; i++) {
+      for (int i = 0; i < 100; i++) {
         String plateNumber = "";
 
         try {

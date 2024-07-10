@@ -744,6 +744,7 @@ class HiveService {
       net_collection = (tickerRevenuePassenger +
               ticketRevenueCardPassenger +
               fetchService.totalBaggageperTrip() +
+              getTotalTopUpperTrip() +
               totalPrepaidPassengerRevenue() +
               totalPrepaidBaggageRevenue()) -
           totalExpenses;

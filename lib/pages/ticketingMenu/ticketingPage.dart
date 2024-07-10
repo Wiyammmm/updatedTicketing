@@ -1204,7 +1204,8 @@ class _TicketingPageState extends State<TicketingPage> {
         return false;
       }
     }
-    if (subtotal > double.parse(coopData['maximumFare'].toString())) {
+    if (subtotal / quantity >
+        double.parse(coopData['maximumFare'].toString())) {
       ArtSweetAlert.show(
           context: context,
           artDialogArgs: ArtDialogArgs(
@@ -1295,7 +1296,8 @@ class _TicketingPageState extends State<TicketingPage> {
                   text: "AMOUNT 0 IS NOT VALID"));
           return false;
         }
-        if (subtotal > double.parse(coopData['maximumFare'].toString())) {
+        if (subtotal / quantity >
+            double.parse(coopData['maximumFare'].toString())) {
           ArtSweetAlert.show(
               context: context,
               artDialogArgs: ArtDialogArgs(

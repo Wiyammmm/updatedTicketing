@@ -317,89 +317,94 @@ class _CundoctorPageState extends State<CundoctorPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              TopUpPassengerCardPage()));
-                                },
-                                child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.28,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primaryColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 8),
-                                        child: Container(
-                                          height: 100,
-                                          width: 100,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFd9d9d9),
-                                            borderRadius:
-                                                BorderRadius.circular(100),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Stack(
-                                              children: [
-                                                Image.asset(
-                                                  'assets/passenger.png',
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.2,
-                                                ),
-                                                Align(
-                                                  alignment: Alignment(3, 2),
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                        color:
-                                                            Color(0xFFd9d9d9),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10)),
-                                                    child: Image.asset(
-                                                      'assets/top-up.png',
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.12,
+                              if (coopData['modeOfPayment'] == "cashless")
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                TopUpPassengerCardPage()));
+                                  },
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.28,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.4,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primaryColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 8),
+                                          child: Container(
+                                            height: 100,
+                                            width: 100,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFd9d9d9),
+                                              borderRadius:
+                                                  BorderRadius.circular(100),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Stack(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/passenger.png',
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.2,
+                                                  ),
+                                                  Align(
+                                                    alignment: Alignment(3, 2),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color:
+                                                              Color(0xFFd9d9d9),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10)),
+                                                      child: Image.asset(
+                                                        'assets/top-up.png',
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.12,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 35,
-                                        child: FittedBox(
-                                          fit: BoxFit.scaleDown,
-                                          child: Text(
-                                            'TOP-UP\nPASSENGER',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
+                                        SizedBox(
+                                          height: 35,
+                                          child: FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              'TOP-UP\nPASSENGER',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
                               // GestureDetector(
                               //   onTap: () {
                               //     Navigator.push(
@@ -482,91 +487,97 @@ class _CundoctorPageState extends State<CundoctorPage> {
                               //     ),
                               //   ),
                               // ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              TopUpListPage()));
-                                },
-                                child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.28,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primaryColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 8),
-                                        child: Container(
-                                          height: 100,
-                                          width: 100,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFd9d9d9),
-                                            borderRadius:
-                                                BorderRadius.circular(100),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Stack(
-                                              children: [
-                                                Image.asset(
-                                                  'assets/passenger.png',
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.2,
-                                                ),
-                                                Align(
-                                                  alignment: Alignment(3, 2),
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                        color:
-                                                            Color(0xFFd9d9d9),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10)),
-                                                    child: Image.asset(
-                                                      'assets/top-up.png',
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.12,
+                              if (coopData['modeOfPayment'] == "cashless")
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                TopUpListPage()));
+                                  },
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.28,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.4,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primaryColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 8),
+                                          child: Container(
+                                            height: 100,
+                                            width: 100,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFd9d9d9),
+                                              borderRadius:
+                                                  BorderRadius.circular(100),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Stack(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/passenger.png',
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.2,
+                                                  ),
+                                                  Align(
+                                                    alignment: Alignment(3, 2),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color:
+                                                              Color(0xFFd9d9d9),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10)),
+                                                      child: Image.asset(
+                                                        'assets/top-up.png',
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.12,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 30,
-                                        child: FittedBox(
-                                          fit: BoxFit.scaleDown,
-                                          child: Text(
-                                            'TOP-UP\nLIST',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
+                                        SizedBox(
+                                          height: 30,
+                                          child: FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              'TOP-UP\nLIST',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
                             ],
                           ),
+                            if (coopData['modeOfPayment'] == "cashless")
                           SizedBox(
                             height: 10,
                           ),
@@ -660,6 +671,7 @@ class _CundoctorPageState extends State<CundoctorPage> {
                                   ),
                                 ),
                               ),
+                              if (coopData['modeOfPayment'] == "cashless")
                               GestureDetector(
                                 onTap: () {
                                   setState(() {

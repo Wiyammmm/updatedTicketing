@@ -1374,8 +1374,12 @@ class HiveService {
       storedData['isClosed'] = false;
       storedData['lastInspectorEmpNo'] = "";
       storedData['torNo'] = "";
-      storedData['loginInfo'] = [];
-      storedData['cashCardInfo'] = [];
+      var removedcashCardInfo = storedData.remove('cashCardInfo');
+      var removedloginInfo = storedData.remove('loginInfo');
+
+      print('removed Map after removing age: $storedData');
+      print('Removed value: $removedcashCardInfo');
+      print('Removed value: $removedloginInfo');
       _myBox.put('SESSION', storedData);
       final newstoredData = _myBox.get('SESSION');
       _myBox.put('torTrip', <Map<String, dynamic>>[]);

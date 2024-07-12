@@ -445,8 +445,17 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                             "${SESSION['tripType']}",
                                             fetchService.totalTripExpenses());
                                     if (isprint) {
-                                      SESSION['cashCardInfo'] = [];
-                                      SESSION['loginInfo'] = [];
+                                      var removedcashCardInfo =
+                                          SESSION.remove('cashCardInfo');
+                                      var removedloginInfo =
+                                          SESSION.remove('loginInfo');
+
+                                      print(
+                                          'removed Map after removing age: $SESSION');
+                                      print(
+                                          'Removed value: $removedcashCardInfo');
+                                      print('Removed value: $removedloginInfo');
+
                                       _myBox.put('SESSION', SESSION);
                                       Navigator.of(context).pop();
                                       Navigator.pushReplacement(

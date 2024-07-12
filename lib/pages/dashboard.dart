@@ -1284,7 +1284,9 @@ class _DashboardPageState extends State<DashboardPage> {
                                     ),
                                   ),
                                   child: Text(
-                                    'Top-up Menu',
+                                    coopData['modeOfPayment'] == "cashless"
+                                        ? 'Top-up Menu'
+                                        : "Check Filipay Card",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),

@@ -45,6 +45,7 @@ class _ticketListingPageState extends State<TicketListingPage> {
     coopData = fetchService.fetchCoopData();
     if (coopData['modeOfPayment'] == "cash") {
       isNoMasterCard = true;
+      print('isNoMasterCard: $isNoMasterCard');
     }
     ticketList = fetchService.fetchTorTicket();
     ticketListCopy = List.from(ticketList);
@@ -75,8 +76,12 @@ class _ticketListingPageState extends State<TicketListingPage> {
     List<Map<String, dynamic>> cardList = [];
     List<Map<String, dynamic>> cardData = [];
     String modeOfPayment = coopData['modeOfPayment'];
+    print('addfaree isNoMasterCard: $isNoMasterCard');
+    print('addfaree typeCard: $typeCard');
     if (!isNoMasterCard ||
         (typeCard == "regular" || typeCard == "discounted")) {
+      print('addfaree dito sa if');
+
       if (!isNfcScanOn) {
         return;
       }
@@ -107,6 +112,7 @@ class _ticketListingPageState extends State<TicketListingPage> {
       print('cardList: $cardList');
       modeOfPayment = "cashless";
     } else {
+      print('addfaree cash');
       modeOfPayment = "cash";
       isCardIDExisting = true;
       result = "";
@@ -158,8 +164,10 @@ class _ticketListingPageState extends State<TicketListingPage> {
                     cancelButtonText: 'NO',
                     onConfirm: () async {
                       Navigator.of(context).pop();
+
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
+
                       bool isAddedOfflineAdditionalFare =
                           await hiveService.addOfflineAdditionalFare(newitem);
 
@@ -273,7 +281,8 @@ class _ticketListingPageState extends State<TicketListingPage> {
                 .then((value) {
               Navigator.of(context).pop();
               Navigator.of(context).pop();
-              Navigator.of(context).pop();
+              if (coopData['modeOfPayment'] == "cashless")
+                Navigator.of(context).pop();
             });
           } else {
             ArtSweetAlert.show(
@@ -1053,14 +1062,20 @@ class _ticketListingPageState extends State<TicketListingPage> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
+                                    print('addfaree cash button');
                                     if (!isNoMasterCard) {
                                       setState(() {
                                         isNfcScanOn = true;
                                       });
-                                      _startNFCReader('mastercard', item);
+
                                       _showDialognfcScan(context, 'CASH CARD',
                                           'master-card.png');
                                     }
+                                    _startNFCReader(
+                                        coopData['modeOfPayment'] == "cashless"
+                                            ? 'mastercard'
+                                            : 'cash',
+                                        item);
                                   },
                                   child: typeofCardsWidget(
                                       title:

@@ -2543,7 +2543,7 @@ class fetchServices {
       // If it contains a decimal or is greater than 0, return it as a double
       String decimalPart = numberString.substring(decimalIndex + 1);
       if (double.parse(decimalPart) > 0) {
-        return double.parse(numberString);
+        return double.parse(double.parse(numberString).toStringAsFixed(2));
       } else {
         return number.toInt();
       }

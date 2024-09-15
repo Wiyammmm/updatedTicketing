@@ -888,50 +888,54 @@ class _DashboardPageState extends State<DashboardPage> {
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryColor,
+                              if (coopData['coopType'].toString() == "Bus")
+                                SizedBox(
+                                  height: 5,
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                          child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                          'PREPAID PASS REVENUE',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      )),
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.3,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Center(
-                                            child: Text(
-                                              '${fetchService.totalPrepaidPassengerRevenueperTrip().toStringAsFixed(2)}',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
+                              if (coopData['coopType'].toString() == "Bus")
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primaryColor,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                            child: FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            'PREPAID PASS REVENUE',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        )),
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.3,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Center(
+                                              child: Text(
+                                                '${fetchService.totalPrepaidPassengerRevenueperTrip().toStringAsFixed(2)}',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      )
-                                    ],
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
                               // SizedBox(
                               //   height: 5,
                               // ),

@@ -3842,6 +3842,7 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   (BuildContext context,
                                                       int index) {
                                                 final station = stations[index];
+                                                print('station yes: $station');
                                                 double amount = double.parse(
                                                     stations[index]['amount']
                                                         .toString());
@@ -3884,12 +3885,18 @@ class _TicketingPageState extends State<TicketingPage> {
                                                         print(
                                                             'error sa gridview: $e');
                                                       }
-
-                                                      double stationKM = (thiskm -
-                                                              double.parse(
-                                                                  "${stations[currentStationIndex][stationkm]}" ??
-                                                                      '0'))
-                                                          .abs();
+                                                      print(
+                                                          'stations[currentStationIndex][stationkm]: ${stations[currentStationIndex][stationkm]}');
+                                                      double stationKM = 0;
+                                                      try {
+                                                        stationKM = (thiskm -
+                                                                double.parse(
+                                                                    "${stations[currentStationIndex][stationkm]}" ??
+                                                                        '0'))
+                                                            .abs();
+                                                      } catch (e) {
+                                                        print('error km : $e');
+                                                      }
 
                                                       if (fetchService
                                                           .getIsNumeric()) {
@@ -4925,14 +4932,16 @@ class _TicketingPageState extends State<TicketingPage> {
                                               final station = stations[index +
                                                   currentStationIndex +
                                                   1];
+                                              print('station yes2: $station');
                                               double price2 = 0;
                                               bool isselectedStationID = false;
                                               if (station['_id'] ==
                                                   selectedStationID) {
                                                 isselectedStationID = true;
                                               }
+                                              double stationKM2 = 0;
 
-                                              double stationKM2 = (double.parse(
+                                              stationKM2 = (double.parse(
                                                           station[stationkm]
                                                               .toString()) -
                                                       double.parse(stations[
@@ -4940,8 +4949,10 @@ class _TicketingPageState extends State<TicketingPage> {
                                                               [stationkm]
                                                           .toString()))
                                                   .abs();
+
                                               double baggageprice2 = 0.00;
-                                              if (stationKM2 <= firstKM) {
+
+                                              if ((stationKM2 <= firstKM)) {
                                                 // If the total distance is 4 km or less, the cost is fixed.
                                                 price2 = minimumFare;
                                               } else {
@@ -4959,10 +4970,20 @@ class _TicketingPageState extends State<TicketingPage> {
                                                   price2 = minimumFare +
                                                       ((stationKM2 - firstKM) *
                                                           pricePerKm);
+                                                  print(
+                                                      'station yes2 minimumFare: $minimumFare');
+                                                  print(
+                                                      'station yes2 stationKM2: $stationKM2');
+                                                  print(
+                                                      'station yes2 firstKM: $firstKM');
+                                                  print(
+                                                      'station yes2 pricePerKm: $pricePerKm');
                                                 } else {
                                                   price2 =
                                                       stationKM2 * pricePerKm;
                                                 }
+                                                print(
+                                                    'station yes2 price2: $price2');
                                               }
                                               return GestureDetector(
                                                 onTap: () {

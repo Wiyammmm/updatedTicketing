@@ -409,8 +409,15 @@ class HiveService {
     return filteredStations;
   }
 
-  Future<bool> updateCurrentTripIndex(
+  Future<Map<String, dynamic>> updateCurrentTripIndex(
       Map<String, dynamic> dispatcherData) async {
+    Map<String, dynamic> updateTripResponse = {
+      "messages": {
+        "code": 500,
+        "message": "SOMETHING WENT WRONG",
+      },
+      "response": {}
+    };
     // try {
     String arrivedTime = await dateService.departedTime();
     String arrivedTimeStamp = await dateService.departureTimestamp();
@@ -953,6 +960,8 @@ class HiveService {
         await httpRequestServices.updateTorMain(torMain[indexToUpdate]);
 
     if (isupdateTorTrip['messages'][0]['code'].toString() == "0") {
+      updateTripResponse['messages']['code'] = 0;
+      updateTripResponse['messages']['message'] = "OK";
       print('isupdateTorTrip: success: $isupdateTorTrip');
 
       _myBox.put('torTrip', torTrip);
@@ -972,9 +981,13 @@ class HiveService {
       // _myBox.put('expenses', <Map<String, dynamic>>[]);
 
       print('newstoredData: $newstoredData');
-      return true;
+
+      return updateTripResponse;
     } else {
       if (isupdateTorTrip['messages'][0]['code'].toString() == "500") {
+        updateTripResponse['messages']['code'] = 0;
+        updateTripResponse['messages']['message'] = "OK";
+
         final offlineUpdateTorTrip = _myBox.get('offlineUpdateTorTrip');
         final offlineUpdateTorMain = _myBox.get('offlineUpdateTorMain');
         offlineUpdateTorMain.add(torMain[indexToUpdate]);
@@ -1003,11 +1016,13 @@ class HiveService {
 
         print('newstoredData: $newstoredData');
 
-        return true;
+        return updateTripResponse;
       } else {
         print(
             'error isupdateTorTrip: ${isupdateTorTrip['messages'][0]['message']}');
-        return false;
+        updateTripResponse['messages']['message'] =
+            "${isupdateTorTrip['messages'][0]['message']}";
+        return updateTripResponse;
       }
     }
     // } catch (e) {
@@ -1384,16 +1399,16 @@ class HiveService {
       final newstoredData = _myBox.get('SESSION');
       _myBox.put('torTrip', <Map<String, dynamic>>[]);
       _myBox.put('torMain', <Map<String, dynamic>>[]);
-      _myBox.put('offlineTicket', <Map<String, dynamic>>[]);
-      _myBox.put('offlineUpdateAdditionalFare', <Map<String, dynamic>>[]);
+      // _myBox.put('offlineTicket', <Map<String, dynamic>>[]);
+      // _myBox.put('offlineUpdateAdditionalFare', <Map<String, dynamic>>[]);
       _myBox.put('torTicket', <Map<String, dynamic>>[]);
       _myBox.put('prepaidTicket', <Map<String, dynamic>>[]);
       _myBox.put('prepaidBaggage', <Map<String, dynamic>>[]);
       _myBox.put('expenses', <Map<String, dynamic>>[]);
       _myBox.put('topUpList', <Map<String, dynamic>>[]);
       _myBox.put('torInspection', <Map<String, dynamic>>[]);
-      _myBox.put('offlinetorInspection', <Map<String, dynamic>>[]);
-      _myBox.put('offlinetorViolation', <Map<String, dynamic>>[]);
+      // _myBox.put('offlinetorInspection', <Map<String, dynamic>>[]);
+      // _myBox.put('offlinetorViolation', <Map<String, dynamic>>[]);
 
       print('newstoredData: $newstoredData');
       return true;

@@ -37,8 +37,8 @@ class _TicketStopListPageState extends State<TicketStopListPage> {
     // Filter data and sum baggage
     for (final item in ticketList) {
       final toPlace = item['to_place'] as String;
-      final baggage = item['baggage'] as int;
-      final fare = int.parse(item['fare'].toString()) as int;
+      final baggage = double.parse(item['baggage'].toString()).toInt();
+      final fare = double.parse(item['fare'].toString()).toInt();
 
       int baggagePlus = baggage > 0 ? 1 : 0;
       int passengerPlus = fare > 0 ? 1 : 0;

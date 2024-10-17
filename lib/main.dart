@@ -325,7 +325,7 @@ Future<void> checkAndInitializeBoxes() async {
     dynamic vehicleListDBDynamic = _myBox.get('vehicleListDB');
 
     dynamic offlineDispatchDynamic = _myBox.get('offlineDispatch');
-    dynamic offlineUpdateTorTripDynamic = _myBox.get('offlineDispatch');
+    dynamic offlineUpdateTorTripDynamic = _myBox.get('offlineUpdateTorTrip');
     dynamic offlineUpdateTorMainDynamic = _myBox.get('offlineUpdateTorMain');
     dynamic offlineAddTorMainDynamic = _myBox.get('offlineAddTorMain');
 

@@ -10,15 +10,15 @@ import 'package:dltb/components/color.dart';
 import 'package:dltb/main.dart';
 import 'package:dltb/pages/dashboard.dart';
 import 'package:dltb/pages/login.dart';
+import 'package:dltb/pages/settings/unsyncPage.dart';
 import 'package:dltb/pages/specialtrip.dart';
 import 'package:dltb/pages/ticketingMenu/ticketingPage.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
+import 'package:dart_ping/dart_ping.dart';
 import 'package:hive/hive.dart';
 import 'package:location/location.dart';
-
+import 'package:get/get.dart';
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -36,11 +36,12 @@ class _FirstPageState extends State<FirstPage> {
   NFCReaderBackend backend = NFCReaderBackend();
   httprequestService httprequestServices = httprequestService();
   fetchServices fetchservice = fetchServices();
+  OfflineController offlineController = Get.put(OfflineController());
   EasyRefreshController _refreshController = EasyRefreshController(
     controlFinishRefresh: true,
     controlFinishLoad: true,
   );
-  PrinterController connectToPrinter = PrinterController();
+  PrinterController connectToPrinter = Get.put(PrinterController());
 
   double progressbar = 0.5;
   String progressText = 'fetching data...';
@@ -199,6 +200,18 @@ class _FirstPageState extends State<FirstPage> {
 
     // Enable background mode
     try {
+      final ping = Ping('google.com');
+      bool isProceed = false;
+      ping.stream.listen((event) {
+        print("my ping: $event");
+        double? pingTime = event.response?.time?.inMilliseconds.toDouble();
+        if (pingTime != null) {
+          print('ping: $pingTime');
+        } else {
+          print('no ping');
+        }
+      });
+
       await location.enableBackgroundMode(enable: true);
       location.onLocationChanged.listen((LocationData newLocation) async {
         httprequestService httprequestservice = httprequestService();
@@ -231,6 +244,7 @@ class _FirstPageState extends State<FirstPage> {
           print('not empty offlineDispatch: $offlineDispatch');
           if (!isofflineDispatchProceed) {
             for (var item in List.from(offlineDispatch)) {
+              offlineController.dispatchResponse.value = "";
               print('connection offlineDispatch item: $item');
               isofflineDispatchProceed = true;
               Map<String, dynamic> resultofflineDispatch =
@@ -245,9 +259,13 @@ class _FirstPageState extends State<FirstPage> {
                   isofflineDispatchProceed = false;
                   print(
                       "connection offlineDispatch failed ${resultofflineDispatch['messages']['message']}");
+                  offlineController.dispatchResponse.value =
+                      "${resultofflineDispatch['messages']['message']}";
                 }
               } catch (e) {
                 isofflineDispatchProceed = false;
+                offlineController.dispatchResponse.value =
+                    "SLOW OR NO INTERNET";
                 print('connection offlineDispatch $e');
               }
               _myBox.put('offlineDispatch', offlineDispatch);
@@ -255,6 +273,7 @@ class _FirstPageState extends State<FirstPage> {
           }
         } else {
           print('empty offlineDispatch: $offlineDispatch');
+          offlineController.dispatchResponse.value = "";
         }
 
         // offline update tortrip
@@ -262,6 +281,7 @@ class _FirstPageState extends State<FirstPage> {
           print('not empty offlineUpdateTorTrip: $offlineUpdateTorTrip');
           if (!isofflineUpdateTorTripProceed) {
             for (var item in List.from(offlineUpdateTorTrip)) {
+              offlineController.arrivalResponse.value = "";
               print('connection offlineUpdateTorTrip item: $item');
               isofflineUpdateTorTripProceed = true;
               Map<String, dynamic> resultofflineUpdateTorTrip =
@@ -277,9 +297,12 @@ class _FirstPageState extends State<FirstPage> {
                   isofflineUpdateTorTripProceed = false;
                   print(
                       "connection offlineUpdateTorTrip failed ${resultofflineUpdateTorTrip['messages']['message']}");
+                  offlineController.arrivalResponse.value =
+                      "${resultofflineUpdateTorTrip['messages']['message']}";
                 }
               } catch (e) {
                 isofflineUpdateTorTripProceed = false;
+                offlineController.arrivalResponse.value = "SLOW OR NO INTERNET";
                 print('connection offlineUpdateTorTrip $e');
               }
               _myBox.put('offlineUpdateTorTrip', offlineUpdateTorTrip);
@@ -287,6 +310,7 @@ class _FirstPageState extends State<FirstPage> {
           }
         } else {
           print('empty offlineUpdateTorTrip: $offlineUpdateTorTrip');
+          offlineController.arrivalResponse.value = "";
         }
 // offline update tormain
         if (offlineUpdateTorMain.isNotEmpty) {
@@ -346,6 +370,7 @@ class _FirstPageState extends State<FirstPage> {
         if (offlineTicket.isNotEmpty) {
           if (!isTicketProceed) {
             for (var item in List.from(offlineTicket)) {
+              offlineController.ticketResponse.value = "";
               print('connection offlineTicket item: $item');
               item['isNegative'] = true;
               isTicketProceed = true;
@@ -361,14 +386,19 @@ class _FirstPageState extends State<FirstPage> {
                   isTicketProceed = false;
                   print(
                       "connection failed ${offlineTorTicket['messages']['message']}");
+                  offlineController.ticketResponse.value =
+                      "${offlineTorTicket['messages']['message']} at Ticket:${item['items']['ticket_no']}";
                 }
               } catch (e) {
                 isTicketProceed = false;
+                offlineController.ticketResponse.value = "SLOW OR NO INTERNET";
                 print('connection $e');
               }
             }
             _myBox.put('offlineTicket', offlineTicket);
           }
+        } else {
+          offlineController.ticketResponse.value = "";
         }
 
         if (offlineUpdateAdditionalFare.isNotEmpty) {

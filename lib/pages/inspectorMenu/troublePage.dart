@@ -54,6 +54,7 @@ class _TroublePageState extends State<TroublePage> {
   String vehicleNo = "";
   final TextEditingController textEditingController = TextEditingController();
   String routeid = "";
+  String date = "";
   @override
   void initState() {
     super.initState();
@@ -69,6 +70,7 @@ class _TroublePageState extends State<TroublePage> {
         .toList();
     stationNames = filteredStations;
     route = " ${torTrip[SESSION['currentTripIndex']]['route']} ";
+    date = "${torTrip[SESSION['currentTripIndex']]['date_of_trip']}";
   }
 
   @override
@@ -195,8 +197,7 @@ class _TroublePageState extends State<TroublePage> {
                             isTop: false,
                             isBottom: true,
                             label: "DATE OF TRIP",
-                            value:
-                                ' ${torTrip[SESSION['currentTripIndex']]['date_of_trip']} '),
+                            value: ' $date '),
                         SizedBox(
                           height: 10,
                         ),

@@ -397,10 +397,12 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                           .toString();
 
                                   // bool isUpdateTripIndex = true;
-                                  bool isUpdateTripIndex = await hiveService
-                                      .updateCurrentTripIndex(dispatcherData);
+                                  Map<String, dynamic> isUpdateTripIndex =
+                                      await hiveService.updateCurrentTripIndex(
+                                          dispatcherData);
 
-                                  if (isUpdateTripIndex) {
+                                  if (isUpdateTripIndex['messages']['code'] ==
+                                      0) {
                                     int totalBaggageCount = torTicket
                                         .where((item) =>
                                             (item['baggage'] is num &&
@@ -485,7 +487,7 @@ class _ArrivalPageState extends State<ArrivalPage> {
                                             type: ArtSweetAlertType.danger,
                                             title: "ERROR",
                                             text:
-                                                "PLEASE CHECK YOUR INTERNET CONNECTION"));
+                                                "${isUpdateTripIndex['messages']['message']}"));
                                   }
                                   // bool isUpdateArrived =
                                   //     await hiveService.updateArrived();

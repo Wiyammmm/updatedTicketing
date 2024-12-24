@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+
+import 'pages/optionpage.dart';
 // void backgroundFetchHeadlessTask(HeadlessTask task) async {
 //   String taskId = task.taskId;
 //   bool isTimeout = task.timeout;
@@ -542,7 +544,7 @@ class MyApp extends StatelessWidget {
       ),
 
       debugShowCheckedModeBanner: false,
-      home: FirstPage(),
+      home: OptionPage(),
       // builder: EasyLoading.init(),
     );
   }
